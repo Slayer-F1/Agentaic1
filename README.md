@@ -13,11 +13,12 @@ Built on **n8n + Google Gemini 2.5 Flash (free tier)**, Google Sheets as the tra
 | `skills/` | The governed skill library (leave, salary certificate, expense claim, IT access) + `_TEMPLATE.skill.md` |
 | `profiles/` | AI expertise profiles (HR / finance / IT-security / general) |
 | `registry/skills-index.json` | The signed source of truth: ids, versions, status, keywords, **allowed_services**, approval chains |
-| `workflow/` | 8 importable n8n workflows (00–07) — agent, service gateway, approvals, SLA chaser, dashboard API, error handler, reset |
+| `docker/` | One-command local stack: n8n + the portal (`cd docker && docker compose up -d`) |
+| `workflow/` | 8 importable n8n workflows (00–07) — agent, service gateway, approvals, SLA chaser, dashboard API, error handler, reset. Stable ids, so sub-workflow links resolve themselves on import |
 | `ui/index.html` | Chat-first portal (single file, no build): chat + preview cards, my-requests tracker, approvals inbox, governance/audit view; demo mode built in |
 | `data/seeds/` | Synthetic registry seed (xlsx + CSVs, 6 tabs) — all fictional, labeled «تجريبي» |
 | `docs/` | `submission.md` (AR+EN) · `setup-guide.md` · `demo-script.md` · `demo-extras/parking-permit.skill.md` (the live-add beat) |
-| `tools/` | Generators: `build_workflows.py`, `build_data.py` (edit these, not the JSONs) |
+| `tools/` | `build_workflows.py`, `build_data.py` (edit these, not the JSONs) · `deploy.py` — imports, publishes and verifies the stack in one command |
 
 ## The six agent criteria
 
@@ -25,7 +26,17 @@ Runtime tool choice (model picks services; gateway enforces the allowlist) · pl
 
 ## Quick start
 
-`docs/setup-guide.md` (≈ 45 min, free tiers only). The portal runs instantly in demo mode by just opening `ui/index.html`.
+```bash
+cd docker && docker compose up -d
+```
+
+n8n comes up on <http://localhost:5678> and the portal on <http://localhost:8080>. Then follow `docs/setup-guide.md` (≈ 15 min, free tiers only): create the n8n owner account, add your Gemini/Sheets/Gmail credentials in the n8n UI, and run:
+
+```bash
+python tools/deploy.py --spreadsheet-id YOUR_SHEET_ID
+```
+
+To just look at the interface, open `ui/index.html` directly — it runs in demo mode with no setup at all.
 
 > **Note:** this repo must stay **public** — n8n fetches `registry/` and `skills/` from raw.githubusercontent.com at runtime.
 
