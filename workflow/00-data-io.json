@@ -1,0 +1,485 @@
+{
+  "name": "مُنجِز — 00 Data IO (sub)",
+  "nodes": [
+    {
+      "id": "607b918e-5d3b-4477-af91-976209f95e9d",
+      "name": "Data Input",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -700,
+        0
+      ],
+      "parameters": {
+        "inputSource": "workflowInputs",
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "action",
+              "type": "string"
+            },
+            {
+              "name": "tab",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "342f6056-bd67-4833-9840-8db1cf8ca7be",
+      "name": "Action?",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -460,
+        0
+      ],
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.action }}",
+                    "rightValue": "read",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "read"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.action }}",
+                    "rightValue": "read_all",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "read_all"
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "3a954845-62c9-470c-b73a-a3ede4545073",
+      "name": "Read Tab",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -200,
+        -140
+      ],
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "value": "REPLACE_WITH_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "={{ $('Data Input').first().json.tab }}",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "SHEETS_CRED_ID",
+          "name": "Google Sheets (demo)"
+        }
+      },
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 4000
+    },
+    {
+      "id": "7a5f89a6-ac8c-4808-bc51-17a364fa68fc",
+      "name": "Wrap Rows",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        60,
+        -140
+      ],
+      "parameters": {
+        "jsCode": "const rows = $input.all().map(i => i.json).filter(r => r && Object.keys(r).length > 0);\nreturn [{ json: { tab: $('Data Input').first().json.tab, count: rows.length, rows } }];\n"
+      }
+    },
+    {
+      "id": "54e7eba7-1458-4fea-9015-350792c9c682",
+      "name": "Read Employees",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -200,
+        140
+      ],
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "value": "REPLACE_WITH_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Employees",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "SHEETS_CRED_ID",
+          "name": "Google Sheets (demo)"
+        }
+      },
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 4000
+    },
+    {
+      "id": "d31515fe-ae35-4142-beb0-0db1c9e2d3bd",
+      "name": "Read LeaveBalances",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        20,
+        140
+      ],
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "value": "REPLACE_WITH_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "LeaveBalances",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "SHEETS_CRED_ID",
+          "name": "Google Sheets (demo)"
+        }
+      },
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 4000
+    },
+    {
+      "id": "fcc36b97-32b8-4a0c-ac47-9e105f002325",
+      "name": "Read ExpensePolicy",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        240,
+        140
+      ],
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "value": "REPLACE_WITH_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "ExpensePolicy",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "SHEETS_CRED_ID",
+          "name": "Google Sheets (demo)"
+        }
+      },
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 4000
+    },
+    {
+      "id": "c3a4d625-09f9-404c-8eaf-b28a65a35b16",
+      "name": "Read SystemCatalog",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        460,
+        140
+      ],
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "value": "REPLACE_WITH_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "SystemCatalog",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "SHEETS_CRED_ID",
+          "name": "Google Sheets (demo)"
+        }
+      },
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 4000
+    },
+    {
+      "id": "e9381d3c-a945-4249-b399-9a958aa1bd4b",
+      "name": "Read Transactions",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        680,
+        140
+      ],
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "value": "REPLACE_WITH_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Transactions",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "SHEETS_CRED_ID",
+          "name": "Google Sheets (demo)"
+        }
+      },
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 4000
+    },
+    {
+      "id": "b9923331-6823-43d8-b598-22e0cece2355",
+      "name": "Read AuditLog",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        900,
+        140
+      ],
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "value": "REPLACE_WITH_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "AuditLog",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "SHEETS_CRED_ID",
+          "name": "Google Sheets (demo)"
+        }
+      },
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 4000
+    },
+    {
+      "id": "f2c3c3c9-bdd2-425d-a016-d8464f0108b2",
+      "name": "Assemble All",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1120,
+        140
+      ],
+      "parameters": {
+        "jsCode": "const grab = (n) => { try { return $(n).all().map(i => i.json).filter(r => r && Object.keys(r).length > 0); } catch (e) { return []; } };\nreturn [{ json: {\n  employees: grab('Read Employees'), balances: grab('Read LeaveBalances'),\n  policy: grab('Read ExpensePolicy'), systems: grab('Read SystemCatalog'),\n  transactions: grab('Read Transactions'), audit: grab('Read AuditLog'),\n} }];\n"
+      }
+    },
+    {
+      "id": "c60801ab-f5fb-4d6a-81f7-35b089ecf4c6",
+      "name": "Note 2459097d",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -720,
+        -320
+      ],
+      "parameters": {
+        "content": "## Data IO (sub)\nUnified reads over the Munjiz Registry sheet. Tabs: Employees · LeaveBalances · ExpensePolicy · SystemCatalog · Transactions · AuditLog.",
+        "width": 520,
+        "height": 220,
+        "color": 4
+      }
+    }
+  ],
+  "connections": {
+    "Data Input": {
+      "main": [
+        [
+          {
+            "node": "Action?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Action?": {
+      "main": [
+        [
+          {
+            "node": "Read Tab",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Read Employees",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Tab": {
+      "main": [
+        [
+          {
+            "node": "Wrap Rows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Employees": {
+      "main": [
+        [
+          {
+            "node": "Read LeaveBalances",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read LeaveBalances": {
+      "main": [
+        [
+          {
+            "node": "Read ExpensePolicy",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read ExpensePolicy": {
+      "main": [
+        [
+          {
+            "node": "Read SystemCatalog",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read SystemCatalog": {
+      "main": [
+        [
+          {
+            "node": "Read Transactions",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Transactions": {
+      "main": [
+        [
+          {
+            "node": "Read AuditLog",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read AuditLog": {
+      "main": [
+        [
+          {
+            "node": "Assemble All",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {}
+}

@@ -1,0 +1,1347 @@
+{
+  "name": "مُنجِز — 02 Service Gateway (sub)",
+  "nodes": [
+    {
+      "id": "58af130b-ce13-47ba-9809-ebeb675cd0c6",
+      "name": "Gateway Input",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -1200,
+        0
+      ],
+      "parameters": {
+        "inputSource": "workflowInputs",
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "service",
+              "type": "string"
+            },
+            {
+              "name": "payload",
+              "type": "string"
+            },
+            {
+              "name": "skill_id",
+              "type": "string"
+            },
+            {
+              "name": "employee_id",
+              "type": "string"
+            },
+            {
+              "name": "session_id",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "bd25fb3a-b83d-4fc0-9c41-ae7075b013cc",
+      "name": "Fetch Skills Index",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -980,
+        0
+      ],
+      "parameters": {
+        "method": "GET",
+        "url": "https://raw.githubusercontent.com/Slayer-F1/Agentaic1/main/registry/skills-index.json",
+        "options": {
+          "timeout": 20000,
+          "response": {
+            "response": {
+              "responseFormat": "text"
+            }
+          }
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 3000
+    },
+    {
+      "id": "6438f6a2-1464-4a48-ba3e-b17cab109a40",
+      "name": "Gate Check",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -760,
+        0
+      ],
+      "parameters": {
+        "jsCode": "const inp = $('Gateway Input').first().json;\nlet index = null;\ntry { index = JSON.parse($json.data ?? $json.body ?? $json.gemini_text ?? ''); } catch (e) {}\nif (!index) { try { index = typeof $json === 'object' && $json.skills ? $json : null; } catch (e) {} }\nconst skills = (index && index.skills) || [];\nconst skill = skills.find(s => s.id === inp.skill_id && s.status === 'approved');\nlet payload = {};\ntry { payload = inp.payload ? JSON.parse(inp.payload) : {}; } catch (e) { payload = { _raw: inp.payload }; }\nconst allowed = skill ? (skill.allowed_services || []) : [];\nconst denied = !skill || !allowed.includes(inp.service);\nreturn [{ json: {\n  service: inp.service, skill_id: inp.skill_id, employee_id: inp.employee_id,\n  session_id: inp.session_id || '', payload,\n  denied, allowed_services: allowed,\n  skill_meta: skill ? { approval_chain: skill.approval_chain, auto_execute: skill.auto_execute,\n    sla_hours: skill.sla_hours, title_ar: skill.title_ar } : null,\n} }];\n"
+      }
+    },
+    {
+      "id": "544310ba-efe7-4a06-b3dc-0bac4465d5c8",
+      "name": "Denied?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -540,
+        0
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.denied }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "300afb11-6a49-4cfa-86b7-c1c37f433233",
+      "name": "Denied Result",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -320,
+        -220
+      ],
+      "parameters": {
+        "jsCode": "return [{ json: { ...$json, result: { error: 'SERVICE_DENIED_BY_GOVERNANCE',\n  message: 'هذه الخدمة غير مصرح بها لهذه المهارة وفق السجل المعتمد.',\n  allowed_services: $json.allowed_services } } }];\n"
+      }
+    },
+    {
+      "id": "cc7c0bba-d650-476c-b757-4df9339a190e",
+      "name": "Service Switch",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -320,
+        60
+      ],
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.service }}",
+                    "rightValue": "get_employee_profile",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "get_employee_profile"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.service }}",
+                    "rightValue": "get_leave_balance",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "get_leave_balance"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.service }}",
+                    "rightValue": "get_salary_record",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "get_salary_record"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.service }}",
+                    "rightValue": "get_expense_policy",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "get_expense_policy"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.service }}",
+                    "rightValue": "get_it_roles",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "get_it_roles"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.service }}",
+                    "rightValue": "get_system_catalog",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "get_system_catalog"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.service }}",
+                    "rightValue": "check_leave_overlap",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "check_leave_overlap"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.service }}",
+                    "rightValue": "submit_transaction",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "submit_transaction"
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "7f888703-0d82-488f-a4ff-c0dbac8d18c5",
+      "name": "Read Employees (profile)",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -60,
+        -320
+      ],
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "value": "REPLACE_WITH_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Employees",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "SHEETS_CRED_ID",
+          "name": "Google Sheets (demo)"
+        }
+      },
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 4000
+    },
+    {
+      "id": "f5fa951d-df66-4bac-9c3e-d653d2c85dd5",
+      "name": "svc: get_employee_profile",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        160,
+        -320
+      ],
+      "parameters": {
+        "jsCode": "const j = $('Gate Check').first().json;\nconst rows = $input.all().map(i => i.json);\nconst e = rows.find(r => r.employee_id === j.employee_id);\nif (!e) return [{ json: { ...j, result: { error: 'EMPLOYEE_NOT_FOUND' } } }];\nreturn [{ json: { ...j, result: {\n  employee_id: e.employee_id, name_ar: e.name_ar, name_en: e.name_en, role: e.role,\n  department: e.department, grade: e.grade, manager_id: e.manager_id, status: e.status,\n  joined_date: e.joined_date,\n} } }];\n"
+      }
+    },
+    {
+      "id": "f6584224-268f-4460-858c-de70e1e618da",
+      "name": "Read LeaveBalances (svc)",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -60,
+        -150
+      ],
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "value": "REPLACE_WITH_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "LeaveBalances",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "SHEETS_CRED_ID",
+          "name": "Google Sheets (demo)"
+        }
+      },
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 4000
+    },
+    {
+      "id": "879346bb-2aeb-4f64-88bc-5887f7c4322b",
+      "name": "svc: get_leave_balance",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        160,
+        -150
+      ],
+      "parameters": {
+        "jsCode": "const j = $('Gate Check').first().json;\nconst rows = $input.all().map(i => i.json);\nconst b = rows.find(r => r.employee_id === j.employee_id);\nif (!b) return [{ json: { ...j, result: { error: 'BALANCE_NOT_FOUND' } } }];\nreturn [{ json: { ...j, result: {\n  annual_total: +b.annual_total, annual_used: +b.annual_used,\n  annual_remaining: +b.annual_total - +b.annual_used,\n  sick_total: +b.sick_total, sick_used: +b.sick_used,\n  sick_remaining: +b.sick_total - +b.sick_used,\n} } }];\n"
+      }
+    },
+    {
+      "id": "f9ccef27-58ea-409f-a117-3f7eac151caf",
+      "name": "Read Employees (salary)",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -60,
+        20
+      ],
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "value": "REPLACE_WITH_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Employees",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "SHEETS_CRED_ID",
+          "name": "Google Sheets (demo)"
+        }
+      },
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 4000
+    },
+    {
+      "id": "52d1066c-e892-4fa9-858d-a96b27cd5d10",
+      "name": "Read Transactions (salary)",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        160,
+        20
+      ],
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "value": "REPLACE_WITH_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Transactions",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "SHEETS_CRED_ID",
+          "name": "Google Sheets (demo)"
+        }
+      },
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 4000
+    },
+    {
+      "id": "9be3307a-5262-4c92-a78b-d22fdaeac968",
+      "name": "svc: get_salary_record",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        380,
+        20
+      ],
+      "parameters": {
+        "jsCode": "const j = $('Gate Check').first().json;\nconst emps = $('Read Employees (salary)').all().map(i => i.json);\nconst txns = $input.all().map(i => i.json);\nconst e = emps.find(r => r.employee_id === j.employee_id);\nif (!e) return [{ json: { ...j, result: { error: 'EMPLOYEE_NOT_FOUND' } } }];\nconst month = new Date().toISOString().slice(0, 7);\nconst certs = txns.filter(t => t.employee_id === j.employee_id && t.skill_id === 'salary-certificate'\n  && String(t.ts || '').startsWith(month) && t.status === 'executed').length;\nreturn [{ json: { ...j, result: {\n  name_ar: e.name_ar, name_en: e.name_en, role: e.role, grade: e.grade,\n  joined_date: e.joined_date, status: e.status,\n  monthly_salary_aed: +e.monthly_salary_aed, allowances_aed: +e.allowances_aed,\n  certificates_issued_this_month: certs, monthly_limit: 3,\n} } }];\n"
+      }
+    },
+    {
+      "id": "04f9c9e6-7fc4-440a-b38e-7ea68f421ecf",
+      "name": "Read Transactions (policy)",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -60,
+        190
+      ],
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "value": "REPLACE_WITH_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Transactions",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "SHEETS_CRED_ID",
+          "name": "Google Sheets (demo)"
+        }
+      },
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 4000
+    },
+    {
+      "id": "ecb4395f-339f-4fdd-ae95-3631f319142c",
+      "name": "Read ExpensePolicy (svc)",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        160,
+        190
+      ],
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "value": "REPLACE_WITH_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "ExpensePolicy",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "SHEETS_CRED_ID",
+          "name": "Google Sheets (demo)"
+        }
+      },
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 4000
+    },
+    {
+      "id": "0db406e8-ee2c-4254-ba13-658a2d5e8a7a",
+      "name": "svc: get_expense_policy",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        380,
+        190
+      ],
+      "parameters": {
+        "jsCode": "const j = $('Gate Check').first().json;\nconst pol = $input.all().map(i => i.json);\nconst txns = $('Read Transactions (policy)').all().map(i => i.json);\nconst cat = j.payload.category || '';\nconst p = pol.find(r => r.category === cat);\nif (!p) return [{ json: { ...j, result: { error: 'UNKNOWN_CATEGORY', categories: pol.map(r => r.category) } } }];\nconst month = new Date().toISOString().slice(0, 7);\nlet spent = 0;\nfor (const t of txns) {\n  if (t.employee_id !== j.employee_id || t.skill_id !== 'expense-claim') continue;\n  if (!String(t.ts || '').startsWith(month)) continue;\n  if (!['executed', 'awaiting_manager', 'awaiting_finance'].includes(t.status)) continue;\n  try { const pl = JSON.parse(t.payload_json || '{}'); if (pl.category === cat) spent += +pl.amount_aed || 0; } catch (e) {}\n}\nreturn [{ json: { ...j, result: {\n  category: cat, monthly_cap_aed: +p.monthly_cap_aed,\n  receipt_required_above: +p.receipt_required_above,\n  spent_this_month_aed: Math.round(spent * 100) / 100,\n  remaining_this_month_aed: Math.round((+p.monthly_cap_aed - spent) * 100) / 100,\n  notes: p.notes || '',\n} } }];\n"
+      }
+    },
+    {
+      "id": "adb6a124-9eb9-4fad-87f7-92c360ee4ff1",
+      "name": "Read Employees (roles)",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -60,
+        360
+      ],
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "value": "REPLACE_WITH_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Employees",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "SHEETS_CRED_ID",
+          "name": "Google Sheets (demo)"
+        }
+      },
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 4000
+    },
+    {
+      "id": "d5658a86-b9bc-45dc-ae93-518b897c757e",
+      "name": "svc: get_it_roles",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        160,
+        360
+      ],
+      "parameters": {
+        "jsCode": "const j = $('Gate Check').first().json;\nconst rows = $input.all().map(i => i.json);\nconst e = rows.find(r => r.employee_id === j.employee_id);\nif (!e) return [{ json: { ...j, result: { error: 'EMPLOYEE_NOT_FOUND' } } }];\nconst roles = String(e.it_roles || '').split(';').map(s => s.trim()).filter(Boolean);\nreturn [{ json: { ...j, result: { current_access: roles } } }];\n"
+      }
+    },
+    {
+      "id": "23e0281e-02d8-4b2f-8ab1-46a746c5a36a",
+      "name": "Read SystemCatalog (svc)",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -60,
+        530
+      ],
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "value": "REPLACE_WITH_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "SystemCatalog",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "SHEETS_CRED_ID",
+          "name": "Google Sheets (demo)"
+        }
+      },
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 4000
+    },
+    {
+      "id": "30bee736-3e4b-4712-b7b6-b343b6bdb928",
+      "name": "svc: get_system_catalog",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        160,
+        530
+      ],
+      "parameters": {
+        "jsCode": "const j = $('Gate Check').first().json;\nconst rows = $input.all().map(i => i.json);\nconst q = (j.payload.system_id || j.payload.query || '').toLowerCase();\nconst hit = rows.filter(r => !q || r.system_id.toLowerCase().includes(q)\n  || String(r.name_ar).includes(j.payload.system_id || j.payload.query || '')\n  || String(r.name_en).toLowerCase().includes(q));\nreturn [{ json: { ...j, result: { systems: hit.map(r => ({\n  system_id: r.system_id, name_ar: r.name_ar, name_en: r.name_en,\n  sensitivity: r.sensitivity, allowed_roles: String(r.allowed_roles || '').split(';').filter(Boolean),\n})) } } }];\n"
+      }
+    },
+    {
+      "id": "255cbef1-dd00-42db-992d-eb96d1af4db7",
+      "name": "Read Employees (overlap)",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -60,
+        700
+      ],
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "value": "REPLACE_WITH_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Employees",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "SHEETS_CRED_ID",
+          "name": "Google Sheets (demo)"
+        }
+      },
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 4000
+    },
+    {
+      "id": "791dcbe9-137f-4551-8c46-ed10a1c95f0b",
+      "name": "Read Transactions (overlap)",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        160,
+        700
+      ],
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "value": "REPLACE_WITH_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Transactions",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "SHEETS_CRED_ID",
+          "name": "Google Sheets (demo)"
+        }
+      },
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 4000
+    },
+    {
+      "id": "eaae8d75-2e6f-4e2f-9fb2-02bbe20e339e",
+      "name": "svc: check_leave_overlap",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        380,
+        700
+      ],
+      "parameters": {
+        "jsCode": "function workingDays(startISO, endISO) {\n  const s = new Date(startISO + 'T12:00:00Z'), e = new Date(endISO + 'T12:00:00Z');\n  if (isNaN(s) || isNaN(e) || e < s) return null;\n  let n = 0; const d = new Date(s);\n  while (d <= e) { const w = d.getUTCDay(); if (w !== 6 && w !== 0) n++; d.setUTCDate(d.getUTCDate() + 1); }\n  return n;\n}\nconst j = $('Gate Check').first().json;\nconst txns = $input.all().map(i => i.json);\nconst emps = $('Read Employees (overlap)').all().map(i => i.json);\nconst me = emps.find(r => r.employee_id === j.employee_id) || {};\nconst team = emps.filter(r => r.department === me.department && r.employee_id !== j.employee_id)\n  .map(r => r.employee_id);\nconst s = j.payload.start_date, e = j.payload.end_date;\nconst overlaps = [];\nfor (const t of txns) {\n  if (t.skill_id !== 'leave-request') continue;\n  if (!['awaiting_manager', 'executed'].includes(t.status)) continue;\n  if (!team.includes(t.employee_id)) continue;\n  try {\n    const pl = JSON.parse(t.payload_json || '{}');\n    if (pl.start_date <= e && pl.end_date >= s) overlaps.push({ employee: t.employee_name,\n      start_date: pl.start_date, end_date: pl.end_date, status: t.status });\n  } catch (er) {}\n}\nreturn [{ json: { ...j, result: { requested_working_days: workingDays(s, e),\n  team_overlaps: overlaps } } }];\n"
+      }
+    },
+    {
+      "id": "88abf6ca-8968-4b65-b207-4a5fb086272f",
+      "name": "Read Employees (submit)",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -60,
+        870
+      ],
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "value": "REPLACE_WITH_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Employees",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "SHEETS_CRED_ID",
+          "name": "Google Sheets (demo)"
+        }
+      },
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 4000
+    },
+    {
+      "id": "36520142-9d93-462b-abe2-111cfe5c63e6",
+      "name": "svc: submit_transaction",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        160,
+        870
+      ],
+      "parameters": {
+        "jsCode": "const j = $('Gate Check').first().json;\nconst emps = $input.all().map(i => i.json);\nconst me = emps.find(r => r.employee_id === j.employee_id) || {};\nconst now = new Date();\nconst txn_id = 'TXN-' + now.getTime();\nconst meta = j.skill_meta || { approval_chain: ['manager'], auto_execute: false, sla_hours: 48 };\nconst chain = (j.payload._approval_chain_override && Array.isArray(j.payload._approval_chain_override))\n  ? j.payload._approval_chain_override : (meta.approval_chain || []);\nconst auto = meta.auto_execute === true && chain.length === 0;\nlet output_ref = '';\nif (auto && j.skill_id === 'salary-certificate') output_ref = 'CERT-' + String(now.getTime()).slice(-6);\nconst status = auto ? 'executed' : 'awaiting_' + chain[0];\nconst row = {\n  txn_id, ts: now.toISOString(), employee_id: j.employee_id,\n  employee_name: me.name_ar || j.employee_id, skill_id: j.skill_id,\n  type_ar: meta.title_ar || j.skill_id,\n  payload_json: JSON.stringify(j.payload), status,\n  approval_chain: chain.join(';'), chain_pos: 0,\n  current_approver: chain[0] || '', decision_note: '', output_ref,\n  sla_hours: meta.sla_hours || 48, updated_at: now.toISOString(),\n};\nreturn [{ json: { ...j, txn_row: row, result: { txn_id, status, output_ref,\n  approval_chain: chain, message: auto ? 'نُفّذت المعاملة فورًا' : 'أُرسلت لسلسلة الاعتماد' } } }];\n"
+      }
+    },
+    {
+      "id": "073a6c7f-58ce-4134-93ac-868cd8d68b04",
+      "name": "Emit Txn Row",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        720,
+        870
+      ],
+      "parameters": {
+        "jsCode": "return [{ json: $json.txn_row }];"
+      }
+    },
+    {
+      "id": "577b9f03-e393-460d-912b-688a33731d33",
+      "name": "Append Transaction",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        940,
+        870
+      ],
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "REPLACE_WITH_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Transactions",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "SHEETS_CRED_ID",
+          "name": "Google Sheets (demo)"
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 4000
+    },
+    {
+      "id": "22d74492-91a5-4d53-a6fd-21ce494bdba5",
+      "name": "Carry Submit Result",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1160,
+        870
+      ],
+      "parameters": {
+        "jsCode": "return [{ json: $('svc: submit_transaction').first().json }];"
+      }
+    },
+    {
+      "id": "837e470c-f5b4-4339-b9e2-437d0119eb03",
+      "name": "Build Audit Row",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1400,
+        60
+      ],
+      "parameters": {
+        "jsCode": "const j = $json;\nreturn [{ json: {\n  ts: new Date().toISOString(), session_id: j.session_id || '',\n  employee_id: j.employee_id || '', skill_id: j.skill_id || '',\n  service: j.service || '', request_json: JSON.stringify(j.payload || {}),\n  result_summary: (j.result && j.result.error) ? ('DENIED/ERROR: ' + j.result.error)\n    : ('OK ' + JSON.stringify(j.result || {}).slice(0, 160)),\n} }];\n"
+      }
+    },
+    {
+      "id": "d4076212-7ccc-43c8-b7fb-b57f6a736e2f",
+      "name": "Append AuditLog",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1620,
+        60
+      ],
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "REPLACE_WITH_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "AuditLog",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "SHEETS_CRED_ID",
+          "name": "Google Sheets (demo)"
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 4000
+    },
+    {
+      "id": "de3c11cc-76fc-460c-a5d9-c28dd285117c",
+      "name": "Return Result",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1840,
+        60
+      ],
+      "parameters": {
+        "jsCode": "const src = $('Build Audit Row').first().json;\n// find the full item that produced the audit row\nlet full = null;\nfor (const n of ['Denied Result','svc: get_employee_profile','svc: get_leave_balance',\n  'svc: get_salary_record','svc: get_expense_policy','svc: get_it_roles',\n  'svc: get_system_catalog','svc: check_leave_overlap','Carry Submit Result']) {\n  try { const it = $(n).first(); if (it && it.json && it.json.result) { full = it.json; break; } } catch (e) {}\n}\nreturn [{ json: { service: src.service, result: (full && full.result) || { error: 'NO_RESULT' } } }];\n"
+      }
+    },
+    {
+      "id": "7983d0d5-bacc-42cf-9a25-ac45f16a34cd",
+      "name": "Note 389abf78",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1240,
+        -420
+      ],
+      "parameters": {
+        "content": "## Service Gateway — بوابة الخدمات (الحوكمة التنفيذية)\nEVERY tool call the agent makes passes through here:\n1) the skill's `allowed_services` allowlist is enforced from the signed registry — a call outside the list returns SERVICE_DENIED_BY_GOVERNANCE;\n2) every call (including denials) writes an AuditLog row.\nThe agent cannot touch data any other way. (Criteria ①⑤⑥)",
+        "width": 640,
+        "height": 250,
+        "color": 4
+      }
+    }
+  ],
+  "connections": {
+    "Gateway Input": {
+      "main": [
+        [
+          {
+            "node": "Fetch Skills Index",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Skills Index": {
+      "main": [
+        [
+          {
+            "node": "Gate Check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gate Check": {
+      "main": [
+        [
+          {
+            "node": "Denied?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Denied?": {
+      "main": [
+        [
+          {
+            "node": "Denied Result",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Service Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Service Switch": {
+      "main": [
+        [
+          {
+            "node": "Read Employees (profile)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Read LeaveBalances (svc)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Read Employees (salary)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Read Transactions (policy)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Read Employees (roles)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Read SystemCatalog (svc)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Read Employees (overlap)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Read Employees (submit)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Employees (profile)": {
+      "main": [
+        [
+          {
+            "node": "svc: get_employee_profile",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read LeaveBalances (svc)": {
+      "main": [
+        [
+          {
+            "node": "svc: get_leave_balance",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Employees (salary)": {
+      "main": [
+        [
+          {
+            "node": "Read Transactions (salary)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Transactions (salary)": {
+      "main": [
+        [
+          {
+            "node": "svc: get_salary_record",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Transactions (policy)": {
+      "main": [
+        [
+          {
+            "node": "Read ExpensePolicy (svc)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read ExpensePolicy (svc)": {
+      "main": [
+        [
+          {
+            "node": "svc: get_expense_policy",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Employees (roles)": {
+      "main": [
+        [
+          {
+            "node": "svc: get_it_roles",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read SystemCatalog (svc)": {
+      "main": [
+        [
+          {
+            "node": "svc: get_system_catalog",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Employees (overlap)": {
+      "main": [
+        [
+          {
+            "node": "Read Transactions (overlap)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Transactions (overlap)": {
+      "main": [
+        [
+          {
+            "node": "svc: check_leave_overlap",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Employees (submit)": {
+      "main": [
+        [
+          {
+            "node": "svc: submit_transaction",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "svc: submit_transaction": {
+      "main": [
+        [
+          {
+            "node": "Emit Txn Row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Emit Txn Row": {
+      "main": [
+        [
+          {
+            "node": "Append Transaction",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append Transaction": {
+      "main": [
+        [
+          {
+            "node": "Carry Submit Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Denied Result": {
+      "main": [
+        [
+          {
+            "node": "Build Audit Row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "svc: get_employee_profile": {
+      "main": [
+        [
+          {
+            "node": "Build Audit Row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "svc: get_leave_balance": {
+      "main": [
+        [
+          {
+            "node": "Build Audit Row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "svc: get_salary_record": {
+      "main": [
+        [
+          {
+            "node": "Build Audit Row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "svc: get_expense_policy": {
+      "main": [
+        [
+          {
+            "node": "Build Audit Row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "svc: get_it_roles": {
+      "main": [
+        [
+          {
+            "node": "Build Audit Row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "svc: get_system_catalog": {
+      "main": [
+        [
+          {
+            "node": "Build Audit Row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "svc: check_leave_overlap": {
+      "main": [
+        [
+          {
+            "node": "Build Audit Row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Carry Submit Result": {
+      "main": [
+        [
+          {
+            "node": "Build Audit Row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Audit Row": {
+      "main": [
+        [
+          {
+            "node": "Append AuditLog",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append AuditLog": {
+      "main": [
+        [
+          {
+            "node": "Return Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {}
+}

@@ -1,0 +1,878 @@
+{
+  "name": "مُنجِز — 01 Chat Agent",
+  "nodes": [
+    {
+      "id": "1e331f58-f919-4912-beae-117d6abdf646",
+      "name": "Chat Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -1700,
+        0
+      ],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "munjiz/chat",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "webhookId": "6122a40c-316f-428a-bac7-fd8d00ab984a"
+    },
+    {
+      "id": "88ad8bef-e5b6-4009-9563-9c84f3de7d41",
+      "name": "Fetch Skills Index",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1480,
+        0
+      ],
+      "parameters": {
+        "method": "GET",
+        "url": "https://raw.githubusercontent.com/Slayer-F1/Agentaic1/main/registry/skills-index.json",
+        "options": {
+          "timeout": 20000,
+          "response": {
+            "response": {
+              "responseFormat": "text"
+            }
+          }
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 3000
+    },
+    {
+      "id": "40373d17-a74d-4084-a83e-f9429def96fb",
+      "name": "Prepare Router",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1260,
+        0
+      ],
+      "parameters": {
+        "jsCode": "const b = $json.body || {};\nlet index = {};\ntry { index = JSON.parse($('Fetch Skills Index').first().json.data); } catch (e) {\n  try { index = $('Fetch Skills Index').first().json; } catch (e2) {}\n}\nconst skills = (index.skills || []).filter(s => s.status === 'approved');\nconst listing = skills.map(s => ({ id: s.id, title_ar: s.title_ar, keywords: s.keywords }));\nconst prompt = ['أنت مصنّف نوايا لبوابة خدمات موظفين. طلب الموظف:', b.message || '',\n  'المهارات المتاحة:', JSON.stringify(listing),\n  'أعد JSON فقط: {\"skill_id\": \"<id أو null>\", \"confidence\": 0..1}. اختر null إذا لم يطابق الطلب أي مهارة بوضوح.'].join('\\n');\nreturn [{ json: {\n  employee_id: b.employee_id || '', session_id: b.session_id || ('S-' + Date.now()),\n  message: b.message || '', active_skill_id: b.active_skill_id || '',\n  skills, listing,\n  geminiBody: { contents: [{ role: 'user', parts: [{ text: prompt }] }],\n    generationConfig: { temperature: 0, response_mime_type: 'application/json' } },\n} }];\n"
+      }
+    },
+    {
+      "id": "847ebda5-7cfa-47a5-bc75-9298fdee8a0f",
+      "name": "Has Active Skill?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -1040,
+        0
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.active_skill_id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "1554a05b-2297-4b87-819c-7c866ab7b085",
+      "name": "Gemini: Route Intent",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1040,
+        220
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googlePalmApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.geminiBody) }}",
+        "options": {
+          "timeout": 90000
+        }
+      },
+      "credentials": {
+        "googlePalmApi": {
+          "id": "GEMINI_CRED_ID",
+          "name": "Google Gemini (AI Studio)"
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 6000
+    },
+    {
+      "id": "cd577e6b-5718-4fb5-9d43-0adb2dc372d5",
+      "name": "Parse Route",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -820,
+        220
+      ],
+      "parameters": {
+        "jsCode": "const out = [];\nfor (const item of $input.all()) {\n  let text = '';\n  try { text = item.json.candidates[0].content.parts.map(p => p.text || '').join(''); } catch (e) {}\n  const cleaned = text.replace(/^```(json)?/m, '').replace(/```\\s*$/m, '').trim();\n  let parsed = null;\n  try { parsed = JSON.parse(cleaned); } catch (e) {\n    const m = cleaned.match(/\\{[\\s\\S]*\\}/);\n    if (m) { try { parsed = JSON.parse(m[0]); } catch (e2) {} }\n  }\n  out.push({ json: { gemini_text: cleaned, gemini_json: parsed, gemini_ok: !!parsed } });\n}\nreturn out;\n"
+      }
+    },
+    {
+      "id": "ebbf1a74-7fc3-43a5-a1d5-4ae6248ac166",
+      "name": "Pick Skill",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -600,
+        110
+      ],
+      "parameters": {
+        "jsCode": "const prep = $('Prepare Router').first().json;\nlet skill_id = prep.active_skill_id || '';\nlet confidence = 1;\nif (!skill_id) {\n  const r = $json.gemini_json || {};\n  skill_id = r.skill_id && r.skill_id !== 'null' ? r.skill_id : '';\n  confidence = typeof r.confidence === 'number' ? r.confidence : 0;\n}\nconst skill = prep.skills.find(s => s.id === skill_id);\nreturn [{ json: { ...prep, geminiBody: undefined, skill_id: skill ? skill.id : '',\n  matched: !!skill && confidence >= 0.5,\n  skill_meta: skill || null,\n  services_list_ar: prep.skills.map(s => '• ' + s.title_ar).join('\\n') } }];\n"
+      }
+    },
+    {
+      "id": "bcc352d3-b3b1-4201-b943-ce052786d465",
+      "name": "Matched?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -380,
+        110
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.matched }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "9997b7de-bf05-4f6f-8f6b-a794ad227e5f",
+      "name": "Respond: Services List",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.2,
+      "position": [
+        -160,
+        320
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"reply\": \"أهلًا بك في مُنجِز 👋 لم أتبيّن الخدمة المطلوبة. الخدمات المتاحة حاليًا:\\n\" + $json.services_list_ar + \"\\nأخبرني أيّها تريد.\", \"state\": \"info\", \"skill_id\": \"\", \"session_id\": $json.session_id } }}",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              },
+              {
+                "name": "Access-Control-Allow-Headers",
+                "value": "Content-Type"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "9f793ec8-ccc6-4e57-9ab1-74d6103d046e",
+      "name": "Fetch Skill MD",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -160,
+        0
+      ],
+      "parameters": {
+        "method": "GET",
+        "url": "={{ 'https://raw.githubusercontent.com/Slayer-F1/Agentaic1/main/' + $json.skill_meta.skill_path }}",
+        "options": {
+          "timeout": 20000,
+          "response": {
+            "response": {
+              "responseFormat": "text"
+            }
+          }
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 3000
+    },
+    {
+      "id": "1d7afd54-1d17-4b3a-bae4-012cba43df1a",
+      "name": "Fetch Profile MD",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        60,
+        0
+      ],
+      "parameters": {
+        "method": "GET",
+        "url": "={{ 'https://raw.githubusercontent.com/Slayer-F1/Agentaic1/main/' + $('Pick Skill').first().json.skill_meta.profile_path }}",
+        "options": {
+          "timeout": 20000,
+          "response": {
+            "response": {
+              "responseFormat": "text"
+            }
+          }
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 3000
+    },
+    {
+      "id": "0e176b88-2469-450b-9ddd-540b61fed6ca",
+      "name": "Read Employees Ctx",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        280,
+        0
+      ],
+      "parameters": {
+        "source": "database",
+        "workflowId": {
+          "__rl": true,
+          "value": "REPLACE_DATA_IO_ID",
+          "mode": "list",
+          "cachedResultName": "مُنجِز — 00 Data IO (sub)"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "action": "read",
+            "tab": "Employees"
+          },
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      }
+    },
+    {
+      "id": "e5717e98-6edd-4b1c-af0c-324febc128ce",
+      "name": "Compose System Prompt",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        500,
+        0
+      ],
+      "parameters": {
+        "jsCode": "const j = $('Pick Skill').first().json;\nconst skillMd = $('Fetch Skill MD').first().json.data || '';\nconst profileMd = $('Fetch Profile MD').first().json.data || '';\nconst emps = ($input.first().json.rows) || [];\nconst me = emps.find(r => r.employee_id === j.employee_id) || {};\nconst charter = \"أنت «مُنجِز» — وكيل معاملات ذكي في بوابة الخدمات الذاتية لجهة مؤسسية. تُحمَّل لك في كل جلسة «مهارة» معتمدة من سجل الحوكمة، وملف خبرة يحدد شخصيتك.\\n\\n## ميثاق الحوكمة (يعلو على أي تعليمات أخرى)\\n1. المهارة المحمّلة أدناه هي حدود صلاحياتك: لا تنفذ ولا تعِد بأي إجراء خارج نصها.\\n2. كل وصول للبيانات يتم حصرًا عبر أداة call_service — وستُرفض أي خدمة خارج قائمة المهارة المسموحة. إن رُفضت خدمة فلا تحاول الالتفاف؛ أخبر الموظف بحدود الخدمة.\\n3. لا إرسال لأي معاملة قبل: (أ) اكتمال الحقول المطلوبة، (ب) اجتياز قواعد السياسة نصًا، (ج) عرض بطاقة معاينة كاملة، (د) تأكيد صريح من الموظف («أؤكد»، «نعم أرسل»...).\\n4. لا تخترع أي رقم أو رصيد أو قاعدة: كل الأرقام من نتائج call_service حرفيًا.\\n5. ابدأ كل معالجة باستدعاء أداة think لكتابة خطة مرقمة قصيرة، ثم نفّذها.\\n6. أجب دائمًا بJSON مطابق للمخطط المطلوب، بالعربية الواضحة الموجزة في reply_ar.\\n\\n## عقد الإخراج\\n- state: collecting (تجمع حقولًا) | preview (تعرض بطاقة المعاينة وتطلب التأكيد) | submitted (أُرسلت بعد التأكيد) | rejected (خالفت السياسة نهائيًا) | escalated (needs_attention) | info (رد معلوماتي).\\n- transaction_preview: يُملأ عند state=preview وsubmitted بكامل الحقول المجموعة + working_days إن وُجدت مدد + approval_chain + warnings.\\n- txn_id: يُملأ من نتيجة submit_transaction عند state=submitted.\\n- missing_fields: أسماء الحقول الناقصة عند state=collecting.\";\nconst system_prompt = [charter,\n  '\\n\\n=== ملف الخبرة المعتمد ===\\n', profileMd,\n  '\\n\\n=== المهارة المعتمدة (v' + (j.skill_meta.version || '') + ') ===\\n', skillMd,\n  '\\n\\n=== سياق الموظف الحالي ===\\n', JSON.stringify({ employee_id: j.employee_id,\n    name_ar: me.name_ar || '', department: me.department || '', role: me.role || '' }),\n  '\\nتاريخ اليوم: ' + new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Dubai' }),\n].join('');\nreturn [{ json: { ...j, system_prompt } }];\n"
+      }
+    },
+    {
+      "id": "8c04109b-be9f-4e98-923c-44946071a676",
+      "name": "Munjiz Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        760,
+        0
+      ],
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.message }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "={{ $json.system_prompt }}",
+          "maxIterations": 10,
+          "returnIntermediateSteps": true
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 2,
+      "waitBetweenTries": 8000
+    },
+    {
+      "id": "c29569ef-143e-40bf-bcd3-684e2d44241e",
+      "name": "Gemini Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        620,
+        260
+      ],
+      "parameters": {
+        "modelName": "models/gemini-2.5-flash",
+        "options": {
+          "temperature": 0.2
+        }
+      },
+      "credentials": {
+        "googlePalmApi": {
+          "id": "GEMINI_CRED_ID",
+          "name": "Google Gemini (AI Studio)"
+        }
+      }
+    },
+    {
+      "id": "b1930f05-eef6-4f3d-b7ae-86c548856190",
+      "name": "Session Memory",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        780,
+        260
+      ],
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Pick Skill').first().json.session_id }}",
+        "contextWindowLength": 12
+      }
+    },
+    {
+      "id": "ece80889-f5b3-4264-9f6e-b8fe02c8e0a6",
+      "name": "Structured Output",
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        940,
+        260
+      ],
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"reply_ar\": {\n      \"type\": \"string\"\n    },\n    \"state\": {\n      \"type\": \"string\",\n      \"enum\": [\n        \"collecting\",\n        \"preview\",\n        \"submitted\",\n        \"rejected\",\n        \"escalated\",\n        \"info\"\n      ]\n    },\n    \"transaction_preview\": {\n      \"type\": [\n        \"object\",\n        \"null\"\n      ],\n      \"properties\": {\n        \"fields\": {\n          \"type\": \"object\"\n        },\n        \"working_days\": {\n          \"type\": [\n            \"number\",\n            \"null\"\n          ]\n        },\n        \"amount_aed\": {\n          \"type\": [\n            \"number\",\n            \"null\"\n          ]\n        },\n        \"approval_chain\": {\n          \"type\": \"array\",\n          \"items\": {\n            \"type\": \"string\"\n          }\n        },\n        \"warnings\": {\n          \"type\": \"array\",\n          \"items\": {\n            \"type\": \"string\"\n          }\n        }\n      }\n    },\n    \"txn_id\": {\n      \"type\": [\n        \"string\",\n        \"null\"\n      ]\n    },\n    \"missing_fields\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"string\"\n      }\n    }\n  },\n  \"required\": [\n    \"reply_ar\",\n    \"state\"\n  ]\n}"
+      }
+    },
+    {
+      "id": "18599b7f-396d-45c2-bbaa-a23c85c52180",
+      "name": "think",
+      "type": "@n8n/n8n-nodes-langchain.toolThink",
+      "typeVersion": 1,
+      "position": [
+        1100,
+        260
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "baec7816-cf13-47bc-9a81-8a4631283d14",
+      "name": "call_service",
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        1260,
+        260
+      ],
+      "parameters": {
+        "name": "call_service",
+        "description": "بوابة الخدمات الموحدة والوحيدة للبيانات والمعاملات. أرسل service (اسم الخدمة كما في المهارة) وpayload (JSON string). الخدمات خارج قائمة المهارة سترفضها الحوكمة. أمثلة: get_employee_profile بلا payload؛ get_leave_balance بلا payload؛ check_leave_overlap بـ {\"start_date\",\"end_date\"}؛ submit_transaction بكامل حقول المعاملة.",
+        "source": "database",
+        "workflowId": {
+          "__rl": true,
+          "value": "REPLACE_GATEWAY_ID",
+          "mode": "list",
+          "cachedResultName": "مُنجِز — 02 Service Gateway (sub)"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "service": "={{ $fromAI('service', 'service name from the skill allowed_services', 'string') }}",
+            "payload": "={{ $fromAI('payload', 'JSON string of the service payload, or empty', 'string') }}",
+            "skill_id": "={{ $('Pick Skill').first().json.skill_id }}",
+            "employee_id": "={{ $('Pick Skill').first().json.employee_id }}",
+            "session_id": "={{ $('Pick Skill').first().json.session_id }}"
+          },
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      }
+    },
+    {
+      "id": "4877120f-05e4-4ab1-bae8-4e44bbf9e696",
+      "name": "Deterministic Cross-Check",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1020,
+        0
+      ],
+      "parameters": {
+        "jsCode": "function workingDays(startISO, endISO) {\n  const s = new Date(startISO + 'T12:00:00Z'), e = new Date(endISO + 'T12:00:00Z');\n  if (isNaN(s) || isNaN(e) || e < s) return null;\n  let n = 0; const d = new Date(s);\n  while (d <= e) { const w = d.getUTCDay(); if (w !== 6 && w !== 0) n++; d.setUTCDate(d.getUTCDate() + 1); }\n  return n;\n}\nconst j = $json.output || {};\nconst ctx = $('Compose System Prompt').first().json;\nconst prior = $('Compose System Prompt').first().json._rechecked === true || $json._rechecked === true;\nlet needs_recheck = false; const notes = [];\nconst p = j.transaction_preview;\nif (p && ['preview', 'submitted'].includes(j.state) && ctx.skill_id === 'leave-request' && p.fields) {\n  const det = workingDays(p.fields.start_date, p.fields.end_date);\n  if (det !== null && p.working_days != null && +p.working_days !== det && !prior) {\n    needs_recheck = true; notes.push('working_days يجب أن تكون ' + det);\n  }\n  if (prior && det !== null) p.working_days = det;\n}\nif (p && p.amount_aed != null) p.amount_aed = Math.round(+p.amount_aed * 100) / 100;\nreturn [{ json: {\n  reply_ar: j.reply_ar || '', state: j.state || 'info',\n  transaction_preview: p || null, txn_id: j.txn_id || null,\n  missing_fields: j.missing_fields || [],\n  skill_id: ctx.skill_id, session_id: ctx.session_id,\n  needs_recheck, recheck_notes: notes, _rechecked: prior,\n} }];\n"
+      }
+    },
+    {
+      "id": "a0c28e2c-c204-4622-a08c-da94466ee8e2",
+      "name": "Needs Re-reason?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1240,
+        0
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.needs_recheck }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "6d24f1b4-c41f-442f-bb87-cab274a42c6f",
+      "name": "Build Re-reason",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1240,
+        -220
+      ],
+      "parameters": {
+        "jsCode": "const j = $json;\nconst prompt = ['راجع ردك: المدقق الحتمي وجد خطأً حسابيًا.', j.recheck_notes.join('؛ '),\n  'ردك السابق:', JSON.stringify({ reply_ar: j.reply_ar, state: j.state,\n    transaction_preview: j.transaction_preview, missing_fields: j.missing_fields }),\n  'صحّح الأرقام وأعد JSON بنفس المخطط تمامًا دون أي نص آخر.'].join('\\n');\nreturn [{ json: { ...j, geminiBody: { contents: [{ role: 'user', parts: [{ text: prompt }] }],\n  generationConfig: { temperature: 0, response_mime_type: 'application/json' } } } }];\n"
+      }
+    },
+    {
+      "id": "9a7bf5a5-97e0-4c26-aa45-4876d5f73308",
+      "name": "Gemini: Re-reason",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1460,
+        -220
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googlePalmApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.geminiBody) }}",
+        "options": {
+          "timeout": 90000
+        }
+      },
+      "credentials": {
+        "googlePalmApi": {
+          "id": "GEMINI_CRED_ID",
+          "name": "Google Gemini (AI Studio)"
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 6000
+    },
+    {
+      "id": "c37d27c5-b0ff-41ad-b8ef-6df5579d049e",
+      "name": "Parse Re-reason",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1680,
+        -220
+      ],
+      "parameters": {
+        "jsCode": "const out = [];\nfor (const item of $input.all()) {\n  let text = '';\n  try { text = item.json.candidates[0].content.parts.map(p => p.text || '').join(''); } catch (e) {}\n  const cleaned = text.replace(/^```(json)?/m, '').replace(/```\\s*$/m, '').trim();\n  let parsed = null;\n  try { parsed = JSON.parse(cleaned); } catch (e) {\n    const m = cleaned.match(/\\{[\\s\\S]*\\}/);\n    if (m) { try { parsed = JSON.parse(m[0]); } catch (e2) {} }\n  }\n  out.push({ json: { gemini_text: cleaned, gemini_json: parsed, gemini_ok: !!parsed } });\n}\nreturn out;\n"
+      }
+    },
+    {
+      "id": "daea8863-e2d1-4813-a255-1e1aa7444214",
+      "name": "Merge Re-reason",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1900,
+        -220
+      ],
+      "parameters": {
+        "jsCode": "const fixed = $json.gemini_json || {};\nreturn [{ json: { output: fixed, _rechecked: true } }];\n"
+      }
+    },
+    {
+      "id": "74f146fe-551a-4356-86a3-1017caec6010",
+      "name": "Respond Chat",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.2,
+      "position": [
+        1460,
+        60
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"reply\": $json.reply_ar, \"state\": $json.state, \"preview\": $json.transaction_preview, \"txn_id\": $json.txn_id, \"missing_fields\": $json.missing_fields, \"skill_id\": $json.skill_id, \"session_id\": $json.session_id } }}",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              },
+              {
+                "name": "Access-Control-Allow-Headers",
+                "value": "Content-Type"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "27312a0c-ea8d-49e1-af5f-bfca55ef19d2",
+      "name": "Note 971062a2",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1720,
+        -380
+      ],
+      "parameters": {
+        "content": "## مُنجِز — Chat Agent (criteria ①②③④⑤⑥)\n④ webhook trigger from the portal. ⑤ router picks the SKILL at runtime; the whole system prompt is composed dynamically from GitHub (governed SKILL.md + PROFILE.md). ① one governed tool (call_service) — the model chooses WHICH service per step. ② think-tool plan first. ③ session memory + registry sheets. ⑥ deterministic working-day cross-check forces a re-reason pass on mismatch.",
+        "width": 700,
+        "height": 240,
+        "color": 4
+      }
+    }
+  ],
+  "connections": {
+    "Chat Webhook": {
+      "main": [
+        [
+          {
+            "node": "Fetch Skills Index",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Skills Index": {
+      "main": [
+        [
+          {
+            "node": "Prepare Router",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Router": {
+      "main": [
+        [
+          {
+            "node": "Has Active Skill?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has Active Skill?": {
+      "main": [
+        [
+          {
+            "node": "Pick Skill",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Gemini: Route Intent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini: Route Intent": {
+      "main": [
+        [
+          {
+            "node": "Parse Route",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Route": {
+      "main": [
+        [
+          {
+            "node": "Pick Skill",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pick Skill": {
+      "main": [
+        [
+          {
+            "node": "Matched?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Matched?": {
+      "main": [
+        [
+          {
+            "node": "Fetch Skill MD",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond: Services List",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Skill MD": {
+      "main": [
+        [
+          {
+            "node": "Fetch Profile MD",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Profile MD": {
+      "main": [
+        [
+          {
+            "node": "Read Employees Ctx",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Employees Ctx": {
+      "main": [
+        [
+          {
+            "node": "Compose System Prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Munjiz Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Session Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Munjiz Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Munjiz Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "think": {
+      "ai_tool": [
+        [
+          {
+            "node": "Munjiz Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "call_service": {
+      "ai_tool": [
+        [
+          {
+            "node": "Munjiz Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Compose System Prompt": {
+      "main": [
+        [
+          {
+            "node": "Munjiz Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Munjiz Agent": {
+      "main": [
+        [
+          {
+            "node": "Deterministic Cross-Check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Deterministic Cross-Check": {
+      "main": [
+        [
+          {
+            "node": "Needs Re-reason?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Needs Re-reason?": {
+      "main": [
+        [
+          {
+            "node": "Build Re-reason",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond Chat",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Re-reason": {
+      "main": [
+        [
+          {
+            "node": "Gemini: Re-reason",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini: Re-reason": {
+      "main": [
+        [
+          {
+            "node": "Parse Re-reason",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Re-reason": {
+      "main": [
+        [
+          {
+            "node": "Merge Re-reason",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge Re-reason": {
+      "main": [
+        [
+          {
+            "node": "Deterministic Cross-Check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {}
+}

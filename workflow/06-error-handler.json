@@ -1,0 +1,118 @@
+{
+  "name": "مُنجِز — 06 Error Handler",
+  "nodes": [
+    {
+      "id": "7d083986-eda2-4ec5-8dda-7f1997c87d24",
+      "name": "Error Trigger",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        -500,
+        0
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "36feaa66-7edb-4533-b43d-0d5b6a32e992",
+      "name": "Extract",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -280,
+        0
+      ],
+      "parameters": {
+        "jsCode": "const j = $json;\nreturn [{ json: { wf: (j.workflow || {}).name || '?', node: (j.execution || {}).lastNodeExecuted || '?',\n  msg: ((j.execution || {}).error || {}).message || '?', at: new Date().toISOString() } }];\n"
+      }
+    },
+    {
+      "id": "81f0dab7-64e3-4893-94bc-b4f6a7b9589a",
+      "name": "Notify",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -60,
+        0
+      ],
+      "parameters": {
+        "sendTo": "munjiz.demo.uae@gmail.com",
+        "subject": "=⚙️ مُنجِز — خطأ تشغيلي: {{ $json.wf }}",
+        "message": "={{ 'Node: ' + $json.node + ' — ' + $json.msg + ' @ ' + $json.at }}",
+        "options": {}
+      },
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "GMAIL_CRED_ID",
+          "name": "Gmail (demo)"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "id": "e546d189-2675-4408-9076-7197f2f257b0",
+      "name": "Logged ✓",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        160,
+        0
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "4af24287-2bf2-464d-b09f-f7bf537db304",
+      "name": "Note b789925a",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -520,
+        -180
+      ],
+      "parameters": {
+        "content": "## Error Handler (criterion ⑥)\nSet as error workflow for 01/03/04/05.",
+        "width": 440,
+        "height": 120,
+        "color": 4
+      }
+    }
+  ],
+  "connections": {
+    "Error Trigger": {
+      "main": [
+        [
+          {
+            "node": "Extract",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract": {
+      "main": [
+        [
+          {
+            "node": "Notify",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notify": {
+      "main": [
+        [
+          {
+            "node": "Logged ✓",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {}
+}

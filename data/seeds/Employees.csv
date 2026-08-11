@@ -1,0 +1,8 @@
+﻿employee_id,name_ar,name_en,role,department,grade,manager_id,email,status,it_roles,joined_date,monthly_salary_aed,allowances_aed
+EMP-1001,أحمد المهيري (تجريبي),Ahmed Almheiri (demo),specialist,تقنية المعلومات,G8,EMP-1002,munjiz.demo.uae+ahmed@gmail.com,active,SYS-BI:read,2021-03-14,24500,6200
+EMP-1002,مريم الشامسي (تجريبي),Mariam Alshamsi (demo),manager,تقنية المعلومات,G11,EMP-1007,munjiz.demo.uae+mariam@gmail.com,active,SYS-BI:write;SYS-CRM:read,2016-09-01,41000,9800
+EMP-1003,سالم النقبي (تجريبي),Salem Alnaqbi (demo),specialist,تقنية المعلومات,G7,EMP-1002,munjiz.demo.uae+salem@gmail.com,active,SYS-BI:read,2022-11-20,21000,5400
+EMP-1004,راشد الكتبي (تجريبي),Rashed Alketbi (demo),specialist,الاتصال المؤسسي,G8,EMP-1005,munjiz.demo.uae+rashed@gmail.com,active,,2020-01-05,23000,5800
+EMP-1005,نورة الظاهري (تجريبي),Noura Aldhaheri (demo),manager,الاتصال المؤسسي,G11,EMP-1007,munjiz.demo.uae+noura@gmail.com,active,SYS-CRM:write,2015-06-15,39500,9200
+EMP-1006,خالد الهاملي (تجريبي),Khaled Alhameli (demo),finance,المالية,G9,EMP-1007,munjiz.demo.uae+khaled@gmail.com,active,SYS-ERP:write,2018-02-10,28500,6900
+EMP-1007,عبدالله السويدي (تجريبي),Abdulla Alsuwaidi (demo),it_security,أمن المعلومات,G12,,munjiz.demo.uae+abdulla@gmail.com,active,SYS-ERP:admin;SYS-CRM:admin,2013-04-22,47000,11000

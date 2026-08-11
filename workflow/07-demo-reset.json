@@ -1,0 +1,341 @@
+{
+  "name": "مُنجِز — 07 Demo Reset",
+  "nodes": [
+    {
+      "id": "b6cdd10f-f0c6-45cc-b124-bd4485efaab7",
+      "name": "POST Reset",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -640,
+        0
+      ],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "munjiz/reset",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "webhookId": "2d907071-85dc-4e5b-a1d0-1a587f638b01"
+    },
+    {
+      "id": "0e3ab3d1-777b-473f-8c4e-a4726ad18a79",
+      "name": "Compute Anchors",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -420,
+        0
+      ],
+      "parameters": {
+        "jsCode": "// Re-arm demo anchors: canonical leave balances for the two demo employees\n// and one stale pending transaction for the chaser beat.\nconst now = new Date();\nconst stale = new Date(now.getTime() - 30 * 3600 * 1000).toISOString();\nreturn [{ json: {\n  bal1: { employee_id: 'EMP-1001', annual_total: 30, annual_used: 22, sick_total: 15, sick_used: 2 },\n  bal2: { employee_id: 'EMP-1003', annual_total: 30, annual_used: 4, sick_total: 15, sick_used: 0 },\n  staleTxn: { txn_id: 'TXN-SEED-CHASE', ts: stale, employee_id: 'EMP-1004',\n    employee_name: 'راشد الكتبي (تجريبي)', skill_id: 'expense-claim', type_ar: 'مطالبة نفقات / بدلات',\n    payload_json: JSON.stringify({ category: 'training', amount_aed: 850, expense_date: stale.slice(0, 10),\n      description: 'رسوم ورشة تدريبية معتمدة', receipt_ref: 'RCPT-7741' }),\n    status: 'awaiting_manager', approval_chain: 'manager;finance', chain_pos: 0,\n    current_approver: 'manager', decision_note: '', output_ref: '', sla_hours: 24, updated_at: stale },\n} }];\n"
+      }
+    },
+    {
+      "id": "85800f0b-4221-43da-886e-9e0220bb024f",
+      "name": "Emit Bal 1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -200,
+        -120
+      ],
+      "parameters": {
+        "jsCode": "return [{ json: $json.bal1 }];"
+      }
+    },
+    {
+      "id": "5336b858-962e-4b05-95a8-1be5ab842035",
+      "name": "Reset Balance 1",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        20,
+        -120
+      ],
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "REPLACE_WITH_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "LeaveBalances",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [
+            "employee_id"
+          ],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "SHEETS_CRED_ID",
+          "name": "Google Sheets (demo)"
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 4000
+    },
+    {
+      "id": "ede5feba-6d13-4697-b018-62c6e8d6bbcb",
+      "name": "Emit Bal 2",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
+        -120
+      ],
+      "parameters": {
+        "jsCode": "return [{ json: $('Compute Anchors').first().json.bal2 }];"
+      }
+    },
+    {
+      "id": "9507e3d4-e3ae-492b-b5c4-1e8912b7c91f",
+      "name": "Reset Balance 2",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        460,
+        -120
+      ],
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "REPLACE_WITH_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "LeaveBalances",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [
+            "employee_id"
+          ],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "SHEETS_CRED_ID",
+          "name": "Google Sheets (demo)"
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 4000
+    },
+    {
+      "id": "b9e63780-cf19-4a75-b225-ce0be9ca923f",
+      "name": "Emit Stale Txn",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        680,
+        -120
+      ],
+      "parameters": {
+        "jsCode": "return [{ json: $('Compute Anchors').first().json.staleTxn }];"
+      }
+    },
+    {
+      "id": "d3e4809f-8b9e-4848-8cec-2e7f8d18efc8",
+      "name": "Seed Stale Txn",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        900,
+        -120
+      ],
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "REPLACE_WITH_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Transactions",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [
+            "txn_id"
+          ],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "SHEETS_CRED_ID",
+          "name": "Google Sheets (demo)"
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 4000
+    },
+    {
+      "id": "c44eafd3-68fe-46d9-9b4a-a2e1fc30fd30",
+      "name": "Respond Reset",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.2,
+      "position": [
+        1120,
+        0
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"ok\": true } }}",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              },
+              {
+                "name": "Access-Control-Allow-Headers",
+                "value": "Content-Type"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "c6e6aaba-7071-4f92-86b7-f538f687d4cd",
+      "name": "Note aecdd683",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -660,
+        -260
+      ],
+      "parameters": {
+        "content": "## Demo Reset\n`POST /munjiz/reset` — canonical balances + a 30-hour-old pending claim so the SLA chaser has something to rescue on stage.",
+        "width": 560,
+        "height": 150,
+        "color": 4
+      }
+    }
+  ],
+  "connections": {
+    "POST Reset": {
+      "main": [
+        [
+          {
+            "node": "Compute Anchors",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Compute Anchors": {
+      "main": [
+        [
+          {
+            "node": "Emit Bal 1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Emit Bal 1": {
+      "main": [
+        [
+          {
+            "node": "Reset Balance 1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reset Balance 1": {
+      "main": [
+        [
+          {
+            "node": "Emit Bal 2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Emit Bal 2": {
+      "main": [
+        [
+          {
+            "node": "Reset Balance 2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reset Balance 2": {
+      "main": [
+        [
+          {
+            "node": "Emit Stale Txn",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Emit Stale Txn": {
+      "main": [
+        [
+          {
+            "node": "Seed Stale Txn",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Seed Stale Txn": {
+      "main": [
+        [
+          {
+            "node": "Respond Reset",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {}
+}

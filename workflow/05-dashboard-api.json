@@ -1,0 +1,187 @@
+{
+  "name": "مُنجِز — 05 Dashboard API",
+  "nodes": [
+    {
+      "id": "d0dfcf97-bb58-4f6b-97bf-669ca726791e",
+      "name": "GET State",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -700,
+        0
+      ],
+      "parameters": {
+        "httpMethod": "GET",
+        "path": "munjiz/state",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "webhookId": "466ded7c-95fc-4c4a-9e1c-841b79a6820e"
+    },
+    {
+      "id": "a365f3dd-cf09-4e8a-aad6-ac55b2555ca6",
+      "name": "Fetch Skills Index (dash)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -480,
+        0
+      ],
+      "parameters": {
+        "method": "GET",
+        "url": "https://raw.githubusercontent.com/Slayer-F1/Agentaic1/main/registry/skills-index.json",
+        "options": {
+          "timeout": 20000,
+          "response": {
+            "response": {
+              "responseFormat": "text"
+            }
+          }
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 3000
+    },
+    {
+      "id": "93b8aae0-4cd1-45a4-82b3-7b3789d06e72",
+      "name": "Read All (dash)",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        -260,
+        0
+      ],
+      "parameters": {
+        "source": "database",
+        "workflowId": {
+          "__rl": true,
+          "value": "REPLACE_DATA_IO_ID",
+          "mode": "list",
+          "cachedResultName": "مُنجِز — 00 Data IO (sub)"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "action": "read_all",
+            "tab": ""
+          },
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      }
+    },
+    {
+      "id": "f7f09421-298d-4417-bb07-c82c1d05d02c",
+      "name": "Assemble Dashboard",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -40,
+        0
+      ],
+      "parameters": {
+        "jsCode": "const d = $json;\nlet index = {};\ntry { index = JSON.parse($('Fetch Skills Index (dash)').first().json.data); } catch (e) {}\nconst txns = (d.transactions || []).filter(t => t.txn_id)\n  .sort((a, b) => String(b.ts).localeCompare(String(a.ts)));\nconst today = new Date().toISOString().slice(0, 10);\nreturn [{ json: {\n  generated_at: new Date().toISOString(),\n  kpis: {\n    total: txns.length,\n    today: txns.filter(t => String(t.ts).startsWith(today)).length,\n    pending: txns.filter(t => String(t.status).startsWith('awaiting_')).length,\n    executed: txns.filter(t => t.status === 'executed').length,\n    rejected: txns.filter(t => t.status === 'rejected').length,\n    minutes_saved: txns.filter(t => t.status === 'executed').length * 25,\n  },\n  transactions: txns.slice(0, 100),\n  audit: (d.audit || []).slice(-60).reverse(),\n  skills: (index.skills || []),\n  employees: (d.employees || []).map(e => ({ employee_id: e.employee_id, name_ar: e.name_ar,\n    role: e.role, department: e.department, manager_id: e.manager_id })),\n  balances: d.balances || [],\n} }];\n"
+      }
+    },
+    {
+      "id": "a8d1ab24-45e8-4d72-9fad-7b8f748f8196",
+      "name": "Respond State",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.2,
+      "position": [
+        180,
+        0
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              },
+              {
+                "name": "Access-Control-Allow-Headers",
+                "value": "Content-Type"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "4065a782-284b-426f-b722-6719d6e1ace5",
+      "name": "Note ae9aaa48",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -720,
+        -220
+      ],
+      "parameters": {
+        "content": "## Dashboard API\n`GET /munjiz/state` — polled by the portal every 3s. Skills come LIVE from the GitHub registry (the live-add demo beat needs no n8n change).",
+        "width": 560,
+        "height": 160,
+        "color": 4
+      }
+    }
+  ],
+  "connections": {
+    "GET State": {
+      "main": [
+        [
+          {
+            "node": "Fetch Skills Index (dash)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Skills Index (dash)": {
+      "main": [
+        [
+          {
+            "node": "Read All (dash)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read All (dash)": {
+      "main": [
+        [
+          {
+            "node": "Assemble Dashboard",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Assemble Dashboard": {
+      "main": [
+        [
+          {
+            "node": "Respond State",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {}
+}

@@ -1,0 +1,606 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>مُنجِز — بوابة الخدمات الذاتية</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:oklch(0.965 0.006 170);
+  --surface:oklch(0.995 0.002 170);
+  --surface-2:oklch(0.94 0.008 170);
+  --line:oklch(0.885 0.01 172);
+  --line-soft:oklch(0.92 0.008 172);
+  --ink:oklch(0.24 0.02 182);
+  --ink-2:oklch(0.42 0.02 182);
+  --ink-3:oklch(0.54 0.015 182);
+  --brand:oklch(0.44 0.1 166);
+  --brand-soft:oklch(0.93 0.03 166);
+  --brand-ink:oklch(0.985 0.005 166);
+  --gold:oklch(0.58 0.12 85);
+  --gold-soft:oklch(0.95 0.04 90);
+  --red:oklch(0.5 0.19 27);
+  --red-soft:oklch(0.94 0.035 27);
+  --amber:oklch(0.55 0.13 75);
+  --amber-soft:oklch(0.95 0.05 85);
+  --ok:oklch(0.46 0.11 160);
+  --ok-soft:oklch(0.93 0.04 160);
+  --info:oklch(0.48 0.1 240);
+  --info-soft:oklch(0.94 0.03 240);
+  --radius:12px;
+  --z-sticky:20;--z-dialog:40;--z-toast:50;
+  --fs-0:.76rem;--fs-1:.86rem;--fs-2:.96rem;--fs-3:1.08rem;--fs-4:1.22rem;--fs-5:1.38rem;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:"IBM Plex Sans Arabic","Segoe UI",system-ui,sans-serif;background:var(--bg);
+  color:var(--ink);font-size:var(--fs-2);line-height:1.7;display:flex;flex-direction:column;overflow:hidden}
+::selection{background:var(--brand);color:var(--brand-ink)}
+button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+input,select,textarea{font:inherit;color:var(--ink);background:var(--surface);
+  border:1px solid var(--line);border-radius:9px;padding:8px 12px}
+input:focus,select:focus,button:focus-visible{outline:2px solid var(--brand);outline-offset:1px}
+h1,h2,h3{font-weight:600;line-height:1.35;text-wrap:balance}
+.num{font-variant-numeric:tabular-nums}
+
+/* ---------- header ---------- */
+header.top{background:var(--brand);color:var(--brand-ink);padding:10px 20px;display:flex;
+  align-items:center;gap:18px;flex:none;z-index:var(--z-sticky)}
+.brand{display:flex;align-items:center;gap:12px}
+.brand svg{width:36px;height:36px}
+.brand .t1{font-size:var(--fs-4);font-weight:700}
+.brand .t2{font-size:var(--fs-0);opacity:.75}
+.views{display:flex;gap:2px;background:oklch(0.38 0.09 166);border-radius:10px;padding:3px}
+.views button{padding:5px 15px;border-radius:7px;color:oklch(0.9 0.02 166);font-size:var(--fs-1);font-weight:500}
+.views button[aria-selected="true"]{background:var(--surface);color:var(--ink)}
+.top .spacer{flex:1}
+.persona{display:flex;align-items:center;gap:8px;font-size:var(--fs-1)}
+.persona select{background:oklch(0.38 0.09 166);color:var(--brand-ink);border-color:transparent;max-width:230px}
+.conn{display:flex;align-items:center;gap:7px;font-size:var(--fs-0);opacity:.9}
+.conn .dot{width:8px;height:8px;border-radius:50%;background:oklch(0.75 0.02 166)}
+.conn.live .dot{background:oklch(0.82 0.16 150)}
+.conn.demo .dot{background:oklch(0.85 0.14 85)}
+.conn.err .dot{background:oklch(0.75 0.18 27)}
+.hbtn{padding:6px 12px;border:1px solid oklch(0.55 0.07 166);border-radius:8px;font-size:var(--fs-1);
+  color:var(--brand-ink)}
+.hbtn:hover{background:oklch(0.5 0.1 166)}
+
+/* ---------- layout ---------- */
+main{flex:1;min-height:0;display:flex;justify-content:center;overflow:hidden}
+.view{width:100%;max-width:1240px;min-height:0;display:none;padding:20px 24px;overflow-y:auto}
+.view.active{display:block}
+.view.chat-view{display:none;padding:0}
+.view.chat-view.active{display:flex}
+
+/* ---------- chat ---------- */
+.chat-wrap{flex:1;display:flex;min-height:0;max-width:1240px;width:100%}
+.chat-main{flex:1;display:flex;flex-direction:column;min-width:0}
+.chat-side{width:320px;border-inline-start:1px solid var(--line);padding:18px;overflow-y:auto;
+  background:var(--surface)}
+@media (max-width:980px){.chat-side{display:none}}
+.chat-log{flex:1;overflow-y:auto;padding:24px;display:flex;flex-direction:column;gap:12px}
+.msg{max-width:72ch;padding:10px 16px;border-radius:14px;font-size:var(--fs-2);line-height:1.85;
+  white-space:pre-wrap;overflow-wrap:anywhere}
+.msg.user{align-self:flex-start;background:var(--brand);color:var(--brand-ink);border-end-start-radius:4px}
+.msg.agent{align-self:flex-end;background:var(--surface);border:1px solid var(--line);border-end-end-radius:4px}
+.msg.sys{align-self:center;background:var(--surface-2);color:var(--ink-2);font-size:var(--fs-0);
+  border-radius:99px;padding:3px 14px}
+.msg.pending{color:var(--ink-3)}
+.msg .typing{display:inline-flex;gap:4px}
+.msg .typing i{width:6px;height:6px;border-radius:50%;background:var(--ink-3);animation:blink 1.2s infinite}
+.msg .typing i:nth-child(2){animation-delay:.2s}.msg .typing i:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,80%,100%{opacity:.25}40%{opacity:1}}
+.chips-row{display:flex;gap:8px;flex-wrap:wrap;align-self:flex-end}
+.chip-btn{border:1px solid var(--brand);color:var(--brand);border-radius:99px;padding:3px 13px;
+  font-size:var(--fs-1);background:var(--surface)}
+.chip-btn:hover{background:var(--brand-soft)}
+.preview-card{align-self:flex-end;width:min(480px,92%);border:1.5px solid var(--brand);border-radius:var(--radius);
+  background:var(--surface);overflow:hidden}
+.preview-card>h4{background:var(--brand-soft);color:var(--brand);padding:9px 16px;font-size:var(--fs-1)}
+.preview-card table{width:100%;border-collapse:collapse;font-size:var(--fs-1)}
+.preview-card td{padding:7px 16px;border-bottom:1px solid var(--line-soft);vertical-align:top}
+.preview-card td:first-child{color:var(--ink-3);width:38%}
+.preview-card .warn{color:var(--amber);padding:8px 16px;font-size:var(--fs-1)}
+.preview-card .chain{padding:8px 16px;font-size:var(--fs-0);color:var(--ink-2)}
+.preview-card .actions{display:flex;gap:10px;padding:12px 16px;border-top:1px solid var(--line-soft)}
+.btn{padding:9px 18px;border-radius:9px;font-weight:600;font-size:var(--fs-1)}
+.btn.primary{background:var(--brand);color:var(--brand-ink)}
+.btn.primary:hover{filter:brightness(1.12)}
+.btn.ghost{border:1px solid var(--line);color:var(--ink-2)}
+.btn.ghost:hover{border-color:var(--ink-3);color:var(--ink)}
+.composer{display:flex;gap:10px;padding:14px 24px;border-top:1px solid var(--line);background:var(--surface)}
+.composer input{flex:1;min-width:0;padding:11px 16px;border-radius:11px}
+.state-chip{align-self:flex-end;font-size:var(--fs-0);color:var(--ink-3)}
+.svc-card{border:1px solid var(--line);border-radius:var(--radius);padding:12px 14px;margin-bottom:10px;
+  cursor:pointer;background:var(--bg);transition:border-color .15s}
+.svc-card:hover{border-color:var(--brand)}
+.svc-card b{display:block;font-size:var(--fs-1)}
+.svc-card span{font-size:var(--fs-0);color:var(--ink-3)}
+.side-h{font-size:var(--fs-0);color:var(--ink-3);margin:4px 0 10px;font-weight:600}
+
+/* ---------- tables & cards ---------- */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px}
+.kpi b{display:block;font-size:var(--fs-5);font-weight:700}
+.kpi span{font-size:var(--fs-0);color:var(--ink-3)}
+.kpi.gold b{color:var(--gold)}
+.kpi.red b{color:var(--red)}
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface)}
+table.data{width:100%;border-collapse:collapse;font-size:var(--fs-1)}
+.data th{text-align:start;color:var(--ink-3);font-weight:500;font-size:var(--fs-0);padding:9px 14px;
+  border-bottom:1px solid var(--line);white-space:nowrap}
+.data td{padding:9px 14px;border-bottom:1px solid var(--line-soft);vertical-align:top}
+.data tr:last-child td{border-bottom:none}
+.data tr.expand-row td{background:var(--bg)}
+.status{display:inline-flex;align-items:center;gap:5px;font-size:var(--fs-0);font-weight:600;
+  padding:2px 11px;border-radius:99px;white-space:nowrap}
+.status.executed{background:var(--ok-soft);color:var(--ok)}
+.status.awaiting{background:var(--amber-soft);color:var(--amber)}
+.status.rejected{background:var(--red-soft);color:var(--red)}
+.status.denied{background:var(--red-soft);color:var(--red)}
+.timeline{display:flex;align-items:center;gap:0;font-size:var(--fs-0);color:var(--ink-3);flex-wrap:wrap}
+.tstep{display:flex;align-items:center;gap:6px}
+.tstep .dotp{width:10px;height:10px;border-radius:50%;background:var(--line)}
+.tstep.done .dotp{background:var(--ok)}
+.tstep.now .dotp{background:var(--amber);box-shadow:0 0 0 3px var(--amber-soft)}
+.tstep+.tstep::before{content:"";width:26px;height:1.5px;background:var(--line);margin:0 6px}
+.cert{border:2px solid var(--gold);border-radius:var(--radius);padding:22px 26px;background:var(--gold-soft);
+  max-width:70ch;line-height:2.1;position:relative}
+.cert .stamp{position:absolute;top:14px;inset-inline-end:16px;border:2px solid var(--gold);color:var(--gold);
+  border-radius:8px;padding:2px 12px;font-weight:700;transform:rotate(-6deg);font-size:var(--fs-1)}
+.skill-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;margin-bottom:24px}
+.skill-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px}
+.skill-card h4{font-size:var(--fs-2);display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.skill-card .ver{font-size:var(--fs-0);color:var(--ink-3);font-weight:400}
+.skill-card .row{margin-top:8px;display:flex;gap:6px;flex-wrap:wrap}
+.tag{font-size:.7rem;background:var(--surface-2);border-radius:6px;padding:1px 8px;color:var(--ink-2)}
+.tag.svc{background:var(--brand-soft);color:var(--brand)}
+.sec-h{display:flex;align-items:center;justify-content:space-between;margin:6px 0 14px}
+.sec-h h2{font-size:var(--fs-4)}
+.sec-h .hint{font-size:var(--fs-0);color:var(--ink-3)}
+.decide-btns{display:flex;gap:8px}
+.empty-block{padding:40px;text-align:center;color:var(--ink-3);font-size:var(--fs-1)}
+
+dialog{margin:auto;background:var(--surface);color:var(--ink);border:1px solid var(--line);
+  border-radius:14px;padding:0;width:min(480px,92vw);z-index:var(--z-dialog)}
+dialog::backdrop{background:oklch(0.2 0.02 180/.4)}
+dialog .dlg-h{padding:14px 20px;border-bottom:1px solid var(--line);font-weight:600}
+dialog .dlg-b{padding:18px 20px;display:flex;flex-direction:column;gap:12px}
+dialog label{font-size:var(--fs-1);color:var(--ink-2);display:flex;flex-direction:column;gap:6px}
+dialog .dlg-f{padding:14px 20px;border-top:1px solid var(--line);display:flex;gap:10px;justify-content:flex-end}
+.hint{font-size:var(--fs-0);color:var(--ink-3);line-height:1.7}
+#toasts{position:fixed;bottom:24px;inset-inline-start:24px;display:flex;flex-direction:column;gap:8px;z-index:var(--z-toast)}
+.toast{background:var(--ink);color:var(--surface);border-radius:9px;padding:10px 18px;font-size:var(--fs-1);
+  animation:rise .2s ease-out}
+.toast.err{background:var(--red)}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001s!important;transition-duration:.001s!important}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="brand">
+    <svg viewBox="0 0 100 100" aria-hidden="true">
+      <circle cx="50" cy="50" r="44" fill="none" stroke="currentColor" stroke-width="5" opacity=".9"/>
+      <path d="M30 52 L45 66 L72 36" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <div>
+      <div class="t1" data-i18n="appTitle">مُنجِز</div>
+      <div class="t2" data-i18n="appSub">بوابة الخدمات الذاتية بالمهارات المحوكمة — بيئة تجريبية</div>
+    </div>
+  </div>
+  <nav class="views" role="tablist">
+    <button role="tab" data-view="chat" aria-selected="true" data-i18n="vChat">المحادثة</button>
+    <button role="tab" data-view="mine" aria-selected="false" data-i18n="vMine">طلباتي</button>
+    <button role="tab" data-view="approvals" aria-selected="false" data-i18n="vApprovals">الاعتمادات</button>
+    <button role="tab" data-view="gov" aria-selected="false" data-i18n="vGov">الحوكمة</button>
+  </nav>
+  <div class="spacer"></div>
+  <div class="persona"><span data-i18n="persona">أنا:</span><select id="who"></select></div>
+  <div class="conn" id="conn"><span class="dot"></span><span id="connLabel">…</span></div>
+  <button class="hbtn" id="btnLang">EN</button>
+  <button class="hbtn" id="btnSettings" data-i18n="settings">الإعدادات</button>
+</header>
+
+<main>
+  <section class="view chat-view active" id="view-chat">
+    <div class="chat-wrap">
+      <div class="chat-main">
+        <div class="chat-log" id="chatLog"></div>
+        <form class="composer" id="composer">
+          <input id="chatInput" data-i18n-ph="chatPh" placeholder="اكتب طلبك… مثل: أريد إجازة الأسبوع القادم" autocomplete="off">
+          <button class="btn primary" type="submit" data-i18n="send">إرسال</button>
+          <button class="btn ghost" type="button" id="btnNew" data-i18n="newSession" title="محادثة جديدة">＋</button>
+        </form>
+      </div>
+      <aside class="chat-side">
+        <div class="side-h" data-i18n="services">الخدمات المتاحة (من سجل الحوكمة)</div>
+        <div id="svcList"></div>
+        <div class="side-h" style="margin-top:18px" data-i18n="myBalance">رصيدي</div>
+        <div id="balBox" class="hint">—</div>
+      </aside>
+    </div>
+  </section>
+
+  <section class="view" id="view-mine">
+    <div class="kpis" id="mineKpis"></div>
+    <div class="sec-h"><h2 data-i18n="vMine">طلباتي</h2><span class="hint" id="mineHint"></span></div>
+    <div class="tbl-wrap"><table class="data" id="mineTbl"></table></div>
+    <div id="certBox" style="margin-top:20px"></div>
+  </section>
+
+  <section class="view" id="view-approvals">
+    <div class="sec-h"><h2 data-i18n="vApprovals">الاعتمادات</h2><span class="hint" data-i18n="apprHint">المعاملات التي تنتظر قرارك بصفتك الحالية</span></div>
+    <div class="tbl-wrap"><table class="data" id="apprTbl"></table></div>
+  </section>
+
+  <section class="view" id="view-gov">
+    <div class="sec-h"><h2 data-i18n="skillsReg">سجل المهارات (حي من GitHub)</h2>
+      <span class="hint" data-i18n="skillsHint">كل مهارة = ملف SKILL.md مُعتمد بإصدار — تعديلها يمر عبر git</span></div>
+    <div class="skill-grid" id="skillGrid"></div>
+    <div class="sec-h"><h2 data-i18n="auditTitle">سجل التدقيق</h2>
+      <span class="hint" data-i18n="auditHint">كل استدعاء خدمة يمر عبر بوابة الحوكمة ويُسجَّل — بما فيه المرفوض</span></div>
+    <div class="tbl-wrap"><table class="data" id="auditTbl"></table></div>
+  </section>
+</main>
+
+<dialog id="dlg">
+  <div class="dlg-h" data-i18n="settings">الإعدادات</div>
+  <div class="dlg-b">
+    <label><span data-i18n="baseUrl">عنوان n8n Webhook الأساسي</span>
+      <input id="inpBase" dir="ltr" placeholder="http://localhost:5678/webhook" spellcheck="false"></label>
+    <p class="hint" data-i18n="baseHint">تُبنى عليه المسارات ‎/munjiz/chat و‎/munjiz/state وغيرها. اتركه فارغًا لوضع العرض التجريبي.</p>
+  </div>
+  <div class="dlg-f">
+    <button class="btn ghost" id="btnChase" data-i18n="chaseNow">تشغيل حارس الإنجاز</button>
+    <button class="btn ghost" id="btnReset" data-i18n="resetDemo">إعادة تهيئة العرض</button>
+    <button class="btn primary" id="btnSave" data-i18n="save">حفظ</button>
+  </div>
+</dialog>
+
+<div id="toasts"></div>
+
+<script>
+"use strict";
+const $=(s,e=document)=>e.querySelector(s), $$=(s,e=document)=>[...e.querySelectorAll(s)];
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+/* ---------------- i18n ---------------- */
+const AR={appTitle:"مُنجِز",appSub:"بوابة الخدمات الذاتية بالمهارات المحوكمة — بيئة تجريبية",
+ vChat:"المحادثة",vMine:"طلباتي",vApprovals:"الاعتمادات",vGov:"الحوكمة",settings:"الإعدادات",save:"حفظ",
+ persona:"أنا:",send:"إرسال",newSession:"＋",chatPh:"اكتب طلبك… مثل: أريد إجازة الأسبوع القادم",
+ services:"الخدمات المتاحة (من سجل الحوكمة)",myBalance:"رصيدي",
+ connecting:"جارٍ الاتصال…",live:"متصل",demo:"وضع العرض التجريبي",connErr:"تعذر الاتصال",
+ baseUrl:"عنوان n8n Webhook الأساسي",
+ baseHint:"تُبنى عليه المسارات ‎/munjiz/chat و‎/munjiz/state وغيرها. اتركه فارغًا لوضع العرض التجريبي.",
+ chaseNow:"تشغيل حارس الإنجاز",resetDemo:"إعادة تهيئة العرض",
+ welcome:(n)=>`أهلًا ${n} 👋 أنا مُنجِز — أنجز معاملاتك محادثةً. جرّب: «أريد إجازة الأسبوع القادم» أو «أحتاج شهادة راتب للبنك».`,
+ confirm:"تأكيد وإرسال",cancel:"إلغاء",previewTitle:"بطاقة المعاينة — راجع ثم أكّد",
+ chain:"سلسلة الاعتماد",days:"أيام العمل",submitted:(id)=>`أُرسلت المعاملة ${id} ✓`,
+ kMine:"إجمالي طلباتي",kPending:"قيد الاعتماد",kDone:"منفَّذة",kSaved:"دقيقة موفَّرة (تقديري)",
+ thTxn:["المعاملة","النوع","التاريخ","الحالة","سلسلة الاعتماد"],
+ thAppr:["المعاملة","النوع","الموظف","التفاصيل","منذ","القرار"],
+ thAudit:["الوقت","المهارة","الخدمة","النتيجة"],
+ approve:"اعتماد",reject:"رفض",noteOpt:"ملاحظة (اختياري)",decided:"سُجّل قرارك ✓",
+ noPending:"لا معاملات بانتظار قرارك حاليًا",noTxns:"لا طلبات بعد — ابدأ من المحادثة",
+ mineHint:"يُحدَّث مباشرة من سجل المعاملات",apprHint:"المعاملات التي تنتظر قرارك بصفتك الحالية",
+ skillsReg:"سجل المهارات (حي من GitHub)",skillsHint:"كل مهارة = ملف SKILL.md مُعتمد بإصدار — تعديلها يمر عبر git",
+ auditTitle:"سجل التدقيق",auditHint:"كل استدعاء خدمة يمر عبر بوابة الحوكمة ويُسجَّل — بما فيه المرفوض",
+ chaseOk:"انطلق حارس الإنجاز",resetOk:"أُعيدت التهيئة",cert:"شهادة",
+ stAwait:(s)=>({manager:"بانتظار المدير",finance:"بانتظار المالية",it_security:"بانتظار أمن المعلومات",hr_head:"بانتظار رئيس الموارد",ciso:"بانتظار CISO",finance_audit:"بانتظار التدقيق"}[s]||("بانتظار "+s)),
+ stMap:{executed:"منفَّذة",rejected:"مرفوضة"},
+ demoNote:"（وضع تجريبي — اربط n8n للمعالجة الفعلية）"};
+const EN={appTitle:"Munjiz",appSub:"Skill-governed self-service portal — demo environment",
+ vChat:"Chat",vMine:"My requests",vApprovals:"Approvals",vGov:"Governance",settings:"Settings",save:"Save",
+ persona:"I am:",send:"Send",newSession:"＋",chatPh:"Type a request… e.g. I need leave next week",
+ services:"Available services (from the governed registry)",myBalance:"My balance",
+ connecting:"Connecting…",live:"Live",demo:"Demo mode",connErr:"Connection failed",
+ baseUrl:"n8n Webhook base URL",
+ baseHint:"Paths like /munjiz/chat and /munjiz/state are appended. Leave empty for demo mode.",
+ chaseNow:"Run SLA chaser",resetDemo:"Re-arm demo",
+ welcome:(n)=>`Hi ${n} 👋 I'm Munjiz — I complete your transactions conversationally. Try: "I need leave next week" or "I need a salary certificate".`,
+ confirm:"Confirm & submit",cancel:"Cancel",previewTitle:"Preview — review then confirm",
+ chain:"Approval chain",days:"working days",submitted:(id)=>`Transaction ${id} submitted ✓`,
+ kMine:"My requests",kPending:"Pending approval",kDone:"Executed",kSaved:"minutes saved (est.)",
+ thTxn:["Txn","Type","Date","Status","Approval chain"],
+ thAppr:["Txn","Type","Employee","Details","Age","Decision"],
+ thAudit:["Time","Skill","Service","Result"],
+ approve:"Approve",reject:"Reject",noteOpt:"Note (optional)",decided:"Decision recorded ✓",
+ noPending:"Nothing awaiting your decision",noTxns:"No requests yet — start from Chat",
+ mineHint:"Live from the transactions registry",apprHint:"Transactions awaiting your decision in your current persona",
+ skillsReg:"Skill registry (live from GitHub)",skillsHint:"Every skill is a versioned, approved SKILL.md — changes go through git",
+ auditTitle:"Audit log",auditHint:"Every service call passes the governance gateway and is logged — including denials",
+ chaseOk:"SLA chaser fired",resetOk:"Demo re-armed",cert:"Certificate",
+ stAwait:(s)=>"awaiting "+s,stMap:{executed:"executed",rejected:"rejected"},
+ demoNote:"(demo mode — connect n8n for real processing)"};
+let T=AR;
+
+/* ---------------- state ---------------- */
+const S={base:localStorage.getItem("munjiz.base")||"",lang:localStorage.getItem("munjiz.lang")||"ar",
+ view:"chat",who:localStorage.getItem("munjiz.who")||"EMP-1001",data:null,demo:false,conn:"connecting",
+ session:"S-"+Date.now(),activeSkill:"",chat:[],busy:false,demoStep:0};
+
+/* ---------------- demo data ---------------- */
+function demoData(){
+ const now=new Date(); const d=n=>{const x=new Date(now);x.setDate(x.getDate()+n);return x.toISOString();};
+ return {kpis:{total:3,today:0,pending:1,executed:2,rejected:0,minutes_saved:50},
+  employees:[
+   {employee_id:"EMP-1001",name_ar:"أحمد المهيري (تجريبي)",role:"specialist",department:"تقنية المعلومات",manager_id:"EMP-1002"},
+   {employee_id:"EMP-1002",name_ar:"مريم الشامسي (تجريبي)",role:"manager",department:"تقنية المعلومات",manager_id:"EMP-1007"},
+   {employee_id:"EMP-1004",name_ar:"راشد الكتبي (تجريبي)",role:"specialist",department:"الاتصال المؤسسي",manager_id:"EMP-1005"},
+   {employee_id:"EMP-1005",name_ar:"نورة الظاهري (تجريبي)",role:"manager",department:"الاتصال المؤسسي",manager_id:"EMP-1007"},
+   {employee_id:"EMP-1006",name_ar:"خالد الهاملي (تجريبي)",role:"finance",department:"المالية",manager_id:"EMP-1007"}],
+  balances:[{employee_id:"EMP-1001",annual_total:30,annual_used:22,sick_total:15,sick_used:2},
+   {employee_id:"EMP-1002",annual_total:30,annual_used:10,sick_total:15,sick_used:0}],
+  skills:[
+   {id:"leave-request",version:"1.2.0",status:"approved",title_ar:"طلب إجازة",title_en:"Leave Request",
+    allowed_services:["get_employee_profile","get_leave_balance","check_leave_overlap","submit_transaction"],
+    approval_chain:["manager"],sla_hours:48},
+   {id:"salary-certificate",version:"1.1.0",status:"approved",title_ar:"شهادة راتب / لمن يهمه الأمر",title_en:"Salary Certificate",
+    allowed_services:["get_employee_profile","get_salary_record","submit_transaction"],approval_chain:[],sla_hours:1},
+   {id:"expense-claim",version:"1.0.2",status:"approved",title_ar:"مطالبة نفقات / بدلات",title_en:"Expense Claim",
+    allowed_services:["get_employee_profile","get_expense_policy","submit_transaction"],approval_chain:["manager","finance"],sla_hours:72},
+   {id:"it-access-request",version:"1.0.0",status:"approved",title_ar:"طلب صلاحية نظام",title_en:"IT Access Request",
+    allowed_services:["get_employee_profile","get_it_roles","get_system_catalog","submit_transaction"],approval_chain:["manager","it_security"],sla_hours:24}],
+  transactions:[
+   {txn_id:"TXN-SEED-CHASE",ts:d(-1),employee_id:"EMP-1004",employee_name:"راشد الكتبي (تجريبي)",
+    skill_id:"expense-claim",type_ar:"مطالبة نفقات / بدلات",
+    payload_json:JSON.stringify({category:"training",amount_aed:850,description:"رسوم ورشة تدريبية معتمدة",receipt_ref:"RCPT-7741"}),
+    status:"awaiting_manager",approval_chain:"manager;finance",chain_pos:0,current_approver:"manager",
+    decision_note:"",output_ref:"",sla_hours:24,updated_at:d(-1)},
+   {txn_id:"TXN-SEED-CERT",ts:d(-9),employee_id:"EMP-1006",employee_name:"خالد الهاملي (تجريبي)",
+    skill_id:"salary-certificate",type_ar:"شهادة راتب / لمن يهمه الأمر",
+    payload_json:JSON.stringify({certificate_type:"employment",addressed_to:"لمن يهمه الأمر",language:"ar",
+     certificate_text:"تشهد الجهة (التجريبية) بأن السيد خالد الهاملي يعمل لدينا بوظيفة محاسب عمليات مالية منذ 2018-02-10، وقد أُصدرت هذه الشهادة بناءً على طلبه دون أدنى مسؤولية على الجهة تجاه الغير."}),
+    status:"executed",approval_chain:"",chain_pos:0,current_approver:"",decision_note:"",
+    output_ref:"CERT-118204",sla_hours:1,updated_at:d(-9)},
+   {txn_id:"TXN-SEED-OVERLAP",ts:d(-2),employee_id:"EMP-1003",employee_name:"سالم النقبي (تجريبي)",
+    skill_id:"leave-request",type_ar:"طلب إجازة",
+    payload_json:JSON.stringify({leave_type:"annual",start_date:d(7).slice(0,10),end_date:d(11).slice(0,10),working_days:3}),
+    status:"executed",approval_chain:"manager",chain_pos:1,current_approver:"",decision_note:"اعتمدت",
+    output_ref:"",sla_hours:48,updated_at:d(-1)}],
+  audit:[
+   {ts:d(0),session_id:"S-demo",employee_id:"EMP-1001",skill_id:"salary-certificate",
+    service:"get_leave_balance",request_json:"{}",result_summary:"DENIED/ERROR: SERVICE_DENIED_BY_GOVERNANCE"},
+   {ts:d(-1),session_id:"S-demo",employee_id:"EMP-1003",skill_id:"leave-request",
+    service:"submit_transaction",request_json:"{\"leave_type\":\"annual\"}",result_summary:"OK TXN-SEED-OVERLAP awaiting_manager"}]};
+}
+/* scripted demo chat: leave flow in 3 beats */
+function demoChat(msg){
+ const me=S.data.employees.find(e=>e.employee_id===S.who)||{};
+ S.demoStep++;
+ if(S.demoStep===1) return {reply:`${T.demoNote}\nأهلًا ${(me.name_ar||"").split(" ")[0]}! حمّلتُ مهارة «طلب إجازة» (v1.2.0). رصيدك السنوي المتبقي 8 أيام. ما نوع الإجازة وتاريخا البداية والنهاية؟`,state:"collecting",missing_fields:["leave_type","start_date","end_date"],skill_id:"leave-request",session_id:S.session};
+ if(S.demoStep===2){const s=new Date(Date.now()+7*864e5).toISOString().slice(0,10),e=new Date(Date.now()+11*864e5).toISOString().slice(0,10);
+  return {reply:"تحقق: زميلك سالم النقبي في إجازة معتمدة تتقاطع مع المدة نفسها — أُدرج تحذير. هذه بطاقة المعاينة، أكّد للإرسال.",state:"preview",
+   preview:{fields:{leave_type:"annual",start_date:s,end_date:e,reason:"إجازة عائلية"},working_days:3,approval_chain:["manager"],
+    warnings:["تعارض مع إجازة زميل في الفريق نفسه"]},skill_id:"leave-request",session_id:S.session};}
+ const id="TXN-"+Date.now();
+ S.data.transactions.unshift({txn_id:id,ts:new Date().toISOString(),employee_id:S.who,
+  employee_name:me.name_ar||S.who,skill_id:"leave-request",type_ar:"طلب إجازة",
+  payload_json:JSON.stringify({leave_type:"annual",working_days:3}),status:"awaiting_manager",
+  approval_chain:"manager",chain_pos:0,current_approver:"manager",decision_note:"",output_ref:"",
+  sla_hours:48,updated_at:new Date().toISOString()});
+ S.data.kpis.pending++;
+ return {reply:"أُرسل طلبك إلى مديرك مريم الشامسي للاعتماد ✓ سأتابعه وأذكّرها إن تأخر — تجده في «طلباتي».",
+  state:"submitted",txn_id:id,skill_id:"leave-request",session_id:S.session};
+}
+
+/* ---------------- networking ---------------- */
+let pollT=null,lastHash="";
+const url=p=>S.base.replace(/\/+$/,"")+p;
+function setConn(c){S.conn=c;const el=$("#conn");
+ el.className="conn "+(c==="live"?"live":c==="demo"?"demo":c==="err"?"err":"");
+ $("#connLabel").textContent=c==="live"?T.live:c==="demo"?T.demo:c==="err"?T.connErr:T.connecting;}
+function maybeRender(force){const h=JSON.stringify({...S.data,generated_at:0});
+ const typing=document.activeElement&&["INPUT","TEXTAREA","SELECT"].includes(document.activeElement.tagName);
+ if(force||(h!==lastHash&&!typing)){lastHash=h;renderAll();}}
+async function fetchState(force){
+ if(!S.base){S.demo=true;if(!S.data)S.data=demoData();setConn("demo");maybeRender(force);return;}
+ try{const c=new AbortController();const t=setTimeout(()=>c.abort(),9000);
+  const r=await fetch(url("/munjiz/state"),{signal:c.signal});clearTimeout(t);
+  if(!r.ok)throw new Error("HTTP "+r.status);
+  S.data=await r.json();S.demo=false;setConn("live");maybeRender(force);
+ }catch(e){setConn("err");}}
+async function post(p,body){
+ if(S.demo){return demoPost(p,body);}
+ const r=await fetch(url(p),{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
+ if(!r.ok)throw new Error("HTTP "+r.status);
+ const ct=r.headers.get("content-type")||"";return ct.includes("json")?r.json():{};}
+function demoPost(p,body){
+ if(p==="/munjiz/chat")return new Promise(res=>setTimeout(()=>res(demoChat(body.message)),800));
+ if(p==="/munjiz/decide"){const t=S.data.transactions.find(x=>x.txn_id===body.txn_id);
+  if(t){const chain=t.approval_chain.split(";").filter(Boolean);const pos=+t.chain_pos||0;
+   if(body.decision==="reject"){t.status="rejected";t.current_approver="";}
+   else if(pos+1<chain.length){t.status="awaiting_"+chain[pos+1];t.current_approver=chain[pos+1];t.chain_pos=pos+1;}
+   else{t.status="executed";t.current_approver="";}
+   t.decision_note=body.note||"";t.updated_at=new Date().toISOString();}
+  return Promise.resolve({ok:true});}
+ return Promise.resolve({ok:true});}
+
+/* ---------------- chat rendering ---------------- */
+function pushMsg(m){S.chat.push(m);renderChat();}
+function renderChat(){
+ const log=$("#chatLog");
+ log.innerHTML=S.chat.map((m,i)=>{
+  if(m.role==="sys")return `<div class="msg sys">${esc(m.text)}</div>`;
+  if(m.role==="user")return `<div class="msg user">${esc(m.text)}</div>`;
+  if(m.pending)return `<div class="msg agent pending"><span class="typing"><i></i><i></i><i></i></span></div>`;
+  let html=`<div class="msg agent">${esc(m.text)}</div>`;
+  if(m.preview)html+=previewCard(m.preview,i);
+  if(m.missing&&m.missing.length)html+=`<div class="chips-row">${m.missing.map(f=>`<span class="tag">${esc(f)}</span>`).join("")}</div>`;
+  if(m.state)html+=`<div class="state-chip">${esc(m.state)}${m.skill?" · "+esc(m.skill):""}</div>`;
+  return html;}).join("");
+ log.scrollTop=log.scrollHeight;
+ $$(".preview-card .btn.primary",log).forEach(b=>b.addEventListener("click",()=>confirmPreview()));
+ $$(".preview-card .btn.ghost",log).forEach(b=>b.addEventListener("click",()=>sendChat("إلغاء الطلب")));
+}
+function previewCard(p,idx){
+ const rows=Object.entries(p.fields||{}).map(([k,v])=>`<tr><td>${esc(k)}</td><td>${esc(v)}</td></tr>`).join("");
+ const wd=p.working_days!=null?`<tr><td>${T.days}</td><td class="num">${esc(p.working_days)}</td></tr>`:"";
+ const am=p.amount_aed!=null?`<tr><td>AED</td><td class="num">${esc(p.amount_aed)}</td></tr>`:"";
+ const warns=(p.warnings||[]).map(w=>`<div class="warn">⚠ ${esc(w)}</div>`).join("");
+ const last=idx===S.chat.length-1;
+ return `<div class="preview-card"><h4>${T.previewTitle}</h4>
+  <table>${rows}${wd}${am}</table>${warns}
+  <div class="chain">${T.chain}: ${(p.approval_chain||[]).map(esc).join(" ← ")||"—"}</div>
+  ${last?`<div class="actions"><button class="btn primary">${T.confirm}</button>
+  <button class="btn ghost">${T.cancel}</button></div>`:""}</div>`;
+}
+async function sendChat(text){
+ if(S.busy)return;
+ const msg=text??$("#chatInput").value.trim();
+ if(!msg)return;
+ $("#chatInput").value="";
+ S.busy=true;
+ pushMsg({role:"user",text:msg});
+ pushMsg({role:"agent",pending:true});
+ try{
+  const r=await post("/munjiz/chat",{employee_id:S.who,session_id:S.session,message:msg,active_skill_id:S.activeSkill});
+  S.chat.pop();
+  if(r.skill_id)S.activeSkill=r.skill_id;
+  pushMsg({role:"agent",text:r.reply||"—",state:r.state,skill:r.skill_id,
+   preview:r.preview||null,missing:r.missing_fields||[]});
+  if(r.state==="submitted"){toast(T.submitted(r.txn_id||""));S.activeSkill="";fetchState(true);}
+ }catch(e){S.chat.pop();pushMsg({role:"agent",text:"⚠ "+e});}
+ S.busy=false;
+}
+function confirmPreview(){sendChat("أؤكد الإرسال");}
+function newSession(){S.session="S-"+Date.now();S.activeSkill="";S.demoStep=0;S.chat=[];welcome();}
+function welcome(){
+ const me=(S.data?.employees||[]).find(e=>e.employee_id===S.who);
+ pushMsg({role:"agent",text:T.welcome(me?me.name_ar.split(" ")[0]:"")});
+}
+
+/* ---------------- other views ---------------- */
+function stLabel(st){
+ if(st==="executed")return `<span class="status executed">${T.stMap.executed}</span>`;
+ if(st==="rejected")return `<span class="status rejected">${T.stMap.rejected}</span>`;
+ if(String(st).startsWith("awaiting_"))return `<span class="status awaiting">${T.stAwait(st.slice(9))}</span>`;
+ return `<span class="status">${esc(st)}</span>`;
+}
+function chainTimeline(t){
+ const chain=String(t.approval_chain||"").split(";").filter(Boolean);
+ if(!chain.length)return `<span class="hint">${T.stMap.executed} (فوري)</span>`;
+ const pos=+t.chain_pos||0;
+ return `<div class="timeline">${chain.map((c,i)=>{
+  const cls=t.status==="executed"||i<pos?"done":(t.status.startsWith("awaiting_")&&i===pos?"now":"");
+  return `<span class="tstep ${cls}"><span class="dotp"></span>${esc(c)}</span>`;}).join("")}</div>`;
+}
+function renderMine(){
+ const mine=(S.data?.transactions||[]).filter(t=>t.employee_id===S.who);
+ const k=$("#mineKpis");
+ k.innerHTML=`<div class="kpi"><b class="num">${mine.length}</b><span>${T.kMine}</span></div>
+  <div class="kpi"><b class="num">${mine.filter(t=>String(t.status).startsWith("awaiting_")).length}</b><span>${T.kPending}</span></div>
+  <div class="kpi"><b class="num">${mine.filter(t=>t.status==="executed").length}</b><span>${T.kDone}</span></div>
+  <div class="kpi gold"><b class="num">${mine.filter(t=>t.status==="executed").length*25}</b><span>${T.kSaved}</span></div>`;
+ $("#mineHint").textContent=T.mineHint;
+ const tbl=$("#mineTbl");
+ if(!mine.length){tbl.innerHTML=`<tr><td class="empty-block">${T.noTxns}</td></tr>`;$("#certBox").innerHTML="";return;}
+ tbl.innerHTML=`<thead><tr>${T.thTxn.map(h=>`<th>${h}</th>`).join("")}</tr></thead><tbody>`+
+  mine.map(t=>`<tr><td class="num">${esc(t.txn_id)}${t.output_ref?` <span class="tag svc">${esc(t.output_ref)}</span>`:""}</td>
+   <td>${esc(t.type_ar)}</td><td class="num">${esc(String(t.ts).slice(0,10))}</td>
+   <td>${stLabel(t.status)}</td><td>${chainTimeline(t)}</td></tr>`).join("")+"</tbody>";
+ const cert=mine.find(t=>t.skill_id==="salary-certificate"&&t.status==="executed");
+ let certHtml="";
+ if(cert){try{const pl=JSON.parse(cert.payload_json||"{}");
+  if(pl.certificate_text)certHtml=`<div class="cert"><span class="stamp">${esc(cert.output_ref)}</span>
+   <h3 style="margin-bottom:10px">${T.cert}</h3>${esc(pl.certificate_text)}</div>`;}catch(e){}}
+ $("#certBox").innerHTML=certHtml;
+}
+function renderApprovals(){
+ const me=(S.data?.employees||[]).find(e=>e.employee_id===S.who)||{};
+ const emps=S.data?.employees||[];
+ const pend=(S.data?.transactions||[]).filter(t=>{
+  if(!String(t.status).startsWith("awaiting_"))return false;
+  const stage=t.current_approver;
+  const owner=emps.find(e=>e.employee_id===t.employee_id)||{};
+  // manager stage: ONLY the employee's own manager; other stages: by role
+  return stage==="manager"?owner.manager_id===S.who:me.role===stage;});
+ const tbl=$("#apprTbl");
+ if(!pend.length){tbl.innerHTML=`<tr><td class="empty-block">${T.noPending}</td></tr>`;return;}
+ tbl.innerHTML=`<thead><tr>${T.thAppr.map(h=>`<th>${h}</th>`).join("")}</tr></thead><tbody>`+
+  pend.map(t=>{let pl={};try{pl=JSON.parse(t.payload_json||"{}");}catch(e){}
+   const age=Math.round((Date.now()-new Date(t.ts).getTime())/36e5);
+   const det=Object.entries(pl).filter(([k])=>!k.startsWith("_")&&k!=="certificate_text")
+    .slice(0,4).map(([k,v])=>`${esc(k)}: ${esc(v)}`).join(" · ");
+   return `<tr><td class="num">${esc(t.txn_id)}</td><td>${esc(t.type_ar)}</td>
+    <td>${esc(t.employee_name)}</td><td class="hint">${det}</td>
+    <td class="num">${age}h</td>
+    <td><div class="decide-btns">
+      <button class="btn primary" data-txn="${esc(t.txn_id)}" data-d="approve">${T.approve}</button>
+      <button class="btn ghost" data-txn="${esc(t.txn_id)}" data-d="reject">${T.reject}</button>
+    </div></td></tr>`;}).join("")+"</tbody>";
+ $$("button[data-txn]",tbl).forEach(b=>b.addEventListener("click",async()=>{
+  try{await post("/munjiz/decide",{txn_id:b.dataset.txn,approver_id:S.who,decision:b.dataset.d,note:""});
+   toast(T.decided);fetchState(true);}catch(e){toast(String(e),"err");}}));
+}
+function renderGov(){
+ const grid=$("#skillGrid");
+ grid.innerHTML=(S.data?.skills||[]).map(s=>`<div class="skill-card">
+  <h4>${esc(S.lang==="ar"?s.title_ar:s.title_en)} <span class="ver num">v${esc(s.version)}</span></h4>
+  <div class="row"><span class="tag">${esc(s.id)}</span><span class="tag">${esc(s.status)}</span>
+   <span class="tag">SLA ${esc(s.sla_hours)}h</span></div>
+  <div class="row">${(s.allowed_services||[]).map(x=>`<span class="tag svc">${esc(x)}</span>`).join("")}</div>
+  <div class="row hint">${T.chain}: ${(s.approval_chain||[]).join(" ← ")||"فوري"}</div></div>`).join("");
+ const tbl=$("#auditTbl");
+ tbl.innerHTML=`<thead><tr>${T.thAudit.map(h=>`<th>${h}</th>`).join("")}</tr></thead><tbody>`+
+  (S.data?.audit||[]).map(a=>{const denied=String(a.result_summary||"").startsWith("DENIED");
+   return `<tr><td class="num">${esc(String(a.ts).slice(5,16).replace("T"," "))}</td>
+    <td>${esc(a.skill_id)}</td><td><span class="tag ${denied?"":"svc"}">${esc(a.service)}</span></td>
+    <td class="${denied?"":"hint"}">${denied?`<span class="status denied">${esc(a.result_summary)}</span>`:esc(String(a.result_summary).slice(0,90))}</td></tr>`;}).join("")+"</tbody>";
+}
+function renderSide(){
+ $("#svcList").innerHTML=(S.data?.skills||[]).map(s=>`<div class="svc-card" data-skill="${esc(s.id)}">
+  <b>${esc(S.lang==="ar"?s.title_ar:s.title_en)}</b><span>v${esc(s.version)} · ${T.chain}: ${(s.approval_chain||[]).join("←")||"فوري"}</span></div>`).join("");
+ $$(".svc-card",$("#svcList")).forEach(c=>c.addEventListener("click",()=>{
+  const s=(S.data.skills||[]).find(x=>x.id===c.dataset.skill);
+  $("#chatInput").value=S.lang==="ar"?("أريد: "+s.title_ar):("I need: "+s.title_en);
+  $("#chatInput").focus();}));
+ const b=(S.data?.balances||[]).find(x=>x.employee_id===S.who);
+ $("#balBox").innerHTML=b?`<div class="num">🌴 ${b.annual_total-b.annual_used}/${b.annual_total} ${S.lang==="ar"?"سنوية":"annual"}
+  · 🤒 ${b.sick_total-b.sick_used}/${b.sick_total} ${S.lang==="ar"?"مرضية":"sick"}</div>`:"—";
+}
+function renderWho(){
+ const sel=$("#who");
+ const cur=S.who;
+ sel.innerHTML=(S.data?.employees||[]).map(e=>`<option value="${esc(e.employee_id)}" ${e.employee_id===cur?"selected":""}>${esc(e.name_ar)} — ${esc(e.role)}</option>`).join("");
+}
+function renderAll(){renderWho();renderSide();renderMine();renderApprovals();renderGov();}
+
+/* ---------------- shell ---------------- */
+function toast(m,c){const d=document.createElement("div");d.className="toast "+(c||"");d.textContent=m;
+ $("#toasts").appendChild(d);setTimeout(()=>d.remove(),4000);}
+function setView(v){S.view=v;
+ $$(".views [role=tab]").forEach(b=>b.setAttribute("aria-selected",b.dataset.view===v));
+ $$(".view").forEach(x=>x.classList.toggle("active",x.id==="view-"+v));}
+function applyLang(){T=S.lang==="ar"?AR:EN;
+ document.documentElement.lang=S.lang;document.documentElement.dir=S.lang==="ar"?"rtl":"ltr";
+ $("#btnLang").textContent=S.lang==="ar"?"EN":"ع";
+ $$("[data-i18n]").forEach(el=>{const k=el.dataset.i18n;if(typeof T[k]==="string")el.textContent=T[k];});
+ $$("[data-i18n-ph]").forEach(el=>{const k=el.dataset.i18nPh;if(typeof T[k]==="string")el.placeholder=T[k];});
+ setConn(S.conn);renderAll();renderChat();}
+function boot(){
+ $$(".views [role=tab]").forEach(b=>b.addEventListener("click",()=>setView(b.dataset.view)));
+ $("#btnLang").addEventListener("click",()=>{S.lang=S.lang==="ar"?"en":"ar";
+  localStorage.setItem("munjiz.lang",S.lang);applyLang();});
+ $("#btnSettings").addEventListener("click",()=>{$("#inpBase").value=S.base;$("#dlg").showModal();});
+ $("#btnSave").addEventListener("click",()=>{S.base=$("#inpBase").value.trim();
+  localStorage.setItem("munjiz.base",S.base);S.data=null;S.demo=false;$("#dlg").close();
+  setConn("connecting");fetchState(true).then(()=>{S.chat=[];welcome();});});
+ $("#btnReset").addEventListener("click",async()=>{try{await post("/munjiz/reset",{});toast(T.resetOk);}catch(e){toast(String(e),"err");}});
+ $("#btnChase").addEventListener("click",async()=>{try{await post("/munjiz/chase",{});toast(T.chaseOk);}catch(e){toast(String(e),"err");}});
+ $("#who").addEventListener("change",e=>{S.who=e.target.value;localStorage.setItem("munjiz.who",S.who);
+  newSession();renderAll();});
+ $("#composer").addEventListener("submit",e=>{e.preventDefault();sendChat();});
+ $("#btnNew").addEventListener("click",()=>newSession());
+ fetchState(true).then(()=>{welcome();});
+ pollT=setInterval(fetchState,3000);
+}
+applyLang();boot();
+</script>
+</body>
+</html>

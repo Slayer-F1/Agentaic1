@@ -1,0 +1,5 @@
+﻿system_id,name_ar,name_en,sensitivity,allowed_roles
+SYS-BI,منصة التقارير والمؤشرات,BI & Reports Platform,normal,specialist;manager;finance
+SYS-CRM,نظام علاقات المتعاملين,Customer Relations System,sensitive,specialist;manager;customer_service
+SYS-ERP,نظام الموارد المؤسسية,Enterprise Resource System,critical,finance;manager
+SYS-HRMS,نظام الموارد البشرية,HR Management System,sensitive,hr;manager
