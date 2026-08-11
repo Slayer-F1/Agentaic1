@@ -2,7 +2,7 @@
   "name": "مُنجِز — 05 Dashboard API",
   "nodes": [
     {
-      "id": "5df13c6e-8849-41ac-ba9f-aa1f23264664",
+      "id": "c56fea18-ec6a-4aee-890e-3168f2f310b6",
       "name": "GET State",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
@@ -16,10 +16,10 @@
         "responseMode": "responseNode",
         "options": {}
       },
-      "webhookId": "1c4ff41a-d99e-4529-bc9d-3dbe2994a9b6"
+      "webhookId": "2bc2355d-4bb6-4a75-8b11-d3acee33e219"
     },
     {
-      "id": "279be1da-6566-467a-9641-a2350ac2c78e",
+      "id": "88ea6d34-0494-4db8-b687-89cc6ea83c21",
       "name": "Fetch Skills Index (dash)",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -44,7 +44,7 @@
       "waitBetweenTries": 3000
     },
     {
-      "id": "de5e084e-0c11-4c6e-9236-0ee50d4d005b",
+      "id": "0ae2c33f-6d23-4edc-b644-cc214434b6c3",
       "name": "Read All (dash)",
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
@@ -56,7 +56,7 @@
         "source": "database",
         "workflowId": {
           "__rl": true,
-          "value": "REPLACE_DATA_IO_ID",
+          "value": "munjizDataIo0000",
           "mode": "list",
           "cachedResultName": "مُنجِز — 00 Data IO (sub)"
         },
@@ -77,7 +77,7 @@
       }
     },
     {
-      "id": "b12d0835-a717-448e-a228-f235685d474b",
+      "id": "4a00b2f9-6cdd-4958-8746-28e810ad2c9d",
       "name": "Assemble Dashboard",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -90,7 +90,7 @@
       }
     },
     {
-      "id": "5acf92b1-f968-40d8-b973-4fe101321983",
+      "id": "0e3d821a-89e1-44ed-bd48-b6518ac4b065",
       "name": "Respond State",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.2,
@@ -118,8 +118,8 @@
       }
     },
     {
-      "id": "654208c9-ac44-4a71-8870-d590dd72735e",
-      "name": "Note 0b1f3b18",
+      "id": "90ae27ac-4671-4dad-a754-18df90e36e22",
+      "name": "Note e12bc7da",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
@@ -183,5 +183,6 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "pinData": {}
+  "pinData": {},
+  "id": "munjizDashApi005"
 }

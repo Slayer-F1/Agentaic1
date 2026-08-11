@@ -1,0 +1,20 @@
+# Serves the Munjiz portal and hands it the n8n base URL, so the containerized
+# stack needs no manual configuration even when n8n runs on a non-default port.
+# nginx:alpine expands ${VARS} from the container environment at startup.
+server {
+    listen       80;
+    server_name  localhost;
+    root   /usr/share/nginx/html;
+    index  index.html;
+
+    # generated config the portal reads before booting
+    location = /config.js {
+        default_type application/javascript;
+        return 200 "window.MUNJIZ_BASE=\"${N8N_PUBLIC_URL}\";";
+    }
+
+    location / {
+        try_files $uri $uri/ /index.html;
+        add_header Cache-Control "no-store";
+    }
+}

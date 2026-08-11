@@ -2,7 +2,7 @@
   "name": "مُنجِز — 06 Error Handler",
   "nodes": [
     {
-      "id": "48b79c62-3670-4f42-8586-8ece32498dc0",
+      "id": "bcdbd917-51c0-4e38-8a5f-50829c0da90f",
       "name": "Error Trigger",
       "type": "n8n-nodes-base.errorTrigger",
       "typeVersion": 1,
@@ -13,7 +13,7 @@
       "parameters": {}
     },
     {
-      "id": "1278a812-734d-4a62-87b2-80f2eb6c991a",
+      "id": "773beb20-33c9-4609-beb5-d3a67b4cea04",
       "name": "Extract",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -26,7 +26,7 @@
       }
     },
     {
-      "id": "bb4b3ad1-527c-43bb-874c-5c64a9a6b40c",
+      "id": "9b89cae9-785c-450e-a8c8-f4fbaab6bea3",
       "name": "Notify",
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.1,
@@ -49,7 +49,7 @@
       "onError": "continueRegularOutput"
     },
     {
-      "id": "cc3b54a1-7c3a-4c96-bc4f-cdc3889ee4a9",
+      "id": "8d074c75-e65f-427f-a17c-5d10e91a59fd",
       "name": "Logged ✓",
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
@@ -60,8 +60,8 @@
       "parameters": {}
     },
     {
-      "id": "c3e58b31-aeb2-4e29-90cd-d877784a8050",
-      "name": "Note dfa4bae9",
+      "id": "36d60524-06df-412b-86b8-4a752af6611b",
+      "name": "Note b0d0c8e5",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
@@ -114,5 +114,6 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "pinData": {}
+  "pinData": {},
+  "id": "munjizErrorHnd06"
 }

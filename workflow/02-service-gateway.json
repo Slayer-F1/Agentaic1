@@ -2,7 +2,7 @@
   "name": "مُنجِز — 02 Service Gateway (sub)",
   "nodes": [
     {
-      "id": "67620d19-c3ea-48a7-80c8-079006f65dbe",
+      "id": "4f87e455-a431-451f-a2b3-505d7d33b468",
       "name": "Gateway Input",
       "type": "n8n-nodes-base.executeWorkflowTrigger",
       "typeVersion": 1.1,
@@ -39,7 +39,7 @@
       }
     },
     {
-      "id": "998cf5b0-482e-4820-9f4a-4d58f03a0775",
+      "id": "6e79f188-100e-4629-823a-ac2c81a2986a",
       "name": "Fetch Skills Index",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -64,7 +64,7 @@
       "waitBetweenTries": 3000
     },
     {
-      "id": "551e0ad4-73cb-4c4c-b0ca-e3bad4ee0358",
+      "id": "19592fc0-642f-43a6-adcd-23dd0fc84ea6",
       "name": "Gate Check",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -77,7 +77,7 @@
       }
     },
     {
-      "id": "d82576c1-1e91-45fd-9055-6271b7e14a7c",
+      "id": "9396d81a-4459-4abd-b804-689e20d46a5e",
       "name": "Denied?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
@@ -110,7 +110,7 @@
       }
     },
     {
-      "id": "3b5cdf48-7710-4741-98e9-30a213cbabb2",
+      "id": "d60304f2-dd58-4c99-94b6-ca696b2a0aeb",
       "name": "Denied Result",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -123,7 +123,7 @@
       }
     },
     {
-      "id": "51ffa463-8a1c-41fd-aa01-f47a79b868fa",
+      "id": "9f5b99be-5361-4a85-807c-8650ca1698ab",
       "name": "Service Switch",
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
@@ -326,7 +326,7 @@
       }
     },
     {
-      "id": "f770da84-7a16-4f3a-a515-2131bf306173",
+      "id": "4caa77e6-d251-472b-912a-ad5877c93225",
       "name": "svc: not_implemented",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -339,7 +339,7 @@
       }
     },
     {
-      "id": "67c6f3af-62a4-4740-bc1c-2ddad33edf46",
+      "id": "922f9f4b-42ac-48ca-ba37-5db0c5704a2a",
       "name": "Read Employees (profile)",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -373,7 +373,7 @@
       "waitBetweenTries": 4000
     },
     {
-      "id": "ea72f41e-2702-4acf-ae24-7b0c04cf25d8",
+      "id": "ca944cf7-238c-4083-add5-a1bef58cdd7d",
       "name": "svc: get_employee_profile",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -386,7 +386,7 @@
       }
     },
     {
-      "id": "43ae100e-3e9c-42da-98db-c056295c9be2",
+      "id": "e757a7af-1139-419b-80e1-f82021985b43",
       "name": "Read LeaveBalances (svc)",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -420,7 +420,7 @@
       "waitBetweenTries": 4000
     },
     {
-      "id": "b61fddb1-1cf5-4ad7-ba71-064d92e053ae",
+      "id": "e06a0b4e-fbc2-4b88-a3ec-b349e0bbabc1",
       "name": "svc: get_leave_balance",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -433,7 +433,7 @@
       }
     },
     {
-      "id": "a08dcf90-98c6-4948-9142-bab09cb0d00c",
+      "id": "f8ad21d4-0e35-4673-80da-d7a9041f142e",
       "name": "Read Employees (salary)",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -467,7 +467,7 @@
       "waitBetweenTries": 4000
     },
     {
-      "id": "ba8bbed2-831c-4b71-8290-36e3345684a8",
+      "id": "21ab0534-8fee-48ff-acf5-824a93ee63fa",
       "name": "Read Transactions (salary)",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -501,7 +501,7 @@
       "waitBetweenTries": 4000
     },
     {
-      "id": "fcca2621-1850-4a8d-b034-e56b157b0fd5",
+      "id": "a244ea8e-ffc4-40e5-ace7-25163432b0dd",
       "name": "svc: get_salary_record",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -514,7 +514,7 @@
       }
     },
     {
-      "id": "9f701871-b217-4a3e-8e2d-4aa896b2d42c",
+      "id": "c8c55ec4-7080-4f37-9bee-b4912c0ad252",
       "name": "Read Transactions (policy)",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -548,7 +548,7 @@
       "waitBetweenTries": 4000
     },
     {
-      "id": "9adc083d-18d5-445e-9505-d0567c253750",
+      "id": "1ad34b2b-dd62-4997-bdd1-a94dea7724c1",
       "name": "Read ExpensePolicy (svc)",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -582,7 +582,7 @@
       "waitBetweenTries": 4000
     },
     {
-      "id": "c6ac09de-c9d1-4e76-ab85-047aec7bf619",
+      "id": "5e960289-9739-408c-bc95-b1523af3d1c8",
       "name": "svc: get_expense_policy",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -595,7 +595,7 @@
       }
     },
     {
-      "id": "6577f82f-b644-4edc-8f61-4a487041d5d9",
+      "id": "e0850382-9e73-41e6-b78c-f7bdb5a7f8e1",
       "name": "Read Employees (roles)",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -629,7 +629,7 @@
       "waitBetweenTries": 4000
     },
     {
-      "id": "bcdacf97-b61e-4699-a34c-911dfa687345",
+      "id": "9d599b19-1210-4f80-bc8c-467c64ebfaa1",
       "name": "svc: get_it_roles",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -642,7 +642,7 @@
       }
     },
     {
-      "id": "e7e4aa83-9fa2-44e9-9aab-e2b81b761ec4",
+      "id": "774e28f7-4642-4473-b57c-69d3adea0015",
       "name": "Read SystemCatalog (svc)",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -676,7 +676,7 @@
       "waitBetweenTries": 4000
     },
     {
-      "id": "c91cb81d-243e-4eca-8347-6b54b4157404",
+      "id": "4892410e-0f0d-4375-a4ef-052a9a86fbdd",
       "name": "svc: get_system_catalog",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -689,7 +689,7 @@
       }
     },
     {
-      "id": "965808ef-4f47-41ec-a295-de0aed96c267",
+      "id": "75301c35-6385-4230-a97e-c5f5855f8adc",
       "name": "Read Employees (overlap)",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -723,7 +723,7 @@
       "waitBetweenTries": 4000
     },
     {
-      "id": "f7da5f70-5546-4982-aecf-09604895b326",
+      "id": "644573f7-349a-4a63-a04d-6e7b13cf07b9",
       "name": "Read Transactions (overlap)",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -757,7 +757,7 @@
       "waitBetweenTries": 4000
     },
     {
-      "id": "90fb9fa8-ccf3-4110-9bf9-5f50a3f86619",
+      "id": "559ba068-b572-46d6-9ebb-13a518f6253d",
       "name": "svc: check_leave_overlap",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -770,7 +770,7 @@
       }
     },
     {
-      "id": "13d5f661-2803-45fd-95ac-493427a8218d",
+      "id": "2ff9f9e7-61b7-420d-a7cd-0ba6881cb7ae",
       "name": "Read Employees (submit)",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -804,7 +804,7 @@
       "waitBetweenTries": 4000
     },
     {
-      "id": "51ac4a76-1f44-4cb1-8dfe-5b9b49195386",
+      "id": "6830dadf-ccec-4217-8583-2468e44a4bba",
       "name": "svc: submit_transaction",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -817,7 +817,7 @@
       }
     },
     {
-      "id": "7641082f-a274-4324-9ee0-8b391008f55b",
+      "id": "ca12e2e5-75a6-444b-8f80-631c4104b99d",
       "name": "Emit Txn Row",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -830,7 +830,7 @@
       }
     },
     {
-      "id": "38383bcc-b11f-4903-a510-72a23f3bf179",
+      "id": "641c681b-c124-4ffd-994d-4f8dfa905942",
       "name": "Append Transaction",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -871,7 +871,7 @@
       "waitBetweenTries": 4000
     },
     {
-      "id": "a8b23398-3afc-434d-95eb-fa3a6eb5c412",
+      "id": "093b625a-65e3-4c10-b4ab-b6ebc54e538b",
       "name": "Carry Submit Result",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -884,7 +884,7 @@
       }
     },
     {
-      "id": "31cc3ef2-aaff-4672-8c62-d40459968cb9",
+      "id": "49744c7d-ea77-48e5-95d5-c8d5da770afb",
       "name": "Build Audit Row",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -897,7 +897,7 @@
       }
     },
     {
-      "id": "8a2c9f9a-3413-447f-960c-a6ff9fe06688",
+      "id": "8aede641-f8a0-4e35-8360-bafb123510c2",
       "name": "Append AuditLog",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -938,7 +938,7 @@
       "waitBetweenTries": 4000
     },
     {
-      "id": "62ac5ee4-ae0c-45aa-91a3-e010f3e7c617",
+      "id": "940e7b95-cdec-4832-9781-21164182a2f9",
       "name": "Return Result",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -951,8 +951,8 @@
       }
     },
     {
-      "id": "49ab3b06-bcf6-4b05-9fce-5e32649cc420",
-      "name": "Note f4175276",
+      "id": "3545fb8a-f340-43f6-b020-2e85b25dbd1e",
+      "name": "Note 36d6a944",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
@@ -1376,5 +1376,6 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "pinData": {}
+  "pinData": {},
+  "id": "munjizGateway002"
 }

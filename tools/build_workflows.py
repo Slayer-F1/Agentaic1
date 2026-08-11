@@ -5,8 +5,6 @@ Run:  python tools/build_workflows.py     → workflow/*.json
 
 User-replaced placeholders (find & replace before import):
   REPLACE_WITH_SPREADSHEET_ID   Google Sheet id of the seeded "Munjiz Registry"
-  REPLACE_DATA_IO_ID            workflow id of "مُنجِز — 00 Data IO (sub)" after import
-  REPLACE_GATEWAY_ID            workflow id of "مُنجِز — 02 Service Gateway (sub)" after import
 The GitHub raw base defaults to the real Agentaic1 repo (public) and can be edited in one node.
 """
 import json
@@ -44,9 +42,27 @@ def sticky(content, pos, width=520, height=220, color=4):
                 {"content": content, "width": width, "height": height, "color": color})
 
 
+# Stable workflow ids (16-char, n8n keeps them verbatim on import). Because the
+# ids are deterministic, sub-workflow references resolve with no manual wiring and
+# re-importing UPDATES a workflow in place instead of creating duplicates.
+WF_IDS = {
+    "00-data-io.json": "munjizDataIo0000",
+    "01-chat-agent.json": "munjizChatAgent1",
+    "02-service-gateway.json": "munjizGateway002",
+    "03-approvals.json": "munjizApprovals3",
+    "04-sla-chaser.json": "munjizSlaChaser4",
+    "05-dashboard-api.json": "munjizDashApi005",
+    "06-error-handler.json": "munjizErrorHnd06",
+    "07-demo-reset.json": "munjizDemoReset7",
+}
+DATA_IO_ID = WF_IDS["00-data-io.json"]
+GATEWAY_ID = WF_IDS["02-service-gateway.json"]
+
+
 class Wf:
-    def __init__(self, name):
+    def __init__(self, name, wf_id=None):
         self.name, self.nodes, self.conns = name, [], {}
+        self.wf_id = wf_id
 
     def add(self, n):
         self.nodes.append(n)
@@ -59,8 +75,11 @@ class Wf:
         e[output].append({"node": dst, "type": ctype, "index": dst_index})
 
     def dump(self):
-        return {"name": self.name, "nodes": self.nodes, "connections": self.conns,
-                "settings": {"executionOrder": "v1"}, "pinData": {}}
+        doc = {"name": self.name, "nodes": self.nodes, "connections": self.conns,
+               "settings": {"executionOrder": "v1"}, "pinData": {}}
+        if self.wf_id:
+            doc["id"] = self.wf_id
+        return doc
 
 
 def sheets_read(name, tab, pos, dyn=None):
@@ -661,7 +680,7 @@ def build_agent():
     f_prof = wf.add(http_raw("Fetch Profile MD",
                              "={{ '" + RAW_BASE + "' + $('Pick Skill').first().json.skill_meta.profile_path }}", (60, 0)))
     wf.link(f_skill, f_prof)
-    emp_read = wf.add(exec_wf("Read Employees Ctx", "REPLACE_DATA_IO_ID", "مُنجِز — 00 Data IO (sub)",
+    emp_read = wf.add(exec_wf("Read Employees Ctx", DATA_IO_ID, "مُنجِز — 00 Data IO (sub)",
                               {"action": "read", "tab": "Employees"}, (280, 0)))
     wf.link(f_prof, emp_read)
     compose = wf.add(code("Compose System Prompt", COMPOSE_JS, (500, 0)))
@@ -699,7 +718,7 @@ def build_agent():
                                             "check_leave_overlap بـ {\"start_date\",\"end_date\"}؛ "
                                             "submit_transaction بكامل حقول المعاملة."),
                             "source": "database",
-                            "workflowId": wfref("REPLACE_GATEWAY_ID", "مُنجِز — 02 Service Gateway (sub)"),
+                            "workflowId": wfref(GATEWAY_ID, "مُنجِز — 02 Service Gateway (sub)"),
                             "workflowInputs": {"mappingMode": "defineBelow", "value": {
                                 "service": "={{ $fromAI('service', 'service name from the skill allowed_services', 'string') }}",
                                 "payload": "={{ $fromAI('payload', 'JSON string of the service payload, or empty', 'string') }}",
@@ -926,7 +945,7 @@ def build_chaser():
                         "responseMode": "responseNode", "options": {}}, webhook=True))
     ack = wf.add(respond("Respond Chase", '={{ { "ok": true, "fired": true } }}', (-1100, 360)))
     wf.link(hook, ack)
-    rd = wf.add(exec_wf("Read All", "REPLACE_DATA_IO_ID", "مُنجِز — 00 Data IO (sub)",
+    rd = wf.add(exec_wf("Read All", DATA_IO_ID, "مُنجِز — 00 Data IO (sub)",
                         {"action": "read_all", "tab": ""}, (-860, 40)))
     for t in (sched, manual, ack):
         wf.link(t, rd)
@@ -1041,7 +1060,7 @@ def build_dash():
                         "responseMode": "responseNode", "options": {}}, webhook=True))
     idx = wf.add(http_raw("Fetch Skills Index (dash)", RAW_BASE + "registry/skills-index.json", (-480, 0)))
     wf.link(hook, idx)
-    rd = wf.add(exec_wf("Read All (dash)", "REPLACE_DATA_IO_ID", "مُنجِز — 00 Data IO (sub)",
+    rd = wf.add(exec_wf("Read All (dash)", DATA_IO_ID, "مُنجِز — 00 Data IO (sub)",
                         {"action": "read_all", "tab": ""}, (-260, 0)))
     wf.link(idx, rd)
     asm = wf.add(code("Assemble Dashboard", ASSEMBLE_JS, (-40, 0)))
@@ -1154,6 +1173,7 @@ def main():
     ]
     bad = False
     for fname, wf in builds:
+        wf.wf_id = WF_IDS.get(fname)
         doc = wf.dump()
         errs = validate(doc)
         if errs:

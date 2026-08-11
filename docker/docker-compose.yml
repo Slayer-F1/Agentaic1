@@ -1,0 +1,58 @@
+# مُنجِز — one-command local stack
+#
+#   cd docker && docker compose up -d
+#
+#   n8n      → http://localhost:5678   (workflows; credentials live ONLY here)
+#   portal   → http://localhost:8080   (the Munjiz portal, auto-points at n8n)
+#
+# No secrets in this file. The Gemini / Sheets / Gmail credentials are entered
+# by the user inside the n8n UI and stored encrypted in the n8n_data volume.
+name: munjiz
+
+services:
+  n8n:
+    image: docker.n8n.io/n8nio/n8n:latest
+    container_name: munjiz-n8n
+    restart: unless-stopped
+    ports:
+      - "${N8N_PORT:-5678}:5678"
+    environment:
+      GENERIC_TIMEZONE: "${TZ:-Asia/Dubai}"
+      TZ: "${TZ:-Asia/Dubai}"
+      # http on localhost — n8n refuses to set a secure cookie without TLS
+      N8N_SECURE_COOKIE: "false"
+      N8N_DIAGNOSTICS_ENABLED: "false"
+      N8N_PERSONALIZATION_SURVEY_ENABLED: "false"
+      N8N_RUNNERS_ENABLED: "true"
+      # absolute URL used when n8n prints production webhook URLs
+      WEBHOOK_URL: "http://localhost:${N8N_PORT:-5678}/"
+    volumes:
+      - n8n_data:/home/node/.n8n
+      # read-only view of the repo so you can import workflows from the container UI
+      - ../workflow:/import/workflow:ro
+      - ../data:/import/data:ro
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:5678/healthz || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 40s
+
+  portal:
+    image: nginx:alpine
+    container_name: munjiz-portal
+    restart: unless-stopped
+    ports:
+      - "${PORTAL_PORT:-8080}:80"
+    environment:
+      # handed to the browser via /config.js so the portal finds n8n on any port
+      N8N_PUBLIC_URL: "http://localhost:${N8N_PORT:-5678}/webhook"
+    volumes:
+      - ../ui:/usr/share/nginx/html:ro
+      - ./nginx.default.conf.template:/etc/nginx/templates/default.conf.template:ro
+    depends_on:
+      - n8n
+
+volumes:
+  n8n_data:
+    name: munjiz_n8n_data

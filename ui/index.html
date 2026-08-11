@@ -264,6 +264,8 @@ dialog .dlg-f{padding:14px 20px;border-top:1px solid var(--line);display:flex;ga
 
 <div id="toasts"></div>
 
+<!-- optional: served by the docker portal, absent when opened as a file -->
+<script src="config.js" onerror="void 0"></script>
 <script>
 "use strict";
 const $=(s,e=document)=>e.querySelector(s), $$=(s,e=document)=>[...e.querySelectorAll(s)];
@@ -322,7 +324,18 @@ const EN={appTitle:"Munjiz",appSub:"Skill-governed self-service portal — demo 
 let T=AR;
 
 /* ---------------- state ---------------- */
-const S={base:localStorage.getItem("munjiz.base")||"",lang:localStorage.getItem("munjiz.lang")||"ar",
+/* Base URL resolution, in order: ?base= param → saved setting → auto-detect when
+   served over http (the docker stack serves the portal on :8080 and n8n on :5678). */
+function defaultBase(){
+ const q=new URLSearchParams(location.search).get("base");
+ if(q){const v=q.replace(/\/+$/,"");localStorage.setItem("munjiz.base",v);return v;} // one link, then it sticks
+ const saved=localStorage.getItem("munjiz.base");
+ if(saved!==null)return saved;
+ if(typeof window.MUNJIZ_BASE==="string"&&window.MUNJIZ_BASE)return window.MUNJIZ_BASE.replace(/\/+$/,"");
+ if(location.protocol.startsWith("http"))return location.protocol+"//"+location.hostname+":5678/webhook";
+ return "";
+}
+const S={base:defaultBase(),lang:localStorage.getItem("munjiz.lang")||"ar",
  view:"chat",who:localStorage.getItem("munjiz.who")||"EMP-1001",data:null,demo:false,conn:"connecting",
  session:"S-"+Date.now(),activeSkill:"",chat:[],busy:false,demoStep:0};
 
