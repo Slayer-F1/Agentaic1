@@ -120,12 +120,19 @@ def main():
     run(["docker", "exec", a.container, "n8n", "import:workflow",
          "--separate", "--input=/tmp/munjiz-deploy"])
 
-    # 3. publish the workflows that own triggers (sub-workflows stay unpublished)
-    for wid in ["munjizChatAgent1", "munjizApprovals3", "munjizSlaChaser4",
-                "munjizDashApi005", "munjizDemoReset7"]:
+    # 3. activate every workflow.
+    #    On n8n 2.x a sub-workflow must ALSO be active or its caller fails with
+    #    "Workflow is not active and cannot be executed" — so 00 Data IO and
+    #    02 Service Gateway are activated too, not just the trigger workflows.
+    all_ids = ["munjizDataIo0000", "munjizChatAgent1", "munjizGateway002",
+               "munjizApprovals3", "munjizSlaChaser4", "munjizDashApi005",
+               "munjizErrorHnd06", "munjizDemoReset7"]
+    for wid in all_ids:
         run(["docker", "exec", a.container, "n8n", "publish:workflow", "--id=" + wid],
             check=False, quiet=True)
-    print("-> published the 5 trigger workflows")
+        run(["docker", "exec", a.container, "n8n", "update:workflow",
+             "--id=" + wid, "--active=true"], check=False, quiet=True)
+    print("-> activated all %d workflows (sub-workflows included)" % len(all_ids))
 
     # 4. restart so the activation takes effect, then verify the plumbing
     print("-> restarting n8n")
@@ -140,9 +147,15 @@ def main():
         with urllib.request.urlopen(url, timeout=30) as r:
             body = r.read(300).decode("utf-8", "replace")
         print("-> GET /webhook/munjiz/state : HTTP %s" % r.status)
-        print("   %s" % body[:200])
         print("")
-        print("READY. Portal: http://localhost:%s" % (os.environ.get("PORTAL_PORT") or "8080"))
+        if body.strip():
+            print("   %s" % body[:200])
+            print("READY. Portal: http://localhost:%s" % (os.environ.get("PORTAL_PORT") or "8080"))
+        else:
+            print("Workflows are live, but the response body is empty: the workflow ran and")
+            print("stopped before responding - almost always a missing credential.")
+            print("Add the Gemini / Sheets / Gmail credentials in the n8n UI (and pass")
+            print("--spreadsheet-id), then re-run. See n8n -> Executions for the failing node.")
     except urllib.error.HTTPError as e:
         print("-> webhook responded HTTP %s (workflow reached, likely missing credentials)" % e.code)
         print("   add the Gemini / Sheets / Gmail credentials in the n8n UI, then retry")

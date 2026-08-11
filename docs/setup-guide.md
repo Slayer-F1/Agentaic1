@@ -102,7 +102,9 @@ The n8n data (workflows + encrypted credentials) lives in the `munjiz_n8n_data` 
 
 | Symptom | Fix |
 |---|---|
-| Webhooks 404 / portal stays amber | Owner account not created (step A2), or the workflow isn't published. Both are required before n8n registers a webhook. |
+| Webhooks 404 / portal stays amber | Owner account not created (step A2), or the workflow isn't active. Both are required before n8n registers a webhook. |
+| `Workflow is not active and cannot be executed` | **n8n 2.x only:** a called sub-workflow must itself be active. `tools/deploy.py` activates all 8 (including `00 Data IO` and `02 Service Gateway`); if you imported by hand, activate those two as well. |
+| Webhook returns HTTP 200 with an empty body | The workflow ran but stopped before its Respond node — nearly always a missing credential. Open **n8n → Executions** and look at the red node. |
 | `port is already allocated` on compose up | Another container owns 5678/8080 — set `N8N_PORT` / `PORTAL_PORT` in `docker/.env`. |
 | Portal stuck in demo mode | It couldn't reach n8n. Check `docker compose ps`, and that Settings' base URL ends in `/webhook` (not `/webhook-test`). |
 | Skill not found / router says no match | Check the raw registry URL loads and the skill's `status` is `approved`. GitHub's raw cache lags ~1 minute after a push. |
