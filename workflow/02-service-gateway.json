@@ -2,7 +2,7 @@
   "name": "مُنجِز — 02 Service Gateway (sub)",
   "nodes": [
     {
-      "id": "58af130b-ce13-47ba-9809-ebeb675cd0c6",
+      "id": "67620d19-c3ea-48a7-80c8-079006f65dbe",
       "name": "Gateway Input",
       "type": "n8n-nodes-base.executeWorkflowTrigger",
       "typeVersion": 1.1,
@@ -39,7 +39,7 @@
       }
     },
     {
-      "id": "bd25fb3a-b83d-4fc0-9c41-ae7075b013cc",
+      "id": "998cf5b0-482e-4820-9f4a-4d58f03a0775",
       "name": "Fetch Skills Index",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -64,7 +64,7 @@
       "waitBetweenTries": 3000
     },
     {
-      "id": "6438f6a2-1464-4a48-ba3e-b17cab109a40",
+      "id": "551e0ad4-73cb-4c4c-b0ca-e3bad4ee0358",
       "name": "Gate Check",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -77,7 +77,7 @@
       }
     },
     {
-      "id": "544310ba-efe7-4a06-b3dc-0bac4465d5c8",
+      "id": "d82576c1-1e91-45fd-9055-6271b7e14a7c",
       "name": "Denied?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
@@ -110,7 +110,7 @@
       }
     },
     {
-      "id": "300afb11-6a49-4cfa-86b7-c1c37f433233",
+      "id": "3b5cdf48-7710-4741-98e9-30a213cbabb2",
       "name": "Denied Result",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -123,7 +123,7 @@
       }
     },
     {
-      "id": "cc7c0bba-d650-476c-b757-4df9339a190e",
+      "id": "51ffa463-8a1c-41fd-aa01-f47a79b868fa",
       "name": "Service Switch",
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
@@ -320,11 +320,26 @@
             }
           ]
         },
-        "options": {}
+        "options": {
+          "fallbackOutput": "extra"
+        }
       }
     },
     {
-      "id": "7f888703-0d82-488f-a4ff-c0dbac8d18c5",
+      "id": "f770da84-7a16-4f3a-a515-2131bf306173",
+      "name": "svc: not_implemented",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -60,
+        1420
+      ],
+      "parameters": {
+        "jsCode": "return [{ json: { ...$json, result: { error: 'SERVICE_NOT_IMPLEMENTED',\n  message: 'الخدمة مسموحة في المهارة لكنها غير مبنية في البوابة بعد - أبلغ الموظف بذلك.',\n  service: $json.service } } }];\n"
+      }
+    },
+    {
+      "id": "67c6f3af-62a4-4740-bc1c-2ddad33edf46",
       "name": "Read Employees (profile)",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -358,7 +373,7 @@
       "waitBetweenTries": 4000
     },
     {
-      "id": "f5fa951d-df66-4bac-9c3e-d653d2c85dd5",
+      "id": "ea72f41e-2702-4acf-ae24-7b0c04cf25d8",
       "name": "svc: get_employee_profile",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -371,7 +386,7 @@
       }
     },
     {
-      "id": "f6584224-268f-4460-858c-de70e1e618da",
+      "id": "43ae100e-3e9c-42da-98db-c056295c9be2",
       "name": "Read LeaveBalances (svc)",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -405,7 +420,7 @@
       "waitBetweenTries": 4000
     },
     {
-      "id": "879346bb-2aeb-4f64-88bc-5887f7c4322b",
+      "id": "b61fddb1-1cf5-4ad7-ba71-064d92e053ae",
       "name": "svc: get_leave_balance",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -418,7 +433,7 @@
       }
     },
     {
-      "id": "f9ccef27-58ea-409f-a117-3f7eac151caf",
+      "id": "a08dcf90-98c6-4948-9142-bab09cb0d00c",
       "name": "Read Employees (salary)",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -452,7 +467,7 @@
       "waitBetweenTries": 4000
     },
     {
-      "id": "52d1066c-e892-4fa9-858d-a96b27cd5d10",
+      "id": "ba8bbed2-831c-4b71-8290-36e3345684a8",
       "name": "Read Transactions (salary)",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -486,7 +501,7 @@
       "waitBetweenTries": 4000
     },
     {
-      "id": "9be3307a-5262-4c92-a78b-d22fdaeac968",
+      "id": "fcca2621-1850-4a8d-b034-e56b157b0fd5",
       "name": "svc: get_salary_record",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -499,7 +514,7 @@
       }
     },
     {
-      "id": "04f9c9e6-7fc4-440a-b38e-7ea68f421ecf",
+      "id": "9f701871-b217-4a3e-8e2d-4aa896b2d42c",
       "name": "Read Transactions (policy)",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -533,7 +548,7 @@
       "waitBetweenTries": 4000
     },
     {
-      "id": "ecb4395f-339f-4fdd-ae95-3631f319142c",
+      "id": "9adc083d-18d5-445e-9505-d0567c253750",
       "name": "Read ExpensePolicy (svc)",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -567,7 +582,7 @@
       "waitBetweenTries": 4000
     },
     {
-      "id": "0db406e8-ee2c-4254-ba13-658a2d5e8a7a",
+      "id": "c6ac09de-c9d1-4e76-ab85-047aec7bf619",
       "name": "svc: get_expense_policy",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -580,7 +595,7 @@
       }
     },
     {
-      "id": "adb6a124-9eb9-4fad-87f7-92c360ee4ff1",
+      "id": "6577f82f-b644-4edc-8f61-4a487041d5d9",
       "name": "Read Employees (roles)",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -614,7 +629,7 @@
       "waitBetweenTries": 4000
     },
     {
-      "id": "d5658a86-b9bc-45dc-ae93-518b897c757e",
+      "id": "bcdacf97-b61e-4699-a34c-911dfa687345",
       "name": "svc: get_it_roles",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -627,7 +642,7 @@
       }
     },
     {
-      "id": "23e0281e-02d8-4b2f-8ab1-46a746c5a36a",
+      "id": "e7e4aa83-9fa2-44e9-9aab-e2b81b761ec4",
       "name": "Read SystemCatalog (svc)",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -661,7 +676,7 @@
       "waitBetweenTries": 4000
     },
     {
-      "id": "30bee736-3e4b-4712-b7b6-b343b6bdb928",
+      "id": "c91cb81d-243e-4eca-8347-6b54b4157404",
       "name": "svc: get_system_catalog",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -670,11 +685,11 @@
         530
       ],
       "parameters": {
-        "jsCode": "const j = $('Gate Check').first().json;\nconst rows = $input.all().map(i => i.json);\nconst q = (j.payload.system_id || j.payload.query || '').toLowerCase();\nconst hit = rows.filter(r => !q || r.system_id.toLowerCase().includes(q)\n  || String(r.name_ar).includes(j.payload.system_id || j.payload.query || '')\n  || String(r.name_en).toLowerCase().includes(q));\nreturn [{ json: { ...j, result: { systems: hit.map(r => ({\n  system_id: r.system_id, name_ar: r.name_ar, name_en: r.name_en,\n  sensitivity: r.sensitivity, allowed_roles: String(r.allowed_roles || '').split(';').filter(Boolean),\n})) } } }];\n"
+        "jsCode": "const j = $('Gate Check').first().json;\nconst rows = $input.all().map(i => i.json).filter(r => r && r.system_id);\nconst q = (j.payload.system_id || j.payload.query || '').toLowerCase();\nconst hit = rows.filter(r => !q || r.system_id.toLowerCase().includes(q)\n  || String(r.name_ar).includes(j.payload.system_id || j.payload.query || '')\n  || String(r.name_en).toLowerCase().includes(q));\nreturn [{ json: { ...j, result: { systems: hit.map(r => ({\n  system_id: r.system_id, name_ar: r.name_ar, name_en: r.name_en,\n  sensitivity: r.sensitivity, allowed_roles: String(r.allowed_roles || '').split(';').filter(Boolean),\n})) } } }];\n"
       }
     },
     {
-      "id": "255cbef1-dd00-42db-992d-eb96d1af4db7",
+      "id": "965808ef-4f47-41ec-a295-de0aed96c267",
       "name": "Read Employees (overlap)",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -708,7 +723,7 @@
       "waitBetweenTries": 4000
     },
     {
-      "id": "791dcbe9-137f-4551-8c46-ed10a1c95f0b",
+      "id": "f7da5f70-5546-4982-aecf-09604895b326",
       "name": "Read Transactions (overlap)",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -742,7 +757,7 @@
       "waitBetweenTries": 4000
     },
     {
-      "id": "eaae8d75-2e6f-4e2f-9fb2-02bbe20e339e",
+      "id": "90fb9fa8-ccf3-4110-9bf9-5f50a3f86619",
       "name": "svc: check_leave_overlap",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -755,7 +770,7 @@
       }
     },
     {
-      "id": "88abf6ca-8968-4b65-b207-4a5fb086272f",
+      "id": "13d5f661-2803-45fd-95ac-493427a8218d",
       "name": "Read Employees (submit)",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -789,7 +804,7 @@
       "waitBetweenTries": 4000
     },
     {
-      "id": "36520142-9d93-462b-abe2-111cfe5c63e6",
+      "id": "51ac4a76-1f44-4cb1-8dfe-5b9b49195386",
       "name": "svc: submit_transaction",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -798,11 +813,11 @@
         870
       ],
       "parameters": {
-        "jsCode": "const j = $('Gate Check').first().json;\nconst emps = $input.all().map(i => i.json);\nconst me = emps.find(r => r.employee_id === j.employee_id) || {};\nconst now = new Date();\nconst txn_id = 'TXN-' + now.getTime();\nconst meta = j.skill_meta || { approval_chain: ['manager'], auto_execute: false, sla_hours: 48 };\nconst chain = (j.payload._approval_chain_override && Array.isArray(j.payload._approval_chain_override))\n  ? j.payload._approval_chain_override : (meta.approval_chain || []);\nconst auto = meta.auto_execute === true && chain.length === 0;\nlet output_ref = '';\nif (auto && j.skill_id === 'salary-certificate') output_ref = 'CERT-' + String(now.getTime()).slice(-6);\nconst status = auto ? 'executed' : 'awaiting_' + chain[0];\nconst row = {\n  txn_id, ts: now.toISOString(), employee_id: j.employee_id,\n  employee_name: me.name_ar || j.employee_id, skill_id: j.skill_id,\n  type_ar: meta.title_ar || j.skill_id,\n  payload_json: JSON.stringify(j.payload), status,\n  approval_chain: chain.join(';'), chain_pos: 0,\n  current_approver: chain[0] || '', decision_note: '', output_ref,\n  sla_hours: meta.sla_hours || 48, updated_at: now.toISOString(),\n};\nreturn [{ json: { ...j, txn_row: row, result: { txn_id, status, output_ref,\n  approval_chain: chain, message: auto ? 'نُفّذت المعاملة فورًا' : 'أُرسلت لسلسلة الاعتماد' } } }];\n"
+        "jsCode": "const j = $('Gate Check').first().json;\nconst emps = $input.all().map(i => i.json);\nconst me = emps.find(r => r.employee_id === j.employee_id) || {};\nconst now = new Date();\nconst txn_id = 'TXN-' + now.getTime();\nconst meta = j.skill_meta || { approval_chain: ['manager'], auto_execute: false, sla_hours: 48 };\nconst chain = meta.approval_chain || []; // governed chain ONLY - never from the model\nfor (const k of Object.keys(j.payload)) if (k.startsWith('_')) delete j.payload[k];\nconst auto = chain.length === 0; // empty chain = instant execution\nlet output_ref = '';\nif (auto && j.skill_id === 'salary-certificate') output_ref = 'CERT-' + String(now.getTime()).slice(-6);\nconst status = auto ? 'executed' : 'awaiting_' + chain[0];\nconst row = {\n  txn_id, ts: now.toISOString(), employee_id: j.employee_id,\n  employee_name: me.name_ar || j.employee_id, skill_id: j.skill_id,\n  type_ar: meta.title_ar || j.skill_id,\n  payload_json: JSON.stringify(j.payload), status,\n  approval_chain: chain.join(';'), chain_pos: 0,\n  current_approver: chain[0] || '', decision_note: '', output_ref,\n  sla_hours: meta.sla_hours || 48, updated_at: now.toISOString(),\n};\nreturn [{ json: { ...j, txn_row: row, result: { txn_id, status, output_ref,\n  approval_chain: chain, message: auto ? 'نُفّذت المعاملة فورًا' : 'أُرسلت لسلسلة الاعتماد' } } }];\n"
       }
     },
     {
-      "id": "073a6c7f-58ce-4134-93ac-868cd8d68b04",
+      "id": "7641082f-a274-4324-9ee0-8b391008f55b",
       "name": "Emit Txn Row",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -815,7 +830,7 @@
       }
     },
     {
-      "id": "577b9f03-e393-460d-912b-688a33731d33",
+      "id": "38383bcc-b11f-4903-a510-72a23f3bf179",
       "name": "Append Transaction",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -856,7 +871,7 @@
       "waitBetweenTries": 4000
     },
     {
-      "id": "22d74492-91a5-4d53-a6fd-21ce494bdba5",
+      "id": "a8b23398-3afc-434d-95eb-fa3a6eb5c412",
       "name": "Carry Submit Result",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -869,7 +884,7 @@
       }
     },
     {
-      "id": "837e470c-f5b4-4339-b9e2-437d0119eb03",
+      "id": "31cc3ef2-aaff-4672-8c62-d40459968cb9",
       "name": "Build Audit Row",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -882,7 +897,7 @@
       }
     },
     {
-      "id": "d4076212-7ccc-43c8-b7fb-b57f6a736e2f",
+      "id": "8a2c9f9a-3413-447f-960c-a6ff9fe06688",
       "name": "Append AuditLog",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -923,7 +938,7 @@
       "waitBetweenTries": 4000
     },
     {
-      "id": "de3c11cc-76fc-460c-a5d9-c28dd285117c",
+      "id": "62ac5ee4-ae0c-45aa-91a3-e010f3e7c617",
       "name": "Return Result",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -932,12 +947,12 @@
         60
       ],
       "parameters": {
-        "jsCode": "const src = $('Build Audit Row').first().json;\n// find the full item that produced the audit row\nlet full = null;\nfor (const n of ['Denied Result','svc: get_employee_profile','svc: get_leave_balance',\n  'svc: get_salary_record','svc: get_expense_policy','svc: get_it_roles',\n  'svc: get_system_catalog','svc: check_leave_overlap','Carry Submit Result']) {\n  try { const it = $(n).first(); if (it && it.json && it.json.result) { full = it.json; break; } } catch (e) {}\n}\nreturn [{ json: { service: src.service, result: (full && full.result) || { error: 'NO_RESULT' } } }];\n"
+        "jsCode": "const src = $('Build Audit Row').first().json;\n// find the full item that produced the audit row\nlet full = null;\nfor (const n of ['Denied Result','svc: get_employee_profile','svc: get_leave_balance',\n  'svc: get_salary_record','svc: get_expense_policy','svc: get_it_roles',\n  'svc: get_system_catalog','svc: check_leave_overlap','Carry Submit Result','svc: not_implemented']) {\n  try { const it = $(n).first(); if (it && it.json && it.json.result) { full = it.json; break; } } catch (e) {}\n}\nreturn [{ json: { service: src.service, result: (full && full.result) || { error: 'NO_RESULT' } } }];\n"
       }
     },
     {
-      "id": "7983d0d5-bacc-42cf-9a25-ac45f16a34cd",
-      "name": "Note 389abf78",
+      "id": "49ab3b06-bcf6-4b05-9fce-5e32649cc420",
+      "name": "Note f4175276",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
@@ -1058,6 +1073,13 @@
         [
           {
             "node": "Read Employees (submit)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "svc: not_implemented",
             "type": "main",
             "index": 0
           }
@@ -1307,6 +1329,17 @@
       ]
     },
     "Carry Submit Result": {
+      "main": [
+        [
+          {
+            "node": "Build Audit Row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "svc: not_implemented": {
       "main": [
         [
           {

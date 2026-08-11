@@ -328,7 +328,7 @@ SVC_CODES = {
     ),
     "get_system_catalog": (
         "const j = $('Gate Check').first().json;\n"
-        "const rows = $input.all().map(i => i.json);\n"
+        "const rows = $input.all().map(i => i.json).filter(r => r && r.system_id);\n"
         "const q = (j.payload.system_id || j.payload.query || '').toLowerCase();\n"
         "const hit = rows.filter(r => !q || r.system_id.toLowerCase().includes(q)\n"
         "  || String(r.name_ar).includes(j.payload.system_id || j.payload.query || '')\n"
@@ -368,9 +368,9 @@ SVC_CODES = {
         "const now = new Date();\n"
         "const txn_id = 'TXN-' + now.getTime();\n"
         "const meta = j.skill_meta || { approval_chain: ['manager'], auto_execute: false, sla_hours: 48 };\n"
-        "const chain = (j.payload._approval_chain_override && Array.isArray(j.payload._approval_chain_override))\n"
-        "  ? j.payload._approval_chain_override : (meta.approval_chain || []);\n"
-        "const auto = meta.auto_execute === true && chain.length === 0;\n"
+        "const chain = meta.approval_chain || []; // governed chain ONLY - never from the model\n"
+        "for (const k of Object.keys(j.payload)) if (k.startsWith('_')) delete j.payload[k];\n"
+        "const auto = chain.length === 0; // empty chain = instant execution\n"
         "let output_ref = '';\n"
         "if (auto && j.skill_id === 'salary-certificate') output_ref = 'CERT-' + String(now.getTime()).slice(-6);\n"
         "const status = auto ? 'executed' : 'awaiting_' + chain[0];\n"
@@ -414,8 +414,16 @@ def build_gateway():
     wf.link(dn, deny_res, output=0)
 
     services = list(SVC_CODES.keys())
-    sw = wf.add(switch_rules("Service Switch", "={{ $json.service }}", services, (-320, 60)))
+    sw_node = switch_rules("Service Switch", "={{ $json.service }}", services, (-320, 60))
+    sw_node["parameters"]["options"] = {"fallbackOutput": "extra"}
+    sw = wf.add(sw_node)
     wf.link(dn, sw, output=1)
+    ni = wf.add(code("svc: not_implemented", (
+        "return [{ json: { ...$json, result: { error: 'SERVICE_NOT_IMPLEMENTED',\n"
+        "  message: 'الخدمة مسموحة في المهارة لكنها غير مبنية في البوابة بعد - أبلغ الموظف بذلك.',\n"
+        "  service: $json.service } } }];\n"
+    ), (-60, 60 + 170 * len(SVC_CODES))))
+    wf.link(sw, ni, output=len(services))
 
     # per-service reads + code
     y = -320
@@ -456,6 +464,7 @@ def build_gateway():
     wf.link(tx_append, tx_back)
     ends[-1] = tx_back  # submit's end is after the append
 
+    ends.append(ni)
     audit_row = wf.add(code("Build Audit Row", (
         "const j = $json;\n"
         "return [{ json: {\n"
@@ -476,7 +485,7 @@ def build_gateway():
         "let full = null;\n"
         "for (const n of ['Denied Result','svc: get_employee_profile','svc: get_leave_balance',\n"
         "  'svc: get_salary_record','svc: get_expense_policy','svc: get_it_roles',\n"
-        "  'svc: get_system_catalog','svc: check_leave_overlap','Carry Submit Result']) {\n"
+        "  'svc: get_system_catalog','svc: check_leave_overlap','Carry Submit Result','svc: not_implemented']) {\n"
         "  try { const it = $(n).first(); if (it && it.json && it.json.result) { full = it.json; break; } } catch (e) {}\n"
         "}\n"
         "return [{ json: { service: src.service, result: (full && full.result) || { error: 'NO_RESULT' } } }];\n"
@@ -531,7 +540,7 @@ AGENT_OUT_SCHEMA = {
 }
 
 ROUTER_JS = (
-    "const b = $json.body || {};\n"
+    "const b = $('Chat Webhook').first().json.body || {};\n"
     "let index = {};\n"
     "try { index = JSON.parse($('Fetch Skills Index').first().json.data); } catch (e) {\n"
     "  try { index = $('Fetch Skills Index').first().json; } catch (e2) {}\n"
@@ -711,7 +720,10 @@ def build_agent():
     rr_call = wf.add(gemini("Gemini: Re-reason", (1460, -220)))
     rr_parse = wf.add(code("Parse Re-reason", GPARSE, (1680, -220)))
     rr_merge = wf.add(code("Merge Re-reason", (
-        "const fixed = $json.gemini_json || {};\n"
+        "const prev = $('Deterministic Cross-Check').first().json;\n"
+        "const fixed = $json.gemini_ok ? $json.gemini_json : {\n"
+        "  reply_ar: prev.reply_ar, state: prev.state, transaction_preview: prev.transaction_preview,\n"
+        "  txn_id: prev.txn_id, missing_fields: prev.missing_fields };\n"
         "return [{ json: { output: fixed, _rechecked: true } }];\n"
     ), (1900, -220)))
     wf.link(needs, rr, output=0)
@@ -756,11 +768,13 @@ DECIDE_JS = (
     "const authorized = stage === 'manager' ? (owner.manager_id === b.approver_id)\n"
     "  : (approver.role === stage);\n"
     "if (!authorized) return [{ json: { ok: false, error: 'NOT_AUTHORIZED', stage } }];\n"
+    "const dec = String(b.decision || '').toLowerCase();\n"
+    "if (dec !== 'approve' && dec !== 'reject') return [{ json: { ok: false, error: 'INVALID_DECISION' } }];\n"
     "const chain = String(t.approval_chain || '').split(';').filter(Boolean);\n"
     "const pos = +t.chain_pos || 0;\n"
     "let update = { txn_id: t.txn_id, decision_note: b.note || '', updated_at: new Date().toISOString() };\n"
     "let side = null;\n"
-    "if (b.decision === 'reject') {\n"
+    "if (dec === 'reject') {\n"
     "  update.status = 'rejected'; update.current_approver = '';\n"
     "} else if (pos + 1 < chain.length) {\n"
     "  update.status = 'awaiting_' + chain[pos + 1];\n"
@@ -909,10 +923,12 @@ def build_chaser():
     manual = wf.add(node("Manual Test", "n8n-nodes-base.manualTrigger", 1, (-1100, 40), {}))
     hook = wf.add(node("Chase Webhook", "n8n-nodes-base.webhook", 2, (-1100, 200),
                        {"httpMethod": "POST", "path": "munjiz/chase",
-                        "responseMode": "onReceived", "options": {}}, webhook=True))
+                        "responseMode": "responseNode", "options": {}}, webhook=True))
+    ack = wf.add(respond("Respond Chase", '={{ { "ok": true, "fired": true } }}', (-1100, 360)))
+    wf.link(hook, ack)
     rd = wf.add(exec_wf("Read All", "REPLACE_DATA_IO_ID", "مُنجِز — 00 Data IO (sub)",
                         {"action": "read_all", "tab": ""}, (-860, 40)))
-    for t in (sched, manual, hook):
+    for t in (sched, manual, ack):
         wf.link(t, rd)
     find = wf.add(code("Find Stale", CHASER_FIND_JS, (-640, 40)))
     wf.link(rd, find)
@@ -950,11 +966,24 @@ def build_chaser():
         "  if (dd.action === 'wait') continue;\n"
         "  out.push({ json: { ...(by[dd.txn_id] || {}), ...dd, ts: new Date().toISOString() } });\n"
         "}\n"
-        "return out.length ? out : [{ json: { none: true } }];\n"
+        "return out; // empty = nothing to act on, chain ends here\n"
     ), (80, -40)))
     wf.link(agent, flat)
-    act = wf.add(switch_rules("Chaser Switch", "={{ $json.action }}", ["remind_approver", "escalate"], (300, -40)))
-    wf.link(flat, act)
+    # audit BEFORE the sends: one row per decision, immune to Gmail response overwrite
+    audit_rows = wf.add(code("Audit Rows", (
+        "return $input.all().map(i => ({ json: {\n"
+        "  ts: i.json.ts, session_id: 'sla-chaser', employee_id: '',\n"
+        "  skill_id: '', service: 'sla_' + i.json.action,\n"
+        "  request_json: JSON.stringify({ txn_id: i.json.txn_id, hours_late: i.json.age_hours }),\n"
+        "  result_summary: i.json.justification_ar || '' } }));\n"
+    ), (300, -40)))
+    wf.link(flat, audit_rows)
+    logw = wf.add(sheets_append("Append AuditLog (chaser)", "AuditLog", (520, -40)))
+    wf.link(audit_rows, logw)
+    carry = wf.add(code("Carry Decisions", "return $('Flatten').all();", (740, -40)))
+    wf.link(logw, carry)
+    act = wf.add(switch_rules("Chaser Switch", "={{ $json.action }}", ["remind_approver", "escalate"], (960, -40)))
+    wf.link(carry, act)
     remind = wf.add(node("Remind Approver", "n8n-nodes-base.gmail", 2.1, (540, -140),
                          {"sendTo": "={{ $json.approver_email || '" + DEMO_INBOX + "' }}",
                           "subject": "=⏰ مُنجِز: معاملة بانتظار اعتمادك — {{ $json.txn_id }}",
@@ -967,16 +996,6 @@ def build_chaser():
                        "message": "={{ $json.type_ar + ' للموظف ' + $json.employee + ' متأخرة ' + $json.age_hours + ' ساعة (sla ' + $json.sla_hours + '). ' + $json.justification_ar }}",
                        "options": {}}, credentials=CRED_GMAIL, onError="continueRegularOutput"))
     wf.link(act, esc, output=1)
-    log = wf.add(code("Audit Rows", (
-        "return [{ json: { ts: $json.ts, session_id: 'sla-chaser', employee_id: '',\n"
-        "  skill_id: '', service: 'sla_' + $json.action,\n"
-        "  request_json: JSON.stringify({ txn_id: $json.txn_id }),\n"
-        "  result_summary: $json.justification_ar } }];\n"
-    ), (760, -40)))
-    wf.link(remind, log)
-    wf.link(esc, log)
-    logw = wf.add(sheets_append("Append AuditLog (chaser)", "AuditLog", (980, -40)))
-    wf.link(log, logw)
     wf.nodes.append(sticky(
         "## SLA Chaser — حارس الإنجاز (criteria ④⑤⑥)\nEvery 5 minutes it reads pending "
         "transactions, and the MODEL decides per case: remind / escalate / wait — each decision "
@@ -1009,7 +1028,7 @@ ASSEMBLE_JS = (
     "  audit: (d.audit || []).slice(-60).reverse(),\n"
     "  skills: (index.skills || []),\n"
     "  employees: (d.employees || []).map(e => ({ employee_id: e.employee_id, name_ar: e.name_ar,\n"
-    "    role: e.role, department: e.department, manager_id: e.manager_id })),\n"
+    "    name_en: e.name_en || '', role: e.role, department: e.department, manager_id: e.manager_id })),\n"
     "  balances: d.balances || [],\n"
     "} }];\n"
 )

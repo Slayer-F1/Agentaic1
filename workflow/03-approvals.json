@@ -2,7 +2,7 @@
   "name": "مُنجِز — 03 Approvals",
   "nodes": [
     {
-      "id": "15e0d51d-550c-4bd8-8001-5319867bacf6",
+      "id": "5d65ad2a-c2b2-4dfb-a5e5-b56b9159a8de",
       "name": "Decide Webhook",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
@@ -16,10 +16,10 @@
         "responseMode": "responseNode",
         "options": {}
       },
-      "webhookId": "a02dbf80-af7d-436e-a96a-8dc94b82e6d4"
+      "webhookId": "1f27e04e-cca1-49a4-bad3-334701861761"
     },
     {
-      "id": "57ebc371-bb87-40ed-87a2-d6aa99a65b86",
+      "id": "2a370741-1dad-45df-a324-a69273280ffa",
       "name": "Read Transactions (decide)",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -53,7 +53,7 @@
       "waitBetweenTries": 4000
     },
     {
-      "id": "f1b29429-11e1-44fe-acc9-03d2a67e3b0a",
+      "id": "f2d97389-4f8a-4b84-83d6-49682f519db5",
       "name": "Read Employees (decide)",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -87,7 +87,7 @@
       "waitBetweenTries": 4000
     },
     {
-      "id": "7a4e8fdf-1f7d-4c6f-b687-613c698d8b42",
+      "id": "ad5f0774-9f7e-45d6-9f3f-0c30984e3161",
       "name": "Decide",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -96,11 +96,11 @@
         0
       ],
       "parameters": {
-        "jsCode": "function workingDays(startISO, endISO) {\n  const s = new Date(startISO + 'T12:00:00Z'), e = new Date(endISO + 'T12:00:00Z');\n  if (isNaN(s) || isNaN(e) || e < s) return null;\n  let n = 0; const d = new Date(s);\n  while (d <= e) { const w = d.getUTCDay(); if (w !== 6 && w !== 0) n++; d.setUTCDate(d.getUTCDate() + 1); }\n  return n;\n}\nconst b = $('Decide Webhook').first().json.body || {};\nconst txns = $('Read Transactions (decide)').all().map(i => i.json);\nconst emps = $('Read Employees (decide)').all().map(i => i.json);\nconst t = txns.find(r => r.txn_id === b.txn_id);\nif (!t) return [{ json: { ok: false, error: 'TXN_NOT_FOUND' } }];\nif (!String(t.status || '').startsWith('awaiting_'))\n  return [{ json: { ok: false, error: 'NOT_PENDING', status: t.status } }];\nconst stage = t.current_approver;\nconst approver = emps.find(r => r.employee_id === b.approver_id) || {};\nconst owner = emps.find(r => r.employee_id === t.employee_id) || {};\n// manager stage authorizes ONLY the employee's own manager; other stages match by role\nconst authorized = stage === 'manager' ? (owner.manager_id === b.approver_id)\n  : (approver.role === stage);\nif (!authorized) return [{ json: { ok: false, error: 'NOT_AUTHORIZED', stage } }];\nconst chain = String(t.approval_chain || '').split(';').filter(Boolean);\nconst pos = +t.chain_pos || 0;\nlet update = { txn_id: t.txn_id, decision_note: b.note || '', updated_at: new Date().toISOString() };\nlet side = null;\nif (b.decision === 'reject') {\n  update.status = 'rejected'; update.current_approver = '';\n} else if (pos + 1 < chain.length) {\n  update.status = 'awaiting_' + chain[pos + 1];\n  update.current_approver = chain[pos + 1]; update.chain_pos = pos + 1;\n} else {\n  update.status = 'executed'; update.current_approver = ''; update.chain_pos = pos + 1;\n  let pl = {}; try { pl = JSON.parse(t.payload_json || '{}'); } catch (e) {}\n  if (t.skill_id === 'leave-request' && pl.start_date && pl.end_date) {\n    const days = pl.working_days || workingDays(pl.start_date, pl.end_date) || 0;\n    side = { kind: 'leave', employee_id: t.employee_id, leave_type: pl.leave_type || 'annual', days };\n  }\n  if (t.skill_id === 'it-access-request' && pl.system_id) {\n    side = { kind: 'it', employee_id: t.employee_id, grant: pl.system_id + ':' + (pl.access_level || 'read') };\n  }\n}\nreturn [{ json: { ok: true, update, side, txn: t, owner_email: owner.email || '',\n  decision: b.decision, stage } }];\n"
+        "jsCode": "function workingDays(startISO, endISO) {\n  const s = new Date(startISO + 'T12:00:00Z'), e = new Date(endISO + 'T12:00:00Z');\n  if (isNaN(s) || isNaN(e) || e < s) return null;\n  let n = 0; const d = new Date(s);\n  while (d <= e) { const w = d.getUTCDay(); if (w !== 6 && w !== 0) n++; d.setUTCDate(d.getUTCDate() + 1); }\n  return n;\n}\nconst b = $('Decide Webhook').first().json.body || {};\nconst txns = $('Read Transactions (decide)').all().map(i => i.json);\nconst emps = $('Read Employees (decide)').all().map(i => i.json);\nconst t = txns.find(r => r.txn_id === b.txn_id);\nif (!t) return [{ json: { ok: false, error: 'TXN_NOT_FOUND' } }];\nif (!String(t.status || '').startsWith('awaiting_'))\n  return [{ json: { ok: false, error: 'NOT_PENDING', status: t.status } }];\nconst stage = t.current_approver;\nconst approver = emps.find(r => r.employee_id === b.approver_id) || {};\nconst owner = emps.find(r => r.employee_id === t.employee_id) || {};\n// manager stage authorizes ONLY the employee's own manager; other stages match by role\nconst authorized = stage === 'manager' ? (owner.manager_id === b.approver_id)\n  : (approver.role === stage);\nif (!authorized) return [{ json: { ok: false, error: 'NOT_AUTHORIZED', stage } }];\nconst dec = String(b.decision || '').toLowerCase();\nif (dec !== 'approve' && dec !== 'reject') return [{ json: { ok: false, error: 'INVALID_DECISION' } }];\nconst chain = String(t.approval_chain || '').split(';').filter(Boolean);\nconst pos = +t.chain_pos || 0;\nlet update = { txn_id: t.txn_id, decision_note: b.note || '', updated_at: new Date().toISOString() };\nlet side = null;\nif (dec === 'reject') {\n  update.status = 'rejected'; update.current_approver = '';\n} else if (pos + 1 < chain.length) {\n  update.status = 'awaiting_' + chain[pos + 1];\n  update.current_approver = chain[pos + 1]; update.chain_pos = pos + 1;\n} else {\n  update.status = 'executed'; update.current_approver = ''; update.chain_pos = pos + 1;\n  let pl = {}; try { pl = JSON.parse(t.payload_json || '{}'); } catch (e) {}\n  if (t.skill_id === 'leave-request' && pl.start_date && pl.end_date) {\n    const days = pl.working_days || workingDays(pl.start_date, pl.end_date) || 0;\n    side = { kind: 'leave', employee_id: t.employee_id, leave_type: pl.leave_type || 'annual', days };\n  }\n  if (t.skill_id === 'it-access-request' && pl.system_id) {\n    side = { kind: 'it', employee_id: t.employee_id, grant: pl.system_id + ':' + (pl.access_level || 'read') };\n  }\n}\nreturn [{ json: { ok: true, update, side, txn: t, owner_email: owner.email || '',\n  decision: b.decision, stage } }];\n"
       }
     },
     {
-      "id": "468101f9-7a64-4352-8155-01c3f3146645",
+      "id": "b72c3bf9-284b-41a2-960d-cbe42760dac7",
       "name": "OK?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
@@ -133,7 +133,7 @@
       }
     },
     {
-      "id": "c5a500bb-b761-451b-8a3e-409e80d69567",
+      "id": "56194c6b-64dd-4715-9b74-1e5b60fd2fe2",
       "name": "Respond Error",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.2,
@@ -161,7 +161,7 @@
       }
     },
     {
-      "id": "964f2789-70d1-4cc5-992c-c277a5591e17",
+      "id": "31d42163-85aa-46f3-8dd3-f2363be6522d",
       "name": "Emit Txn Update",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -174,7 +174,7 @@
       }
     },
     {
-      "id": "8972a34d-b6ee-4f20-82c8-aa3c8feb0a06",
+      "id": "ef571ead-f2a0-43c4-a46b-88219fa73dc7",
       "name": "Update Transaction",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -217,7 +217,7 @@
       "waitBetweenTries": 4000
     },
     {
-      "id": "dea91b7e-137f-445e-923d-55cb752b5bec",
+      "id": "31a80a20-8d1b-4c76-89bf-ca229904706b",
       "name": "Read LeaveBalances (side)",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -251,7 +251,7 @@
       "waitBetweenTries": 4000
     },
     {
-      "id": "de866e67-3411-4836-899a-328cda6c4b5d",
+      "id": "072ea84a-d58f-4ee4-a152-eda0b5252b05",
       "name": "Read Employees (side)",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -285,7 +285,7 @@
       "waitBetweenTries": 4000
     },
     {
-      "id": "04c5d7b9-7ca2-459f-9e75-cf99b230a711",
+      "id": "381128da-481e-4b14-8589-d618aae06700",
       "name": "Apply Side Effect",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -299,7 +299,7 @@
       "alwaysOutputData": true
     },
     {
-      "id": "3b16de83-082a-496d-bae3-4c6109c5edd9",
+      "id": "5ba536ed-2bd6-4e4b-92ad-c9ee535d668e",
       "name": "Leave Side?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
@@ -332,7 +332,7 @@
       }
     },
     {
-      "id": "42d9fe38-e194-4e0b-938f-36ac550ca3d9",
+      "id": "377a0231-1bd1-4fe6-b415-4559e607b775",
       "name": "Update LeaveBalances",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -375,7 +375,7 @@
       "waitBetweenTries": 4000
     },
     {
-      "id": "6de84e89-78f3-4512-bfe0-69e268b3becd",
+      "id": "e6b74f97-d65a-4109-bc73-9f0a2d341b57",
       "name": "IT Side?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
@@ -408,7 +408,7 @@
       }
     },
     {
-      "id": "5e90eaab-9db1-4918-b655-ee942e6194e9",
+      "id": "3affb34d-60fa-460b-95c2-93c362c58ba9",
       "name": "Update Employee Roles",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -451,7 +451,7 @@
       "waitBetweenTries": 4000
     },
     {
-      "id": "7f143fec-df8d-45d5-93a2-9611590fa5cc",
+      "id": "78a0fdf3-900c-4af3-8348-bcab9b79a7d7",
       "name": "Converge",
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
@@ -462,7 +462,7 @@
       "parameters": {}
     },
     {
-      "id": "e3069f6d-c0a4-4c1a-8360-66357689d045",
+      "id": "f385b262-e286-4ab3-b36c-cb3e032451d0",
       "name": "Notify Employee",
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.1,
@@ -485,7 +485,7 @@
       "onError": "continueRegularOutput"
     },
     {
-      "id": "9ce8fe2c-b531-4967-89b6-7a5e77038916",
+      "id": "0c2303b9-943e-4f3c-9cf8-609c3253a163",
       "name": "Respond Decide",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.2,
@@ -513,8 +513,8 @@
       }
     },
     {
-      "id": "168a6cc6-bd7c-4ae7-9419-acbb059faa21",
-      "name": "Note 4d1ece67",
+      "id": "954b89fa-7e9b-47bf-9e8e-ef7eebaeb3df",
+      "name": "Note 11e62320",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [

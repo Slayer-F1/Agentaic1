@@ -2,7 +2,7 @@
   "name": "مُنجِز — 01 Chat Agent",
   "nodes": [
     {
-      "id": "1e331f58-f919-4912-beae-117d6abdf646",
+      "id": "addbe2ec-e399-464c-a811-113929d10b62",
       "name": "Chat Webhook",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
@@ -16,10 +16,10 @@
         "responseMode": "responseNode",
         "options": {}
       },
-      "webhookId": "6122a40c-316f-428a-bac7-fd8d00ab984a"
+      "webhookId": "855545f3-025a-458e-b709-5a366673036f"
     },
     {
-      "id": "88ad8bef-e5b6-4009-9563-9c84f3de7d41",
+      "id": "f5642c7a-21d3-481d-82c0-9dc0c60f8f5b",
       "name": "Fetch Skills Index",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -44,7 +44,7 @@
       "waitBetweenTries": 3000
     },
     {
-      "id": "40373d17-a74d-4084-a83e-f9429def96fb",
+      "id": "3bb66a76-8952-4110-a66e-8596e8358036",
       "name": "Prepare Router",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -53,11 +53,11 @@
         0
       ],
       "parameters": {
-        "jsCode": "const b = $json.body || {};\nlet index = {};\ntry { index = JSON.parse($('Fetch Skills Index').first().json.data); } catch (e) {\n  try { index = $('Fetch Skills Index').first().json; } catch (e2) {}\n}\nconst skills = (index.skills || []).filter(s => s.status === 'approved');\nconst listing = skills.map(s => ({ id: s.id, title_ar: s.title_ar, keywords: s.keywords }));\nconst prompt = ['أنت مصنّف نوايا لبوابة خدمات موظفين. طلب الموظف:', b.message || '',\n  'المهارات المتاحة:', JSON.stringify(listing),\n  'أعد JSON فقط: {\"skill_id\": \"<id أو null>\", \"confidence\": 0..1}. اختر null إذا لم يطابق الطلب أي مهارة بوضوح.'].join('\\n');\nreturn [{ json: {\n  employee_id: b.employee_id || '', session_id: b.session_id || ('S-' + Date.now()),\n  message: b.message || '', active_skill_id: b.active_skill_id || '',\n  skills, listing,\n  geminiBody: { contents: [{ role: 'user', parts: [{ text: prompt }] }],\n    generationConfig: { temperature: 0, response_mime_type: 'application/json' } },\n} }];\n"
+        "jsCode": "const b = $('Chat Webhook').first().json.body || {};\nlet index = {};\ntry { index = JSON.parse($('Fetch Skills Index').first().json.data); } catch (e) {\n  try { index = $('Fetch Skills Index').first().json; } catch (e2) {}\n}\nconst skills = (index.skills || []).filter(s => s.status === 'approved');\nconst listing = skills.map(s => ({ id: s.id, title_ar: s.title_ar, keywords: s.keywords }));\nconst prompt = ['أنت مصنّف نوايا لبوابة خدمات موظفين. طلب الموظف:', b.message || '',\n  'المهارات المتاحة:', JSON.stringify(listing),\n  'أعد JSON فقط: {\"skill_id\": \"<id أو null>\", \"confidence\": 0..1}. اختر null إذا لم يطابق الطلب أي مهارة بوضوح.'].join('\\n');\nreturn [{ json: {\n  employee_id: b.employee_id || '', session_id: b.session_id || ('S-' + Date.now()),\n  message: b.message || '', active_skill_id: b.active_skill_id || '',\n  skills, listing,\n  geminiBody: { contents: [{ role: 'user', parts: [{ text: prompt }] }],\n    generationConfig: { temperature: 0, response_mime_type: 'application/json' } },\n} }];\n"
       }
     },
     {
-      "id": "847ebda5-7cfa-47a5-bc75-9298fdee8a0f",
+      "id": "c51cdf8f-3bd4-42c5-a713-30e231235012",
       "name": "Has Active Skill?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
@@ -90,7 +90,7 @@
       }
     },
     {
-      "id": "1554a05b-2297-4b87-819c-7c866ab7b085",
+      "id": "3b2583b0-0ad3-45f2-b9dc-ab648ef2454e",
       "name": "Gemini: Route Intent",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -121,7 +121,7 @@
       "waitBetweenTries": 6000
     },
     {
-      "id": "cd577e6b-5718-4fb5-9d43-0adb2dc372d5",
+      "id": "49b657b7-8f05-49e2-bb3c-cb181b98ee45",
       "name": "Parse Route",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -134,7 +134,7 @@
       }
     },
     {
-      "id": "ebbf1a74-7fc3-43a5-a1d5-4ae6248ac166",
+      "id": "f06f2a9c-3758-4fdd-97e3-84db576be54c",
       "name": "Pick Skill",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -147,7 +147,7 @@
       }
     },
     {
-      "id": "bcc352d3-b3b1-4201-b943-ce052786d465",
+      "id": "f22f4090-b803-4c39-a741-842939e5e466",
       "name": "Matched?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
@@ -180,7 +180,7 @@
       }
     },
     {
-      "id": "9997b7de-bf05-4f6f-8f6b-a794ad227e5f",
+      "id": "cc0cd2dc-3d75-4ed5-89cb-2d6caf3791f9",
       "name": "Respond: Services List",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.2,
@@ -208,7 +208,7 @@
       }
     },
     {
-      "id": "9f793ec8-ccc6-4e57-9ab1-74d6103d046e",
+      "id": "567346da-18de-4c96-962a-9beb091e75b1",
       "name": "Fetch Skill MD",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -233,7 +233,7 @@
       "waitBetweenTries": 3000
     },
     {
-      "id": "1d7afd54-1d17-4b3a-bae4-012cba43df1a",
+      "id": "8cad7af9-e177-4299-b8b9-90c6d6c3c2d1",
       "name": "Fetch Profile MD",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -258,7 +258,7 @@
       "waitBetweenTries": 3000
     },
     {
-      "id": "0e176b88-2469-450b-9ddd-540b61fed6ca",
+      "id": "d468e656-a5e8-4504-b39a-325279aa98d3",
       "name": "Read Employees Ctx",
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
@@ -291,7 +291,7 @@
       }
     },
     {
-      "id": "e5717e98-6edd-4b1c-af0c-324febc128ce",
+      "id": "a0b6c42f-941e-4adf-8aac-e2c0d276bbc3",
       "name": "Compose System Prompt",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -304,7 +304,7 @@
       }
     },
     {
-      "id": "8c04109b-be9f-4e98-923c-44946071a676",
+      "id": "4e1659ce-1eed-4615-bf78-e657b44e692e",
       "name": "Munjiz Agent",
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 2.2,
@@ -327,7 +327,7 @@
       "waitBetweenTries": 8000
     },
     {
-      "id": "c29569ef-143e-40bf-bcd3-684e2d44241e",
+      "id": "1d6171c3-dafd-4273-b041-9da72373bae6",
       "name": "Gemini Chat Model",
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1,
@@ -349,7 +349,7 @@
       }
     },
     {
-      "id": "b1930f05-eef6-4f3d-b7ae-86c548856190",
+      "id": "6200cb38-b95a-41b3-adc6-89b562abe513",
       "name": "Session Memory",
       "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
       "typeVersion": 1.3,
@@ -364,7 +364,7 @@
       }
     },
     {
-      "id": "ece80889-f5b3-4264-9f6e-b8fe02c8e0a6",
+      "id": "202a9725-f225-41c7-8457-0e502db6b80b",
       "name": "Structured Output",
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "typeVersion": 1.2,
@@ -378,7 +378,7 @@
       }
     },
     {
-      "id": "18599b7f-396d-45c2-bbaa-a23c85c52180",
+      "id": "0cce3f93-595d-41b3-9888-2093b41a1904",
       "name": "think",
       "type": "@n8n/n8n-nodes-langchain.toolThink",
       "typeVersion": 1,
@@ -389,7 +389,7 @@
       "parameters": {}
     },
     {
-      "id": "baec7816-cf13-47bc-9a81-8a4631283d14",
+      "id": "5559cd3b-f240-431d-810e-ac9c540fcdfd",
       "name": "call_service",
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
@@ -424,7 +424,7 @@
       }
     },
     {
-      "id": "4877120f-05e4-4ab1-bae8-4e44bbf9e696",
+      "id": "8fdb3278-a685-4230-bf11-aa11d0ef255a",
       "name": "Deterministic Cross-Check",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -437,7 +437,7 @@
       }
     },
     {
-      "id": "a0c28e2c-c204-4622-a08c-da94466ee8e2",
+      "id": "b3661d8f-c0cd-4451-b7f3-f57c962f19da",
       "name": "Needs Re-reason?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
@@ -470,7 +470,7 @@
       }
     },
     {
-      "id": "6d24f1b4-c41f-442f-bb87-cab274a42c6f",
+      "id": "4d799c12-5918-456c-bf68-946389d35c17",
       "name": "Build Re-reason",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -483,7 +483,7 @@
       }
     },
     {
-      "id": "9a7bf5a5-97e0-4c26-aa45-4876d5f73308",
+      "id": "a3f67816-a11b-4aed-b820-8175b3f6943e",
       "name": "Gemini: Re-reason",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -514,7 +514,7 @@
       "waitBetweenTries": 6000
     },
     {
-      "id": "c37d27c5-b0ff-41ad-b8ef-6df5579d049e",
+      "id": "d360a677-b688-40d8-b183-71180ec0dd06",
       "name": "Parse Re-reason",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -527,7 +527,7 @@
       }
     },
     {
-      "id": "daea8863-e2d1-4813-a255-1e1aa7444214",
+      "id": "5a2e1ff4-fb1d-472a-a618-b507ba483c9d",
       "name": "Merge Re-reason",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -536,11 +536,11 @@
         -220
       ],
       "parameters": {
-        "jsCode": "const fixed = $json.gemini_json || {};\nreturn [{ json: { output: fixed, _rechecked: true } }];\n"
+        "jsCode": "const prev = $('Deterministic Cross-Check').first().json;\nconst fixed = $json.gemini_ok ? $json.gemini_json : {\n  reply_ar: prev.reply_ar, state: prev.state, transaction_preview: prev.transaction_preview,\n  txn_id: prev.txn_id, missing_fields: prev.missing_fields };\nreturn [{ json: { output: fixed, _rechecked: true } }];\n"
       }
     },
     {
-      "id": "74f146fe-551a-4356-86a3-1017caec6010",
+      "id": "9159212d-8393-4110-a1fe-2f5dfcfd1fb3",
       "name": "Respond Chat",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.2,
@@ -568,8 +568,8 @@
       }
     },
     {
-      "id": "27312a0c-ea8d-49e1-af5f-bfca55ef19d2",
-      "name": "Note 971062a2",
+      "id": "4b717f4f-a72d-4b23-b51a-81ce63cb02c0",
+      "name": "Note 6b89d69c",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [

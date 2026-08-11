@@ -6,7 +6,7 @@ Follow in order. ≈ 40–50 minutes, free tiers only.
 ## 0. Prerequisites
 
 - Docker Desktop (or Node 20+), a **demo** Google account (never a work account), and a free Google AI Studio key: <https://aistudio.google.com/apikey>.
-- **This GitHub repo must be public** (it is: `Slayer-F1/Agentaic1`) — n8n fetches skills from `raw.githubusercontent.com` at runtime. If you fork it private, add a GitHub credential to the three "Fetch …" HTTP nodes instead.
+- **This GitHub repo must be public** (it is: `Slayer-F1/Agentaic1`) — n8n fetches skills from `raw.githubusercontent.com` at runtime. If you fork it private, add a GitHub credential to the five "Fetch …" HTTP nodes instead (three in workflow 01, one each in 02 and 05).
 
 ## 1. Run n8n
 
@@ -62,4 +62,4 @@ Open `ui/index.html` (or serve: `python -m http.server 8770`). It boots in demo 
 | SERVICE_DENIED in normal flows | The skill's `allowed_services` doesn't list the service — that's governance working; fix the skill file if intentional. |
 | Gemini 429 | Free-tier limit; nodes retry with backoff. Wait 60s. |
 | Sheets "Could not find column" | Tab headers altered — re-import the seed xlsx. |
-| Approve button says NOT_AUTHORIZED | You're not that employee's manager / your role ≠ stage. Switch persona. |
+| Approve/Reject shows a NOT_AUTHORIZED or NOT_PENDING toast | You're not that employee's manager / your role ≠ stage, or another approver already decided. Switch persona / refresh. |

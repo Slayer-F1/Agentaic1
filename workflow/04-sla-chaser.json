@@ -2,7 +2,7 @@
   "name": "مُنجِز — 04 SLA Chaser",
   "nodes": [
     {
-      "id": "c03be2aa-b311-4c4c-a197-8ec61e0edea5",
+      "id": "38a1ce3e-a44d-4aba-916b-9c22a5bcbcd9",
       "name": "Every 5 Minutes",
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
@@ -22,7 +22,7 @@
       }
     },
     {
-      "id": "fd260d16-f1ba-404e-9c47-ba821c4f1dc8",
+      "id": "cb154d7e-90c4-42da-9248-0e44bc3fa0bf",
       "name": "Manual Test",
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
@@ -33,7 +33,7 @@
       "parameters": {}
     },
     {
-      "id": "7edede8d-c386-4c67-a291-f70198900953",
+      "id": "2b1f6f27-3944-461b-9cb2-b222c9dacd7a",
       "name": "Chase Webhook",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
@@ -44,13 +44,41 @@
       "parameters": {
         "httpMethod": "POST",
         "path": "munjiz/chase",
-        "responseMode": "onReceived",
+        "responseMode": "responseNode",
         "options": {}
       },
-      "webhookId": "f9df668a-0c7a-4e26-be3a-b8f44bf9ba78"
+      "webhookId": "b6a89468-dfaa-4ff6-9c5c-622e0ed032f2"
     },
     {
-      "id": "ff775e7b-cb6b-4e85-898f-339b64d71246",
+      "id": "e6ed14b4-7041-4f10-932e-1e28bf02ddb6",
+      "name": "Respond Chase",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.2,
+      "position": [
+        -1100,
+        360
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"ok\": true, \"fired\": true } }}",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              },
+              {
+                "name": "Access-Control-Allow-Headers",
+                "value": "Content-Type"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "fa4bea7f-2fc2-402d-a9f6-7dde9ecfdf31",
       "name": "Read All",
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
@@ -83,7 +111,7 @@
       }
     },
     {
-      "id": "038c13e2-42f8-415b-bff6-707175f3fc53",
+      "id": "e7e2d4fe-3b7c-403c-904c-f4bd7058c9f3",
       "name": "Find Stale",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -96,7 +124,7 @@
       }
     },
     {
-      "id": "6bd90305-6534-497d-b714-e0c525cab16b",
+      "id": "318eb942-e351-4c2e-b4ae-72815d0bdd7f",
       "name": "Any Stale?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
@@ -128,7 +156,7 @@
       }
     },
     {
-      "id": "4ca3ac6d-3049-4bc8-95c0-0680385a6d04",
+      "id": "cc94c411-a4e4-465d-9025-5b38c59fe92f",
       "name": "Nothing ✓",
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
@@ -139,7 +167,7 @@
       "parameters": {}
     },
     {
-      "id": "23d5fbbd-ab44-4a83-b75a-ff9f341ca5ab",
+      "id": "674df162-b665-42d8-9da8-3fb451b96078",
       "name": "Chaser Agent",
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 2.2,
@@ -162,7 +190,7 @@
       "waitBetweenTries": 8000
     },
     {
-      "id": "3804be6c-588b-4b4b-a489-9099ab2aac91",
+      "id": "2a972cac-20db-4428-801e-763e9fc82141",
       "name": "Gemini Chat Model (chaser)",
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1,
@@ -184,7 +212,7 @@
       }
     },
     {
-      "id": "44e4b37f-4871-4b99-b940-1c866ee13594",
+      "id": "dd0e2141-3280-4c93-b575-4173bb42c833",
       "name": "Chaser Output",
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "typeVersion": 1.2,
@@ -198,7 +226,7 @@
       }
     },
     {
-      "id": "4166fb95-636b-43f7-8fb4-673636f25231",
+      "id": "74882977-dfe5-4d9a-8bb2-9ea0cb5c4514",
       "name": "Flatten",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -207,16 +235,83 @@
         -40
       ],
       "parameters": {
-        "jsCode": "const cases = $('Find Stale').first().json.cases;\nconst by = {}; for (const c of cases) by[c.txn_id] = c;\nconst out = [];\nfor (const dd of (($json.output || {}).decisions || [])) {\n  if (dd.action === 'wait') continue;\n  out.push({ json: { ...(by[dd.txn_id] || {}), ...dd, ts: new Date().toISOString() } });\n}\nreturn out.length ? out : [{ json: { none: true } }];\n"
+        "jsCode": "const cases = $('Find Stale').first().json.cases;\nconst by = {}; for (const c of cases) by[c.txn_id] = c;\nconst out = [];\nfor (const dd of (($json.output || {}).decisions || [])) {\n  if (dd.action === 'wait') continue;\n  out.push({ json: { ...(by[dd.txn_id] || {}), ...dd, ts: new Date().toISOString() } });\n}\nreturn out; // empty = nothing to act on, chain ends here\n"
       }
     },
     {
-      "id": "c29f10bd-7733-4c96-8b4d-a3bca511d1bb",
+      "id": "71e3356e-7079-4056-b3b4-dc8890ffa4fe",
+      "name": "Audit Rows",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        300,
+        -40
+      ],
+      "parameters": {
+        "jsCode": "return $input.all().map(i => ({ json: {\n  ts: i.json.ts, session_id: 'sla-chaser', employee_id: '',\n  skill_id: '', service: 'sla_' + i.json.action,\n  request_json: JSON.stringify({ txn_id: i.json.txn_id, hours_late: i.json.age_hours }),\n  result_summary: i.json.justification_ar || '' } }));\n"
+      }
+    },
+    {
+      "id": "1e0594f3-829c-4766-8d64-131b8e6bb5f4",
+      "name": "Append AuditLog (chaser)",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        520,
+        -40
+      ],
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "REPLACE_WITH_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "AuditLog",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "SHEETS_CRED_ID",
+          "name": "Google Sheets (demo)"
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 4000
+    },
+    {
+      "id": "9ee2a548-bf01-40af-916d-41d30720e1c4",
+      "name": "Carry Decisions",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        740,
+        -40
+      ],
+      "parameters": {
+        "jsCode": "return $('Flatten').all();"
+      }
+    },
+    {
+      "id": "72828f4e-df8f-4f46-a364-760caa4a89f7",
       "name": "Chaser Switch",
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
       "position": [
-        300,
+        960,
         -40
       ],
       "parameters": {
@@ -274,7 +369,7 @@
       }
     },
     {
-      "id": "3878ce74-f6a5-47f8-acb7-12826b39d1ab",
+      "id": "224bb2c5-9861-4bad-a619-8ce03d414a0d",
       "name": "Remind Approver",
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.1,
@@ -297,7 +392,7 @@
       "onError": "continueRegularOutput"
     },
     {
-      "id": "f9894ca4-0747-44b6-8cff-db2921f75763",
+      "id": "92816a7e-44eb-4130-b920-a38eb87e3a5e",
       "name": "Escalate",
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.1,
@@ -320,62 +415,8 @@
       "onError": "continueRegularOutput"
     },
     {
-      "id": "2e05e300-1d23-4ad2-913b-fab7f2717e45",
-      "name": "Audit Rows",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        760,
-        -40
-      ],
-      "parameters": {
-        "jsCode": "return [{ json: { ts: $json.ts, session_id: 'sla-chaser', employee_id: '',\n  skill_id: '', service: 'sla_' + $json.action,\n  request_json: JSON.stringify({ txn_id: $json.txn_id }),\n  result_summary: $json.justification_ar } }];\n"
-      }
-    },
-    {
-      "id": "e3f88166-1143-4135-b0d2-ba6a61f992dd",
-      "name": "Append AuditLog (chaser)",
-      "type": "n8n-nodes-base.googleSheets",
-      "typeVersion": 4.5,
-      "position": [
-        980,
-        -40
-      ],
-      "parameters": {
-        "operation": "append",
-        "documentId": {
-          "__rl": true,
-          "value": "REPLACE_WITH_SPREADSHEET_ID",
-          "mode": "id"
-        },
-        "sheetName": {
-          "__rl": true,
-          "value": "AuditLog",
-          "mode": "name"
-        },
-        "columns": {
-          "mappingMode": "autoMapInputData",
-          "value": {},
-          "matchingColumns": [],
-          "schema": [],
-          "attemptToConvertTypes": false,
-          "convertFieldsToString": true
-        },
-        "options": {}
-      },
-      "credentials": {
-        "googleSheetsOAuth2Api": {
-          "id": "SHEETS_CRED_ID",
-          "name": "Google Sheets (demo)"
-        }
-      },
-      "retryOnFail": true,
-      "maxTries": 3,
-      "waitBetweenTries": 4000
-    },
-    {
-      "id": "2cd7cfbe-0c3e-4424-9818-6e0fb19e373c",
-      "name": "Note 8de3f692",
+      "id": "958868af-f67b-41a3-829c-3dbfb7bd5a6a",
+      "name": "Note 6f9c34e1",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
@@ -391,6 +432,17 @@
     }
   ],
   "connections": {
+    "Chase Webhook": {
+      "main": [
+        [
+          {
+            "node": "Respond Chase",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
     "Every 5 Minutes": {
       "main": [
         [
@@ -413,7 +465,7 @@
         ]
       ]
     },
-    "Chase Webhook": {
+    "Respond Chase": {
       "main": [
         [
           {
@@ -501,6 +553,39 @@
       "main": [
         [
           {
+            "node": "Audit Rows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Audit Rows": {
+      "main": [
+        [
+          {
+            "node": "Append AuditLog (chaser)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append AuditLog (chaser)": {
+      "main": [
+        [
+          {
+            "node": "Carry Decisions",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Carry Decisions": {
+      "main": [
+        [
+          {
             "node": "Chaser Switch",
             "type": "main",
             "index": 0
@@ -520,39 +605,6 @@
         [
           {
             "node": "Escalate",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Remind Approver": {
-      "main": [
-        [
-          {
-            "node": "Audit Rows",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Escalate": {
-      "main": [
-        [
-          {
-            "node": "Audit Rows",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Audit Rows": {
-      "main": [
-        [
-          {
-            "node": "Append AuditLog (chaser)",
             "type": "main",
             "index": 0
           }
