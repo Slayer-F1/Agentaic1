@@ -4,7 +4,7 @@ Entry for the **AI Agents Innovation Challenge** (تحدي ابتكار وكلا
 
 Every procedure is a versioned, approved `SKILL.md` in this repo (fields, eligibility rules, allowed services, approval chain, escalation) + a `PROFILE.md` persona. The n8n agent loads the matching skill **live from GitHub** per request, becomes that procedure's expert, and every data/tool call passes a **service gateway** that enforces the skill's allowlist and writes an audit row — including denials. Adding a new procedure = pushing one markdown file. Zero n8n changes.
 
-Built on **n8n + Google Gemini 2.5 Flash (free tier)**, Google Sheets as the transactional registry, and a bilingual RTL chat-first portal.
+Built on **n8n + Google Gemini 2.5 Flash (free tier)**, with **n8n Data Tables** as the transactional datastore — no spreadsheet, no OAuth, no external service — and a bilingual RTL chat-first portal.
 
 ## Repository map
 
@@ -31,10 +31,10 @@ Runtime tool choice (model picks services; gateway enforces the allowlist) · pl
 cd docker && docker compose up -d
 ```
 
-n8n comes up on <http://localhost:5678> and the portal on <http://localhost:8080>. Then follow `docs/setup-guide.md` (≈ 15 min, free tiers only): create the n8n owner account, add your Gemini/Sheets/Gmail credentials in the n8n UI, and run:
+n8n comes up on <http://localhost:5678> and the portal on <http://localhost:8080>. Then follow `docs/setup-guide.md` (≈ 5 min): create the n8n owner account, add **one** credential (your Gemini key), and run:
 
 ```bash
-python tools/deploy.py --spreadsheet-id YOUR_SHEET_ID
+python tools/deploy.py
 ```
 
 To just look at the interface, open `ui/index.html` directly — it runs in demo mode with no setup at all.
