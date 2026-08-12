@@ -62,6 +62,51 @@ def wait_healthy(port, timeout=180):
     return False
 
 
+CRED_TYPES = {
+    "googlePalmApi": "Google Gemini (AI Studio)",
+    "googleSheetsOAuth2Api": "Google Sheets",
+    "gmailOAuth2": "Gmail",
+}
+
+
+def read_credentials(container, workdir):
+    """Map credential type -> (id, name) by reading n8n's own database.
+
+    Only ids/types/names are read; the secret payload stays encrypted and is
+    never touched. Lets the deploy point every node at the credentials you
+    created in the UI, instead of you selecting them node by node.
+    """
+    dbfile = os.path.join(workdir, "n8n.sqlite")
+    p = subprocess.run(["docker", "cp", "%s:/home/node/.n8n/database.sqlite" % container, dbfile],
+                       capture_output=True, text=True)
+    if p.returncode != 0 or not os.path.exists(dbfile):
+        return {}
+    try:
+        import sqlite3
+        con = sqlite3.connect(dbfile)
+        rows = con.execute("SELECT id, type, name FROM credentials_entity").fetchall()
+        con.close()
+    except Exception:
+        return {}
+    out = {}
+    for cid, ctype, cname in rows:
+        out.setdefault(ctype, (cid, cname))  # first of each type wins
+    return out
+
+
+def wire_credentials(doc, creds):
+    """Point every node's credential reference at the real credential id."""
+    hits = 0
+    for node in doc.get("nodes", []):
+        for ctype, ref in (node.get("credentials") or {}).items():
+            if ctype in creds:
+                cid, cname = creds[ctype]
+                if ref.get("id") != cid:
+                    ref["id"], ref["name"] = cid, cname
+                    hits += 1
+    return hits
+
+
 def owner_exists(port):
     """False while n8n still shows the first-run setup screen."""
     try:
@@ -97,19 +142,31 @@ def main():
         print("   n8n does not register webhooks until the instance is set up.")
         sys.exit(2)
 
-    # 1. stage the workflows, substituting the only remaining placeholder
+    # 1. stage the workflows: substitute the sheet id and bind real credentials
     tmp = tempfile.mkdtemp(prefix="munjiz-deploy-")
-    staged, wired = 0, 0
+    creds = read_credentials(a.container, tmp)
+    missing = [t for t in CRED_TYPES if t not in creds]
+    if creds:
+        print("-> credentials in n8n: %s" % ", ".join(sorted(creds)))
+    if missing:
+        print("   missing credential types: %s" % ", ".join(missing))
+        print("   (create them in the n8n UI; re-run and every node is bound automatically)")
+
+    staged, sheet_hits, cred_hits = 0, 0, 0
     for fn in sorted(os.listdir(WORKFLOW_DIR)):
         if not fn.endswith(".json"):
             continue
         text = open(os.path.join(WORKFLOW_DIR, fn), encoding="utf-8").read()
         if a.spreadsheet_id and PLACEHOLDER in text:
             text = text.replace(PLACEHOLDER, a.spreadsheet_id)
-            wired += 1
-        open(os.path.join(tmp, fn), "w", encoding="utf-8").write(text)
+            sheet_hits += 1
+        doc = json.loads(text)
+        cred_hits += wire_credentials(doc, creds)
+        with open(os.path.join(tmp, fn), "w", encoding="utf-8") as f:
+            json.dump(doc, f, ensure_ascii=False, indent=2)
         staged += 1
-    print("-> staged %d workflows%s" % (staged, " (sheet id wired into %d)" % wired if wired else ""))
+    print("-> staged %d workflows (sheet id in %d files, %d credential refs bound)"
+          % (staged, sheet_hits, cred_hits))
     if not a.spreadsheet_id:
         print("   note: no --spreadsheet-id given; Sheets nodes keep the placeholder")
 
