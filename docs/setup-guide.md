@@ -12,7 +12,7 @@ Two paths: **Docker (recommended, ~15 min)** or manual. Free tiers only, no paid
 - **Docker Desktop** running.
 - A **demo** Google account (never your work account) — it owns the Sheet, the Gmail inbox, and the AI Studio key.
 - A free Gemini API key: <https://aistudio.google.com/apikey>.
-- **This repo must stay public** — n8n fetches `registry/skills-index.json` and `skills/*.md` from raw.githubusercontent.com at runtime. If you fork it private, add a GitHub credential to the five "Fetch …" HTTP nodes (three in workflow 01, one each in 02 and 05).
+- **This repo must stay public** — n8n fetches `registry/skills-index.json` and `skills/*.md` from raw.githubusercontent.com at runtime. If you fork it private, add a GitHub credential to the five "Fetch …" HTTP nodes (four in `01-main`, one in `02-service-gateway`).
 
 ## A1. Start the stack
 
@@ -24,7 +24,7 @@ That brings up two containers:
 
 | Service | URL | What it is |
 |---|---|---|
-| `munjiz-n8n` | <http://localhost:5678> | n8n — workflows and the credential store |
+| `munjiz-n8n` | <http://localhost:5678> | n8n — workflows and the credential store (this machine uses **5679**; see `docker/.env`) |
 | `munjiz-portal` | <http://localhost:8080> | the Munjiz portal (nginx), auto-pointed at n8n |
 
 **Port already in use?** Copy `docker/.env.example` to `docker/.env` and change `N8N_PORT` / `PORTAL_PORT`. The portal picks the new port up automatically (it reads `/config.js`, which compose generates).
@@ -54,7 +54,7 @@ python tools/deploy.py --spreadsheet-id YOUR_SHEET_ID
 
 The script stages the workflows with your sheet ID, binds the credentials you created, imports them, activates all of them (sub-workflows included — n8n 2.x needs those active too), restarts n8n, and verifies `GET /webhook/munjiz/state`. Add `--split` to deploy the 8-file granular set instead of the merged 4-file one; it deactivates the other set first so the shared webhook paths never compete. It is **idempotent** — the workflows carry stable ids, so re-running updates them in place instead of creating duplicates.
 
-Then open each workflow once in the n8n UI and pick your credentials on any node showing a ⚠ (n8n remembers per credential type, so it's quick), and set **Settings → Error workflow → `مُنجِز — 06 Error Handler`** on workflows 01, 03, 04, 05. Re-run the deploy script afterwards if you prefer, or just save in the UI.
+Credentials are bound automatically by the script, so there is nothing to click node by node. The one thing it cannot set is **Settings → Error workflow → `مُنجِز — 06 Error Handler`** on `01-main` — do that once in the UI.
 
 ## A6. Use it
 
@@ -82,7 +82,7 @@ The n8n data (workflows + encrypted credentials) lives in the `munjiz_n8n_data` 
 
 1. `npx n8n` (Node 20+), then open <http://localhost:5678> and create the owner account.
 2. Do steps **A3** and **A4** above.
-3. In `workflow/*.json`, replace `REPLACE_WITH_SPREADSHEET_ID` with your sheet ID — it is the **only** placeholder left (sub-workflow links resolve on their own via stable workflow ids). It appears in files 00, 02, 03, 04, 07.
+3. In `workflow/*.json`, replace `REPLACE_WITH_SPREADSHEET_ID` with your sheet ID — it is the **only** placeholder left (sub-workflow links resolve on their own via stable workflow ids). It appears in `00-data-io`, `01-main` and `02-service-gateway`.
 4. n8n → **Workflows → Import from File** → import the 4 files in `workflow/` in any order (or the 8 in `workflow-split/` — one set or the other, never both).
 5. Attach credentials, set **Settings → Error workflow** on `01-main`, and activate **all four** (the two sub-workflows included — on n8n 2.x a called sub-workflow must be active or the caller fails).
 6. Open `ui/index.html`, then **الإعدادات / Settings** → base URL `http://localhost:5678/webhook` → Save.
@@ -103,7 +103,7 @@ The n8n data (workflows + encrypted credentials) lives in the `munjiz_n8n_data` 
 | Symptom | Fix |
 |---|---|
 | Webhooks 404 / portal stays amber | Owner account not created (step A2), or the workflow isn't active. Both are required before n8n registers a webhook. |
-| `Workflow is not active and cannot be executed` | **n8n 2.x only:** a called sub-workflow must itself be active. `tools/deploy.py` activates all 8 (including `00 Data IO` and `02 Service Gateway`); if you imported by hand, activate those two as well. |
+| `Workflow is not active and cannot be executed` | **n8n 2.x only:** a called sub-workflow must itself be active. `tools/deploy.py` activates every workflow it deploys (including `00 Data IO` and `02 Service Gateway`); if you imported by hand, activate those two as well. |
 | Webhook returns HTTP 200 with an empty body | The workflow ran but stopped before its Respond node — nearly always a missing credential. Open **n8n → Executions** and look at the red node. |
 | `port is already allocated` on compose up | Another container owns 5678/8080 — set `N8N_PORT` / `PORTAL_PORT` in `docker/.env`. |
 | Portal stuck in demo mode | It couldn't reach n8n. Check `docker compose ps`, and that Settings' base URL ends in `/webhook` (not `/webhook-test`). |
