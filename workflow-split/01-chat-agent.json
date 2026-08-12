@@ -2,7 +2,7 @@
   "name": "مُنجِز — 01 Chat Agent",
   "nodes": [
     {
-      "id": "cd440ca0-ecbb-4c55-8650-7bf9480ccfe4",
+      "id": "1c7170e5-ba97-4378-9260-e7a440683506",
       "name": "Chat Webhook",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
@@ -16,10 +16,10 @@
         "responseMode": "responseNode",
         "options": {}
       },
-      "webhookId": "b9c22855-bd3b-4b42-a47d-169ddd66b423"
+      "webhookId": "b8157610-ccc5-40ee-987c-dc712c41a378"
     },
     {
-      "id": "ec4a9d69-a43b-4745-9e4c-37c296a216d5",
+      "id": "08070deb-45d6-418b-b3c6-e6c6c3b4255a",
       "name": "Fetch Skills Index",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -44,7 +44,7 @@
       "waitBetweenTries": 3000
     },
     {
-      "id": "5c43051c-6569-468d-85b7-47c382dddb4d",
+      "id": "9eb928fb-1a73-49d8-acc3-0daffdb7b4b6",
       "name": "Prepare Router",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -57,7 +57,7 @@
       }
     },
     {
-      "id": "d4519a79-40e1-4312-ba0b-34454f16b843",
+      "id": "e4e25ae7-250d-4e9e-9e02-c0c605a32f85",
       "name": "Has Active Skill?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
@@ -90,7 +90,7 @@
       }
     },
     {
-      "id": "45a1c876-cd25-40b9-ab33-94db836f84bc",
+      "id": "5d594427-62ff-4bb2-8854-0c67d93f13d1",
       "name": "Gemini: Route Intent",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -121,7 +121,7 @@
       "waitBetweenTries": 6000
     },
     {
-      "id": "1ff4e1ba-bbce-4893-acba-dda5e9dafe39",
+      "id": "e0ae6dc1-1987-4656-8b1c-422249c7a385",
       "name": "Parse Route",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -134,7 +134,7 @@
       }
     },
     {
-      "id": "8fa031c8-8505-4d92-98bb-bb42b675b651",
+      "id": "036dc8ba-00d0-44d2-b84d-1dbf22a3a1d4",
       "name": "Pick Skill",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -147,7 +147,7 @@
       }
     },
     {
-      "id": "555a3f08-84fe-4973-8cb8-4a25d1cb8946",
+      "id": "d2bfbbac-59d1-4d3b-a2e2-5a22867468e3",
       "name": "Matched?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
@@ -180,7 +180,7 @@
       }
     },
     {
-      "id": "41cd6540-a945-48f6-b063-b25359c516a5",
+      "id": "f59b62e1-9129-4858-b730-ff6e4f205ef7",
       "name": "Respond: Services List",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.2,
@@ -208,7 +208,7 @@
       }
     },
     {
-      "id": "2c7822b8-f111-48eb-869d-a7c3d82f6f3b",
+      "id": "284a822b-cc2b-431a-a5db-f142e7cd9ef4",
       "name": "Fetch Skill MD",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -233,7 +233,7 @@
       "waitBetweenTries": 3000
     },
     {
-      "id": "815c3a86-87e5-47f9-85dc-e5c2aeac06d8",
+      "id": "b67c9334-84e1-41eb-a630-e9a062b7afeb",
       "name": "Fetch Profile MD",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -258,7 +258,7 @@
       "waitBetweenTries": 3000
     },
     {
-      "id": "5b26a6f6-1fbe-4a4c-b320-0e7721099e89",
+      "id": "e7652800-81d8-407d-817e-c91802b85d66",
       "name": "Read Employees Ctx",
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
@@ -291,7 +291,7 @@
       }
     },
     {
-      "id": "2d99bbb7-1b17-4106-9c29-5425bd62e6be",
+      "id": "8fbc4f51-c75c-45b4-9dfb-edec24ad26af",
       "name": "Compose System Prompt",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -304,7 +304,7 @@
       }
     },
     {
-      "id": "0544cd02-f8db-496a-b862-95a4214257f6",
+      "id": "7b6e7bf4-acc9-42e2-a500-22dc972cf64b",
       "name": "Munjiz Agent",
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 2.2,
@@ -327,7 +327,7 @@
       "waitBetweenTries": 8000
     },
     {
-      "id": "0031fb67-6cb1-45b7-9faf-ca2337e7b9d0",
+      "id": "cad2f027-524e-412f-8ec6-0ea2bda6a550",
       "name": "Gemini Chat Model",
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1,
@@ -349,7 +349,7 @@
       }
     },
     {
-      "id": "e856e2b9-6121-45be-a7e0-c5f5615615ef",
+      "id": "a0d7aa49-a14e-4f64-896c-056453b624a3",
       "name": "Session Memory",
       "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
       "typeVersion": 1.3,
@@ -364,7 +364,7 @@
       }
     },
     {
-      "id": "73b0e90a-9eab-4672-b738-f93bf6930832",
+      "id": "d4b04bc0-802b-4a9c-bcd3-036e5331146e",
       "name": "Structured Output",
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "typeVersion": 1.2,
@@ -378,7 +378,7 @@
       }
     },
     {
-      "id": "4d397b63-530f-40ed-a557-1f4928d5dfec",
+      "id": "6f820489-2250-480e-9eb2-811693e4cc30",
       "name": "think",
       "type": "@n8n/n8n-nodes-langchain.toolThink",
       "typeVersion": 1,
@@ -389,7 +389,7 @@
       "parameters": {}
     },
     {
-      "id": "209de41a-41f5-43db-abb1-6d70d5b73386",
+      "id": "b2845da8-9125-4cb1-a2f1-1b1a9335c15c",
       "name": "call_service",
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
@@ -424,7 +424,7 @@
       }
     },
     {
-      "id": "25e478a5-29f9-45d4-a004-da82fccbea40",
+      "id": "ca4ac4eb-d322-4fdc-9bff-32525083b503",
       "name": "Deterministic Cross-Check",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -437,7 +437,7 @@
       }
     },
     {
-      "id": "60961741-3e39-4fc8-9e56-9b8246097c1c",
+      "id": "ae4030fb-73ae-420b-b3d5-c985597489b4",
       "name": "Needs Re-reason?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
@@ -470,7 +470,7 @@
       }
     },
     {
-      "id": "d59e50a9-b236-472e-a001-c1764b4fa514",
+      "id": "3e6f6200-c9b2-42b6-a9e9-0edc2e2b3869",
       "name": "Build Re-reason",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -483,7 +483,7 @@
       }
     },
     {
-      "id": "64f2e8fe-695f-4769-9421-39bdefd2198f",
+      "id": "e179e00c-a5fd-4f77-9aca-253e0b6adc7d",
       "name": "Gemini: Re-reason",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -514,7 +514,7 @@
       "waitBetweenTries": 6000
     },
     {
-      "id": "8711ed81-8c13-4c02-a3c9-8addcc271f31",
+      "id": "9f21bce1-44dc-40ab-9475-5e485594d3f4",
       "name": "Parse Re-reason",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -527,7 +527,7 @@
       }
     },
     {
-      "id": "0b0cfe9d-c494-4a8e-a03f-4de74bd7eec9",
+      "id": "0b3225f1-a51e-45e9-ab5f-9e23d64a489f",
       "name": "Merge Re-reason",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -540,7 +540,7 @@
       }
     },
     {
-      "id": "fda576aa-2d90-4088-840a-ad190cdb6d7c",
+      "id": "e758938d-5f75-40b4-9143-d196b5dddd7b",
       "name": "Respond Chat",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.2,
@@ -568,8 +568,8 @@
       }
     },
     {
-      "id": "34ae0c85-1127-43ea-b9a6-7b31e85b8e22",
-      "name": "Note e166699d",
+      "id": "def5e4f1-7c27-469e-9ee6-e86d0a46151f",
+      "name": "Note f9150ebd",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [

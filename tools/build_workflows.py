@@ -4,7 +4,6 @@
 Run:  python tools/build_workflows.py     → workflow/*.json
 
 User-replaced placeholders (find & replace before import):
-  REPLACE_WITH_SPREADSHEET_ID   Google Sheet id of the seeded "Munjiz Registry"
 The GitHub raw base defaults to the real Agentaic1 repo (public) and can be edited in one node.
 """
 import json
@@ -14,14 +13,24 @@ import uuid
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, "workflow")
 OUT_SPLIT = os.path.join(ROOT, "workflow-split")
-SHEET = {"__rl": True, "value": "REPLACE_WITH_SPREADSHEET_ID", "mode": "id"}
 GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent"
 RAW_BASE = "https://raw.githubusercontent.com/Slayer-F1/Agentaic1/main/"
 DEMO_INBOX = "munjiz.demo.uae@gmail.com"
 
 CRED_GEMINI = {"googlePalmApi": {"id": "GEMINI_CRED_ID", "name": "Google Gemini (AI Studio)"}}
-CRED_SHEETS = {"googleSheetsOAuth2Api": {"id": "SHEETS_CRED_ID", "name": "Google Sheets (demo)"}}
-CRED_GMAIL = {"gmailOAuth2": {"id": "GMAIL_CRED_ID", "name": "Gmail (demo)"}}
+
+
+import build_data  # single source of seed truth (tools/ is on sys.path when run as a script)
+
+
+def js_lit(obj):
+    """A JS string literal holding this object as JSON - no manual escaping anywhere."""
+    return json.dumps(json.dumps(obj, ensure_ascii=False))
+
+
+def seed_rows(table):
+    headers, rows = build_data.TABS[table]
+    return [{k: ("" if r.get(k) is None else r.get(k)) for k in headers} for r in rows]
 
 
 def nid():
@@ -88,32 +97,61 @@ class Wf:
         return doc
 
 
-def sheets_read(name, tab, pos, dyn=None):
-    sn = {"__rl": True, "value": dyn or tab, "mode": "name"}
-    return node(name, "n8n-nodes-base.googleSheets", 4.5, pos,
-                {"operation": "read", "documentId": SHEET, "sheetName": sn, "options": {}},
-                credentials=CRED_SHEETS, alwaysOutputData=True,
-                retryOnFail=True, maxTries=3, waitBetweenTries=4000)
+DT_TYPE = "n8n-nodes-base.dataTable"
+DT_VER = 1.1
 
 
-def sheets_append(name, tab, pos):
-    return node(name, "n8n-nodes-base.googleSheets", 4.5, pos,
-                {"operation": "append", "documentId": SHEET,
-                 "sheetName": {"__rl": True, "value": tab, "mode": "name"},
-                 "columns": {"mappingMode": "autoMapInputData", "value": {}, "matchingColumns": [],
-                             "schema": [], "attemptToConvertTypes": False, "convertFieldsToString": True},
-                 "options": {}},
-                credentials=CRED_SHEETS, retryOnFail=True, maxTries=3, waitBetweenTries=4000)
+def dt_ref(table):
+    """Data tables are addressable by name, so no generated ids leak into the JSON."""
+    return {"__rl": True, "mode": "name", "value": table}
 
 
-def sheets_upsert(name, tab, match, pos):
-    return node(name, "n8n-nodes-base.googleSheets", 4.5, pos,
-                {"operation": "appendOrUpdate", "documentId": SHEET,
-                 "sheetName": {"__rl": True, "value": tab, "mode": "name"},
-                 "columns": {"mappingMode": "autoMapInputData", "value": {}, "matchingColumns": [match],
-                             "schema": [], "attemptToConvertTypes": False, "convertFieldsToString": True},
-                 "options": {}},
-                credentials=CRED_SHEETS, retryOnFail=True, maxTries=3, waitBetweenTries=4000)
+def dt_map():
+    return {"mappingMode": "autoMapInputData", "value": None, "matchingColumns": [],
+            "schema": [], "attemptToConvertTypes": False, "convertFieldsToString": True}
+
+
+def dt_read(name, table, pos, dyn=None, newest=None):
+    """Read a table. `newest=N` returns only the N most recent rows, which stops an
+    append-only log (AuditLog) from slowing every dashboard poll as it grows."""
+    params = {
+        "operation": "get",
+        "dataTableId": dt_ref(dyn or table),
+        "matchType": "allConditions",
+        "filters": {"conditions": []},
+        "options": {},
+    }
+    if newest:
+        params.update({"returnAll": False, "limit": newest, "orderBy": True,
+                       "orderByColumn": "createdAt", "orderByDirection": "DESC"})
+    else:
+        params["returnAll"] = True
+    # executeOnce is essential: a Data Table read runs once PER INPUT ITEM, and these
+    # reads ignore their input. Chained without it, each read multiplies the previous
+    # one's row count (7 employees -> 49 balances -> 147 transactions).
+    return node(name, DT_TYPE, DT_VER, pos, params, executeOnce=True,
+                alwaysOutputData=True, retryOnFail=True, maxTries=3, waitBetweenTries=2000)
+
+
+def dt_insert(name, table, pos):
+    return node(name, DT_TYPE, DT_VER, pos, {
+        "operation": "insert",
+        "dataTableId": dt_ref(table),
+        "columns": dt_map(),
+        "options": {},
+    }, retryOnFail=True, maxTries=3, waitBetweenTries=2000)
+
+
+def dt_upsert(name, table, match, pos):
+    return node(name, DT_TYPE, DT_VER, pos, {
+        "operation": "upsert",
+        "dataTableId": dt_ref(table),
+        "matchType": "allConditions",
+        "filters": {"conditions": [
+            {"keyName": match, "condition": "eq", "keyValue": "={{ $json." + match + " }}"}]},
+        "columns": dt_map(),
+        "options": {},
+    }, retryOnFail=True, maxTries=3, waitBetweenTries=2000)
 
 
 def code(name, js, pos, **extra):
@@ -221,7 +259,7 @@ def build_data_io():
     sw = wf.add(switch_rules("Action?", "={{ $json.action }}", ["read", "read_all"], (-460, 0)))
     wf.link(trig, sw)
 
-    rt = wf.add(sheets_read("Read Tab", "Employees", (-200, -140),
+    rt = wf.add(dt_read("Read Tab", "Employees", (-200, -140),
                             dyn="={{ $('Data Input').first().json.tab }}"))
     wrap = wf.add(code("Wrap Rows", (
         "const rows = $input.all().map(i => i.json).filter(r => r && Object.keys(r).length > 0);\n"
@@ -230,11 +268,14 @@ def build_data_io():
     wf.link(sw, rt, output=0)
     wf.link(rt, wrap)
 
-    tabs = ["Employees", "LeaveBalances", "ExpensePolicy", "SystemCatalog", "Transactions", "AuditLog"]
+    # Only what read_all's consumers need: the dashboard uses employees/balances/
+    # transactions/audit and the SLA chaser uses transactions/employees. ExpensePolicy
+    # and SystemCatalog are read directly by the gateway, so they stay out of here.
+    tabs = ["Employees", "LeaveBalances", "Transactions", "AuditLog"]
     prev = None
     x = -200
     for t in tabs:
-        n = wf.add(sheets_read("Read " + t, t, (x, 140)))
+        n = wf.add(dt_read("Read " + t, t, (x, 140), newest=120 if t == "AuditLog" else None))
         if prev is None:
             wf.link(sw, n, output=1)
         else:
@@ -245,7 +286,6 @@ def build_data_io():
         "const grab = (n) => { try { return $(n).all().map(i => i.json).filter(r => r && Object.keys(r).length > 0); } catch (e) { return []; } };\n"
         "return [{ json: {\n"
         "  employees: grab('Read Employees'), balances: grab('Read LeaveBalances'),\n"
-        "  policy: grab('Read ExpensePolicy'), systems: grab('Read SystemCatalog'),\n"
         "  transactions: grab('Read Transactions'), audit: grab('Read AuditLog'),\n"
         "} }];\n"
     ), (x, 140)))
@@ -467,7 +507,7 @@ def build_gateway():
         x = -60
         prev = None
         for rname, tab in reads_map[svc]:
-            n = wf.add(sheets_read(rname, tab, (x, y)))
+            n = wf.add(dt_read(rname, tab, (x, y)))
             if prev is None:
                 wf.link(sw, n, output=i)
             else:
@@ -481,7 +521,7 @@ def build_gateway():
 
     # submit path also appends the transaction row
     tx_emit = wf.add(code("Emit Txn Row", "return [{ json: $json.txn_row }];", (720, y - 170)))
-    tx_append = wf.add(sheets_append("Append Transaction", "Transactions", (940, y - 170)))
+    tx_append = wf.add(dt_insert("Append Transaction", "Transactions", (940, y - 170)))
     tx_back = wf.add(code("Carry Submit Result",
                           "return [{ json: $('svc: submit_transaction').first().json }];", (1160, y - 170)))
     wf.link("svc: submit_transaction", tx_emit)
@@ -502,7 +542,7 @@ def build_gateway():
     ), (1400, 60)))
     for e in ends:
         wf.link(e, audit_row)
-    audit_append = wf.add(sheets_append("Append AuditLog", "AuditLog", (1620, 60)))
+    audit_append = wf.add(dt_insert("Append AuditLog", "AuditLog", (1620, 60)))
     wf.link(audit_row, audit_append)
     ret = wf.add(code("Return Result", (
         "const src = $('Build Audit Row').first().json;\n"
@@ -846,8 +886,8 @@ def build_approvals():
     hook = wf.add(node("Decide Webhook", "n8n-nodes-base.webhook", 2, (-1100, 0),
                        {"httpMethod": "POST", "path": "munjiz/decide",
                         "responseMode": "responseNode", "options": {}}, webhook=True))
-    r1 = wf.add(sheets_read("Read Transactions (decide)", "Transactions", (-880, 0)))
-    r2 = wf.add(sheets_read("Read Employees (decide)", "Employees", (-660, 0)))
+    r1 = wf.add(dt_read("Read Transactions (decide)", "Transactions", (-880, 0)))
+    r2 = wf.add(dt_read("Read Employees (decide)", "Employees", (-660, 0)))
     wf.link(hook, r1)
     wf.link(r1, r2)
     dec = wf.add(code("Decide", DECIDE_JS.replace("const b = $json.body || {};",
@@ -861,11 +901,11 @@ def build_approvals():
 
     upd_emit = wf.add(code("Emit Txn Update", "return [{ json: $json.update }];", (0, -80)))
     wf.link(ok, upd_emit, output=0)
-    upd = wf.add(sheets_upsert("Update Transaction", "Transactions", "txn_id", (220, -80)))
+    upd = wf.add(dt_upsert("Update Transaction", "Transactions", "txn_id", (220, -80)))
     wf.link(upd_emit, upd)
 
-    r3 = wf.add(sheets_read("Read LeaveBalances (side)", "LeaveBalances", (440, -80)))
-    r4 = wf.add(sheets_read("Read Employees (side)", "Employees", (660, -80)))
+    r3 = wf.add(dt_read("Read LeaveBalances (side)", "LeaveBalances", (440, -80)))
+    r4 = wf.add(dt_read("Read Employees (side)", "Employees", (660, -80)))
     wf.link(upd, r3)
     wf.link(r3, r4)
     side = wf.add(code("Apply Side Effect", SIDE_JS.replace("const j = $json;",
@@ -875,24 +915,32 @@ def build_approvals():
     has_side = wf.add(if_node("Leave Side?", "={{ $json.annual_used !== undefined || $json.sick_used !== undefined }}",
                               "boolean", "true", "true", (1100, -80), single=True))
     wf.link(side, has_side)
-    up_bal = wf.add(sheets_upsert("Update LeaveBalances", "LeaveBalances", "employee_id", (1320, -180)))
+    up_bal = wf.add(dt_upsert("Update LeaveBalances", "LeaveBalances", "employee_id", (1320, -180)))
     wf.link(has_side, up_bal, output=0)
     has_it = wf.add(if_node("IT Side?", "={{ $json.it_roles !== undefined }}", "boolean", "true", "true",
                             (1320, 0), single=True))
     wf.link(has_side, has_it, output=1)
-    up_emp = wf.add(sheets_upsert("Update Employee Roles", "Employees", "employee_id", (1540, -60)))
+    up_emp = wf.add(dt_upsert("Update Employee Roles", "Employees", "employee_id", (1540, -60)))
     wf.link(has_it, up_emp, output=0)
     conv = wf.add(node("Converge", "n8n-nodes-base.noOp", 1, (1540, 120), {}))
     wf.link(has_it, conv, output=1)
     wf.link(up_bal, conv)
     wf.link(up_emp, conv)
 
-    mail = wf.add(node("Notify Employee", "n8n-nodes-base.gmail", 2.1, (1760, 120),
-                       {"sendTo": "={{ $('Decide').first().json.owner_email }}",
-                        "subject": "=مُنجِز: تحديث معاملتك {{ $('Decide').first().json.txn.txn_id }}",
-                        "message": "={{ 'حالة معاملتك (' + $('Decide').first().json.txn.type_ar + ') أصبحت: ' + $('Decide').first().json.update.status + ($('Decide').first().json.update.decision_note ? ' — ملاحظة: ' + $('Decide').first().json.update.decision_note : '') }}",
-                        "options": {}}, credentials=CRED_GMAIL, onError="continueRegularOutput"))
-    wf.link(conv, mail)
+    notify = wf.add(code("Build Notification", (
+        "const d = $('Decide').first().json;\n"
+        "return [{ json: {\n"
+        "  ts: new Date().toISOString(), session_id: 'approvals',\n"
+        "  employee_id: d.txn.employee_id, skill_id: d.txn.skill_id,\n"
+        "  service: 'notify_employee',\n"
+        "  request_json: JSON.stringify({ txn_id: d.txn.txn_id, decision: d.decision }),\n"
+        "  result_summary: 'حالة معاملتك (' + d.txn.type_ar + ') أصبحت: ' + d.update.status\n"
+        "    + (d.update.decision_note ? ' — ملاحظة: ' + d.update.decision_note : ''),\n"
+        "} }];\n"
+    ), (1760, 120)))
+    mail = wf.add(dt_insert("Notify Employee", "AuditLog", (1960, 120)))
+    wf.link(conv, notify)
+    wf.link(notify, mail)
     resp = wf.add(respond("Respond Decide",
                           '={{ { "ok": true, "status": $(\'Decide\').first().json.update.status } }}', (1980, 120)))
     wf.link(mail, resp)
@@ -1003,23 +1051,15 @@ def build_chaser():
         "  result_summary: i.json.justification_ar || '' } }));\n"
     ), (300, -40)))
     wf.link(flat, audit_rows)
-    logw = wf.add(sheets_append("Append AuditLog (chaser)", "AuditLog", (520, -40)))
+    logw = wf.add(dt_insert("Append AuditLog (chaser)", "AuditLog", (520, -40)))
     wf.link(audit_rows, logw)
     carry = wf.add(code("Carry Decisions", "return $('Flatten').all();", (740, -40)))
     wf.link(logw, carry)
     act = wf.add(switch_rules("Chaser Switch", "={{ $json.action }}", ["remind_approver", "escalate"], (960, -40)))
     wf.link(carry, act)
-    remind = wf.add(node("Remind Approver", "n8n-nodes-base.gmail", 2.1, (540, -140),
-                         {"sendTo": "={{ $json.approver_email || '" + DEMO_INBOX + "' }}",
-                          "subject": "=⏰ مُنجِز: معاملة بانتظار اعتمادك — {{ $json.txn_id }}",
-                          "message": "={{ $json.type_ar + ' للموظف ' + $json.employee + ' منذ ' + $json.age_hours + ' ساعة. ' + $json.justification_ar }}",
-                          "options": {}}, credentials=CRED_GMAIL, onError="continueRegularOutput"))
+    remind = wf.add(node("Remind Approver", "n8n-nodes-base.noOp", 1, (540, -140), {}))
     wf.link(act, remind, output=0)
-    esc = wf.add(node("Escalate", "n8n-nodes-base.gmail", 2.1, (540, 60),
-                      {"sendTo": DEMO_INBOX,
-                       "subject": "=🔺 مُنجِز: معاملة تجاوزت SLA — {{ $json.txn_id }}",
-                       "message": "={{ $json.type_ar + ' للموظف ' + $json.employee + ' متأخرة ' + $json.age_hours + ' ساعة (sla ' + $json.sla_hours + '). ' + $json.justification_ar }}",
-                       "options": {}}, credentials=CRED_GMAIL, onError="continueRegularOutput"))
+    esc = wf.add(node("Escalate", "n8n-nodes-base.noOp", 1, (540, 60), {}))
     wf.link(act, esc, output=1)
     wf.nodes.append(sticky(
         "## SLA Chaser — حارس الإنجاز (criteria ④⑤⑥)\nEvery 5 minutes it reads pending "
@@ -1084,13 +1124,15 @@ def build_error():
     trig = wf.add(node("Error Trigger", "n8n-nodes-base.errorTrigger", 1, (-500, 0), {}))
     ext = wf.add(code("Extract", (
         "const j = $json;\n"
-        "return [{ json: { wf: (j.workflow || {}).name || '?', node: (j.execution || {}).lastNodeExecuted || '?',\n"
-        "  msg: ((j.execution || {}).error || {}).message || '?', at: new Date().toISOString() } }];\n"
+        "const wfName = (j.workflow || {}).name || '?';\n"
+        "const nodeName = (j.execution || {}).lastNodeExecuted || '?';\n"
+        "const msg = ((j.execution || {}).error || {}).message || '?';\n"
+        "return [{ json: { ts: new Date().toISOString(), session_id: 'error-handler',\n"
+        "  employee_id: '', skill_id: '', service: 'workflow_error',\n"
+        "  request_json: JSON.stringify({ workflow: wfName, node: nodeName }),\n"
+        "  result_summary: msg } }];\n"
     ), (-280, 0)))
-    mail = wf.add(node("Notify", "n8n-nodes-base.gmail", 2.1, (-60, 0),
-                       {"sendTo": DEMO_INBOX, "subject": "=⚙️ مُنجِز — خطأ تشغيلي: {{ $json.wf }}",
-                        "message": "={{ 'Node: ' + $json.node + ' — ' + $json.msg + ' @ ' + $json.at }}",
-                        "options": {}}, credentials=CRED_GMAIL, onError="continueRegularOutput"))
+    mail = wf.add(dt_insert("Notify", "AuditLog", (-60, 0)))
     done = wf.add(node("Logged ✓", "n8n-nodes-base.noOp", 1, (160, 0), {}))
     wf.link(trig, ext)
     wf.link(ext, mail)
@@ -1100,45 +1142,56 @@ def build_error():
     return wf
 
 
-def build_reset():
-    wf = Wf("مُنجِز — 07 Demo Reset")
-    hook = wf.add(node("POST Reset", "n8n-nodes-base.webhook", 2, (-640, 0),
+def build_seed():
+    """Provision the datastore inside n8n: create the six data tables, clear them
+    and load the synthetic seed. Idempotent, so it doubles as the demo-reset
+    button (POST /munjiz/reset). No external service is involved."""
+    wf = Wf("مُنجِز — 07 Provision & Seed")
+    hook = wf.add(node("POST Reset", "n8n-nodes-base.webhook", 2, (-1000, 0),
                        {"httpMethod": "POST", "path": "munjiz/reset",
                         "responseMode": "responseNode", "options": {}}, webhook=True))
-    comp = wf.add(code("Compute Anchors", (
-        "// Re-arm demo anchors: canonical leave balances for the two demo employees\n"
-        "// and one stale pending transaction for the chaser beat.\n"
-        "const now = new Date();\n"
-        "const stale = new Date(now.getTime() - 30 * 3600 * 1000).toISOString();\n"
-        "return [{ json: {\n"
-        "  bal1: { employee_id: 'EMP-1001', annual_total: 30, annual_used: 22, sick_total: 15, sick_used: 2 },\n"
-        "  bal2: { employee_id: 'EMP-1003', annual_total: 30, annual_used: 4, sick_total: 15, sick_used: 0 },\n"
-        "  staleTxn: { txn_id: 'TXN-SEED-CHASE', ts: stale, employee_id: 'EMP-1004',\n"
-        "    employee_name: 'راشد الكتبي (تجريبي)', skill_id: 'expense-claim', type_ar: 'مطالبة نفقات / بدلات',\n"
-        "    payload_json: JSON.stringify({ category: 'training', amount_aed: 850, expense_date: stale.slice(0, 10),\n"
-        "      description: 'رسوم ورشة تدريبية معتمدة', receipt_ref: 'RCPT-7741' }),\n"
-        "    status: 'awaiting_manager', approval_chain: 'manager;finance', chain_pos: 0,\n"
-        "    current_approver: 'manager', decision_note: '', output_ref: '', sla_hours: 24, updated_at: stale },\n"
-        "} }];\n"
-    ), (-420, 0)))
-    wf.link(hook, comp)
-    b1 = wf.add(code("Emit Bal 1", "return [{ json: $json.bal1 }];", (-200, -120)))
-    u1 = wf.add(sheets_upsert("Reset Balance 1", "LeaveBalances", "employee_id", (20, -120)))
-    b2 = wf.add(code("Emit Bal 2", "return [{ json: $('Compute Anchors').first().json.bal2 }];", (240, -120)))
-    u2 = wf.add(sheets_upsert("Reset Balance 2", "LeaveBalances", "employee_id", (460, -120)))
-    b3 = wf.add(code("Emit Stale Txn", "return [{ json: $('Compute Anchors').first().json.staleTxn }];", (680, -120)))
-    u3 = wf.add(sheets_upsert("Seed Stale Txn", "Transactions", "txn_id", (900, -120)))
-    resp = wf.add(respond("Respond Reset", '={{ { "ok": true } }}', (1120, 0)))
-    wf.link(comp, b1)
-    wf.link(b1, u1)
-    wf.link(u1, b2)
-    wf.link(b2, u2)
-    wf.link(u2, b3)
-    wf.link(b3, u3)
-    wf.link(u3, resp)
-    wf.nodes.append(sticky("## Demo Reset\n`POST /munjiz/reset` — canonical balances + a 30-hour-old "
-                           "pending claim so the SLA chaser has something to rescue on stage.",
-                           (-660, -260), width=560, height=150))
+    manual = wf.add(node("Seed Manually", "n8n-nodes-base.manualTrigger", 1, (-1000, 220), {}))
+    ack = wf.add(respond("Respond Reset", '={{ { "ok": true, "seeded": true } }}', (-780, 0)))
+    wf.link(hook, ack)
+    prev = None
+    x = -520
+    for table in build_data.TABS:
+        cols = [{"name": c, "type": "string"} for c in build_data.TABS[table][0]]
+        lines = ["const rows = JSON.parse(" + js_lit(seed_rows(table)) + ");"]
+        if table == "Transactions":
+            lines += [
+                "const stale = new Date(Date.now() - 30 * 3600 * 1000).toISOString();",
+                "// re-arm the SLA anchor relative to now so the chaser always has a live case",
+                "for (const r of rows) if (r.txn_id === 'TXN-SEED-CHASE') { r.ts = stale; r.updated_at = stale; }",
+            ]
+        lines.append("return rows.map(r => ({ json: r }));")
+        create = wf.add(node("Create " + table, DT_TYPE, DT_VER, (x, 0), {
+            "resource": "table", "operation": "create", "tableName": table,
+            "columns": {"column": cols}, "options": {},
+        }, onError="continueRegularOutput", executeOnce=True))
+        clear = wf.add(node("Clear " + table, DT_TYPE, DT_VER, (x, 170), {
+            "resource": "table", "operation": "clear", "dataTableId": dt_ref(table),
+        }, onError="continueRegularOutput", executeOnce=True))
+        emit = wf.add(code("Seed " + table, chr(10).join(lines), (x, 340)))
+        ins = wf.add(dt_insert("Insert " + table, table, (x, 510)))
+        wf.link(create, clear)
+        wf.link(clear, emit)
+        wf.link(emit, ins)
+        if prev is None:
+            wf.link(ack, create)
+            wf.link(manual, create)
+        else:
+            wf.link(prev, create)
+        prev = ins
+        x += 250
+    wf.nodes.append(sticky(chr(10).join([
+        "## Provision & Seed",
+        "`POST /munjiz/reset` (or run it manually) creates the six **n8n Data Tables**,",
+        "clears them and loads the synthetic seed.",
+        "",
+        "No Google Sheet, no spreadsheet id, no OAuth - the datastore lives inside n8n.",
+        "Idempotent, so this is also the reset button between rehearsals.",
+    ]), (-1020, -360), width=640, height=220))
     return wf
 
 
@@ -1226,7 +1279,7 @@ def main():
         ("04-sla-chaser.json", build_chaser()),
         ("05-dashboard-api.json", build_dash()),
         ("06-error-handler.json", build_error()),
-        ("07-demo-reset.json", build_reset()),
+        ("07-demo-reset.json", build_seed()),
     ])
 
     # Default set: the five trigger workflows merged onto one canvas.
@@ -1238,7 +1291,7 @@ def main():
         ("03 Approvals", build_approvals()),
         ("04 SLA Chaser", build_chaser()),
         ("05 Dashboard API", build_dash()),
-        ("07 Demo Reset", build_reset()),
+        ("07 Provision & Seed", build_seed()),
     ])
     print("workflow/ (4 files, merged - the default import set)")
     bad = emit(OUT, [

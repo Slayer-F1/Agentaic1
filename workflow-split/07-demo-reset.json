@@ -1,13 +1,13 @@
 {
-  "name": "مُنجِز — 07 Demo Reset",
+  "name": "مُنجِز — 07 Provision & Seed",
   "nodes": [
     {
-      "id": "ad6ba712-3afc-41f1-a6df-b297d66871d8",
+      "id": "cd6e0ea2-15ba-42a9-9191-c8498c2b8589",
       "name": "POST Reset",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
       "position": [
-        -640,
+        -1000,
         0
       ],
       "parameters": {
@@ -16,201 +16,31 @@
         "responseMode": "responseNode",
         "options": {}
       },
-      "webhookId": "cb72ba2c-1ef4-4a7f-9f0e-546eb5aad00b"
+      "webhookId": "ceb51506-4e0c-4ea5-ab77-a3911385b911"
     },
     {
-      "id": "782b9370-aa07-4e2d-997a-907a933e6896",
-      "name": "Compute Anchors",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
+      "id": "6107400e-0219-40ed-9482-448c5f437e6e",
+      "name": "Seed Manually",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
       "position": [
-        -420,
-        0
+        -1000,
+        220
       ],
-      "parameters": {
-        "jsCode": "// Re-arm demo anchors: canonical leave balances for the two demo employees\n// and one stale pending transaction for the chaser beat.\nconst now = new Date();\nconst stale = new Date(now.getTime() - 30 * 3600 * 1000).toISOString();\nreturn [{ json: {\n  bal1: { employee_id: 'EMP-1001', annual_total: 30, annual_used: 22, sick_total: 15, sick_used: 2 },\n  bal2: { employee_id: 'EMP-1003', annual_total: 30, annual_used: 4, sick_total: 15, sick_used: 0 },\n  staleTxn: { txn_id: 'TXN-SEED-CHASE', ts: stale, employee_id: 'EMP-1004',\n    employee_name: 'راشد الكتبي (تجريبي)', skill_id: 'expense-claim', type_ar: 'مطالبة نفقات / بدلات',\n    payload_json: JSON.stringify({ category: 'training', amount_aed: 850, expense_date: stale.slice(0, 10),\n      description: 'رسوم ورشة تدريبية معتمدة', receipt_ref: 'RCPT-7741' }),\n    status: 'awaiting_manager', approval_chain: 'manager;finance', chain_pos: 0,\n    current_approver: 'manager', decision_note: '', output_ref: '', sla_hours: 24, updated_at: stale },\n} }];\n"
-      }
+      "parameters": {}
     },
     {
-      "id": "c0c1613a-bb7c-48ad-9bac-069732b28754",
-      "name": "Emit Bal 1",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        -200,
-        -120
-      ],
-      "parameters": {
-        "jsCode": "return [{ json: $json.bal1 }];"
-      }
-    },
-    {
-      "id": "179ec9bb-d8d1-4f8d-a2f1-1b816f789c91",
-      "name": "Reset Balance 1",
-      "type": "n8n-nodes-base.googleSheets",
-      "typeVersion": 4.5,
-      "position": [
-        20,
-        -120
-      ],
-      "parameters": {
-        "operation": "appendOrUpdate",
-        "documentId": {
-          "__rl": true,
-          "value": "REPLACE_WITH_SPREADSHEET_ID",
-          "mode": "id"
-        },
-        "sheetName": {
-          "__rl": true,
-          "value": "LeaveBalances",
-          "mode": "name"
-        },
-        "columns": {
-          "mappingMode": "autoMapInputData",
-          "value": {},
-          "matchingColumns": [
-            "employee_id"
-          ],
-          "schema": [],
-          "attemptToConvertTypes": false,
-          "convertFieldsToString": true
-        },
-        "options": {}
-      },
-      "credentials": {
-        "googleSheetsOAuth2Api": {
-          "id": "SHEETS_CRED_ID",
-          "name": "Google Sheets (demo)"
-        }
-      },
-      "retryOnFail": true,
-      "maxTries": 3,
-      "waitBetweenTries": 4000
-    },
-    {
-      "id": "dcd2623e-e1c2-4055-b911-51f57f449cb0",
-      "name": "Emit Bal 2",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        240,
-        -120
-      ],
-      "parameters": {
-        "jsCode": "return [{ json: $('Compute Anchors').first().json.bal2 }];"
-      }
-    },
-    {
-      "id": "5304d2b8-08a9-482e-9893-ff42c07d8dc1",
-      "name": "Reset Balance 2",
-      "type": "n8n-nodes-base.googleSheets",
-      "typeVersion": 4.5,
-      "position": [
-        460,
-        -120
-      ],
-      "parameters": {
-        "operation": "appendOrUpdate",
-        "documentId": {
-          "__rl": true,
-          "value": "REPLACE_WITH_SPREADSHEET_ID",
-          "mode": "id"
-        },
-        "sheetName": {
-          "__rl": true,
-          "value": "LeaveBalances",
-          "mode": "name"
-        },
-        "columns": {
-          "mappingMode": "autoMapInputData",
-          "value": {},
-          "matchingColumns": [
-            "employee_id"
-          ],
-          "schema": [],
-          "attemptToConvertTypes": false,
-          "convertFieldsToString": true
-        },
-        "options": {}
-      },
-      "credentials": {
-        "googleSheetsOAuth2Api": {
-          "id": "SHEETS_CRED_ID",
-          "name": "Google Sheets (demo)"
-        }
-      },
-      "retryOnFail": true,
-      "maxTries": 3,
-      "waitBetweenTries": 4000
-    },
-    {
-      "id": "94ebdb22-14cb-43f7-88dd-5c2560431325",
-      "name": "Emit Stale Txn",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        680,
-        -120
-      ],
-      "parameters": {
-        "jsCode": "return [{ json: $('Compute Anchors').first().json.staleTxn }];"
-      }
-    },
-    {
-      "id": "42ac495b-fb5a-43aa-99de-dde9d6ea4c17",
-      "name": "Seed Stale Txn",
-      "type": "n8n-nodes-base.googleSheets",
-      "typeVersion": 4.5,
-      "position": [
-        900,
-        -120
-      ],
-      "parameters": {
-        "operation": "appendOrUpdate",
-        "documentId": {
-          "__rl": true,
-          "value": "REPLACE_WITH_SPREADSHEET_ID",
-          "mode": "id"
-        },
-        "sheetName": {
-          "__rl": true,
-          "value": "Transactions",
-          "mode": "name"
-        },
-        "columns": {
-          "mappingMode": "autoMapInputData",
-          "value": {},
-          "matchingColumns": [
-            "txn_id"
-          ],
-          "schema": [],
-          "attemptToConvertTypes": false,
-          "convertFieldsToString": true
-        },
-        "options": {}
-      },
-      "credentials": {
-        "googleSheetsOAuth2Api": {
-          "id": "SHEETS_CRED_ID",
-          "name": "Google Sheets (demo)"
-        }
-      },
-      "retryOnFail": true,
-      "maxTries": 3,
-      "waitBetweenTries": 4000
-    },
-    {
-      "id": "44db4156-b580-40ea-b709-a8abc9f89e17",
+      "id": "637e483d-312b-47c5-8595-a76915f37392",
       "name": "Respond Reset",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.2,
       "position": [
-        1120,
+        -780,
         0
       ],
       "parameters": {
         "respondWith": "json",
-        "responseBody": "={{ { \"ok\": true } }}",
+        "responseBody": "={{ { \"ok\": true, \"seeded\": true } }}",
         "options": {
           "responseHeaders": {
             "entries": [
@@ -228,18 +58,730 @@
       }
     },
     {
-      "id": "aa579e9f-b4a4-463f-b25e-70d2691ba40e",
-      "name": "Note 49adb2d2",
+      "id": "e56aaf9a-dc8f-4603-a4c3-fcba1353779a",
+      "name": "Create Employees",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        -520,
+        0
+      ],
+      "parameters": {
+        "resource": "table",
+        "operation": "create",
+        "tableName": "Employees",
+        "columns": {
+          "column": [
+            {
+              "name": "employee_id",
+              "type": "string"
+            },
+            {
+              "name": "name_ar",
+              "type": "string"
+            },
+            {
+              "name": "name_en",
+              "type": "string"
+            },
+            {
+              "name": "role",
+              "type": "string"
+            },
+            {
+              "name": "department",
+              "type": "string"
+            },
+            {
+              "name": "grade",
+              "type": "string"
+            },
+            {
+              "name": "manager_id",
+              "type": "string"
+            },
+            {
+              "name": "email",
+              "type": "string"
+            },
+            {
+              "name": "status",
+              "type": "string"
+            },
+            {
+              "name": "it_roles",
+              "type": "string"
+            },
+            {
+              "name": "joined_date",
+              "type": "string"
+            },
+            {
+              "name": "monthly_salary_aed",
+              "type": "string"
+            },
+            {
+              "name": "allowances_aed",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "onError": "continueRegularOutput",
+      "executeOnce": true
+    },
+    {
+      "id": "57bc63eb-ea3e-4855-9ca5-87d7d3724f43",
+      "name": "Clear Employees",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        -520,
+        170
+      ],
+      "parameters": {
+        "resource": "table",
+        "operation": "clear",
+        "dataTableId": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Employees"
+        }
+      },
+      "onError": "continueRegularOutput",
+      "executeOnce": true
+    },
+    {
+      "id": "abc5f185-9364-4372-99ed-1c970fae86ef",
+      "name": "Seed Employees",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -520,
+        340
+      ],
+      "parameters": {
+        "jsCode": "const rows = JSON.parse(\"[{\\\"employee_id\\\": \\\"EMP-1001\\\", \\\"name_ar\\\": \\\"\\u0623\\u062d\\u0645\\u062f \\u0627\\u0644\\u0645\\u0647\\u064a\\u0631\\u064a (\\u062a\\u062c\\u0631\\u064a\\u0628\\u064a)\\\", \\\"name_en\\\": \\\"Ahmed Almheiri (demo)\\\", \\\"role\\\": \\\"specialist\\\", \\\"department\\\": \\\"\\u062a\\u0642\\u0646\\u064a\\u0629 \\u0627\\u0644\\u0645\\u0639\\u0644\\u0648\\u0645\\u0627\\u062a\\\", \\\"grade\\\": \\\"G8\\\", \\\"manager_id\\\": \\\"EMP-1002\\\", \\\"email\\\": \\\"munjiz.demo.uae+ahmed@gmail.com\\\", \\\"status\\\": \\\"active\\\", \\\"it_roles\\\": \\\"SYS-BI:read\\\", \\\"joined_date\\\": \\\"2021-03-14\\\", \\\"monthly_salary_aed\\\": 24500, \\\"allowances_aed\\\": 6200}, {\\\"employee_id\\\": \\\"EMP-1002\\\", \\\"name_ar\\\": \\\"\\u0645\\u0631\\u064a\\u0645 \\u0627\\u0644\\u0634\\u0627\\u0645\\u0633\\u064a (\\u062a\\u062c\\u0631\\u064a\\u0628\\u064a)\\\", \\\"name_en\\\": \\\"Mariam Alshamsi (demo)\\\", \\\"role\\\": \\\"manager\\\", \\\"department\\\": \\\"\\u062a\\u0642\\u0646\\u064a\\u0629 \\u0627\\u0644\\u0645\\u0639\\u0644\\u0648\\u0645\\u0627\\u062a\\\", \\\"grade\\\": \\\"G11\\\", \\\"manager_id\\\": \\\"EMP-1007\\\", \\\"email\\\": \\\"munjiz.demo.uae+mariam@gmail.com\\\", \\\"status\\\": \\\"active\\\", \\\"it_roles\\\": \\\"SYS-BI:write;SYS-CRM:read\\\", \\\"joined_date\\\": \\\"2016-09-01\\\", \\\"monthly_salary_aed\\\": 41000, \\\"allowances_aed\\\": 9800}, {\\\"employee_id\\\": \\\"EMP-1003\\\", \\\"name_ar\\\": \\\"\\u0633\\u0627\\u0644\\u0645 \\u0627\\u0644\\u0646\\u0642\\u0628\\u064a (\\u062a\\u062c\\u0631\\u064a\\u0628\\u064a)\\\", \\\"name_en\\\": \\\"Salem Alnaqbi (demo)\\\", \\\"role\\\": \\\"specialist\\\", \\\"department\\\": \\\"\\u062a\\u0642\\u0646\\u064a\\u0629 \\u0627\\u0644\\u0645\\u0639\\u0644\\u0648\\u0645\\u0627\\u062a\\\", \\\"grade\\\": \\\"G7\\\", \\\"manager_id\\\": \\\"EMP-1002\\\", \\\"email\\\": \\\"munjiz.demo.uae+salem@gmail.com\\\", \\\"status\\\": \\\"active\\\", \\\"it_roles\\\": \\\"SYS-BI:read\\\", \\\"joined_date\\\": \\\"2022-11-20\\\", \\\"monthly_salary_aed\\\": 21000, \\\"allowances_aed\\\": 5400}, {\\\"employee_id\\\": \\\"EMP-1004\\\", \\\"name_ar\\\": \\\"\\u0631\\u0627\\u0634\\u062f \\u0627\\u0644\\u0643\\u062a\\u0628\\u064a (\\u062a\\u062c\\u0631\\u064a\\u0628\\u064a)\\\", \\\"name_en\\\": \\\"Rashed Alketbi (demo)\\\", \\\"role\\\": \\\"specialist\\\", \\\"department\\\": \\\"\\u0627\\u0644\\u0627\\u062a\\u0635\\u0627\\u0644 \\u0627\\u0644\\u0645\\u0624\\u0633\\u0633\\u064a\\\", \\\"grade\\\": \\\"G8\\\", \\\"manager_id\\\": \\\"EMP-1005\\\", \\\"email\\\": \\\"munjiz.demo.uae+rashed@gmail.com\\\", \\\"status\\\": \\\"active\\\", \\\"it_roles\\\": \\\"\\\", \\\"joined_date\\\": \\\"2020-01-05\\\", \\\"monthly_salary_aed\\\": 23000, \\\"allowances_aed\\\": 5800}, {\\\"employee_id\\\": \\\"EMP-1005\\\", \\\"name_ar\\\": \\\"\\u0646\\u0648\\u0631\\u0629 \\u0627\\u0644\\u0638\\u0627\\u0647\\u0631\\u064a (\\u062a\\u062c\\u0631\\u064a\\u0628\\u064a)\\\", \\\"name_en\\\": \\\"Noura Aldhaheri (demo)\\\", \\\"role\\\": \\\"manager\\\", \\\"department\\\": \\\"\\u0627\\u0644\\u0627\\u062a\\u0635\\u0627\\u0644 \\u0627\\u0644\\u0645\\u0624\\u0633\\u0633\\u064a\\\", \\\"grade\\\": \\\"G11\\\", \\\"manager_id\\\": \\\"EMP-1007\\\", \\\"email\\\": \\\"munjiz.demo.uae+noura@gmail.com\\\", \\\"status\\\": \\\"active\\\", \\\"it_roles\\\": \\\"SYS-CRM:write\\\", \\\"joined_date\\\": \\\"2015-06-15\\\", \\\"monthly_salary_aed\\\": 39500, \\\"allowances_aed\\\": 9200}, {\\\"employee_id\\\": \\\"EMP-1006\\\", \\\"name_ar\\\": \\\"\\u062e\\u0627\\u0644\\u062f \\u0627\\u0644\\u0647\\u0627\\u0645\\u0644\\u064a (\\u062a\\u062c\\u0631\\u064a\\u0628\\u064a)\\\", \\\"name_en\\\": \\\"Khaled Alhameli (demo)\\\", \\\"role\\\": \\\"finance\\\", \\\"department\\\": \\\"\\u0627\\u0644\\u0645\\u0627\\u0644\\u064a\\u0629\\\", \\\"grade\\\": \\\"G9\\\", \\\"manager_id\\\": \\\"EMP-1007\\\", \\\"email\\\": \\\"munjiz.demo.uae+khaled@gmail.com\\\", \\\"status\\\": \\\"active\\\", \\\"it_roles\\\": \\\"SYS-ERP:write\\\", \\\"joined_date\\\": \\\"2018-02-10\\\", \\\"monthly_salary_aed\\\": 28500, \\\"allowances_aed\\\": 6900}, {\\\"employee_id\\\": \\\"EMP-1007\\\", \\\"name_ar\\\": \\\"\\u0639\\u0628\\u062f\\u0627\\u0644\\u0644\\u0647 \\u0627\\u0644\\u0633\\u0648\\u064a\\u062f\\u064a (\\u062a\\u062c\\u0631\\u064a\\u0628\\u064a)\\\", \\\"name_en\\\": \\\"Abdulla Alsuwaidi (demo)\\\", \\\"role\\\": \\\"it_security\\\", \\\"department\\\": \\\"\\u0623\\u0645\\u0646 \\u0627\\u0644\\u0645\\u0639\\u0644\\u0648\\u0645\\u0627\\u062a\\\", \\\"grade\\\": \\\"G12\\\", \\\"manager_id\\\": \\\"\\\", \\\"email\\\": \\\"munjiz.demo.uae+abdulla@gmail.com\\\", \\\"status\\\": \\\"active\\\", \\\"it_roles\\\": \\\"SYS-ERP:admin;SYS-CRM:admin\\\", \\\"joined_date\\\": \\\"2013-04-22\\\", \\\"monthly_salary_aed\\\": 47000, \\\"allowances_aed\\\": 11000}]\");\nreturn rows.map(r => ({ json: r }));"
+      }
+    },
+    {
+      "id": "f54179d6-163c-40dd-ad46-9c8b744f5fbd",
+      "name": "Insert Employees",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        -520,
+        510
+      ],
+      "parameters": {
+        "operation": "insert",
+        "dataTableId": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Employees"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": null,
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000
+    },
+    {
+      "id": "e247432e-6143-409d-bf38-5772a2a64ab7",
+      "name": "Create LeaveBalances",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        -270,
+        0
+      ],
+      "parameters": {
+        "resource": "table",
+        "operation": "create",
+        "tableName": "LeaveBalances",
+        "columns": {
+          "column": [
+            {
+              "name": "employee_id",
+              "type": "string"
+            },
+            {
+              "name": "annual_total",
+              "type": "string"
+            },
+            {
+              "name": "annual_used",
+              "type": "string"
+            },
+            {
+              "name": "sick_total",
+              "type": "string"
+            },
+            {
+              "name": "sick_used",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "onError": "continueRegularOutput",
+      "executeOnce": true
+    },
+    {
+      "id": "a9ed1a61-4a7b-4b11-aab3-8e329d066f87",
+      "name": "Clear LeaveBalances",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        -270,
+        170
+      ],
+      "parameters": {
+        "resource": "table",
+        "operation": "clear",
+        "dataTableId": {
+          "__rl": true,
+          "mode": "name",
+          "value": "LeaveBalances"
+        }
+      },
+      "onError": "continueRegularOutput",
+      "executeOnce": true
+    },
+    {
+      "id": "2a7fee31-1744-4a6d-ac0f-e58d39344280",
+      "name": "Seed LeaveBalances",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -270,
+        340
+      ],
+      "parameters": {
+        "jsCode": "const rows = JSON.parse(\"[{\\\"employee_id\\\": \\\"EMP-1001\\\", \\\"annual_total\\\": 30, \\\"annual_used\\\": 22, \\\"sick_total\\\": 15, \\\"sick_used\\\": 2}, {\\\"employee_id\\\": \\\"EMP-1002\\\", \\\"annual_total\\\": 30, \\\"annual_used\\\": 10, \\\"sick_total\\\": 15, \\\"sick_used\\\": 0}, {\\\"employee_id\\\": \\\"EMP-1003\\\", \\\"annual_total\\\": 30, \\\"annual_used\\\": 4, \\\"sick_total\\\": 15, \\\"sick_used\\\": 1}, {\\\"employee_id\\\": \\\"EMP-1004\\\", \\\"annual_total\\\": 30, \\\"annual_used\\\": 12, \\\"sick_total\\\": 15, \\\"sick_used\\\": 3}, {\\\"employee_id\\\": \\\"EMP-1005\\\", \\\"annual_total\\\": 30, \\\"annual_used\\\": 8, \\\"sick_total\\\": 15, \\\"sick_used\\\": 0}, {\\\"employee_id\\\": \\\"EMP-1006\\\", \\\"annual_total\\\": 30, \\\"annual_used\\\": 15, \\\"sick_total\\\": 15, \\\"sick_used\\\": 4}, {\\\"employee_id\\\": \\\"EMP-1007\\\", \\\"annual_total\\\": 30, \\\"annual_used\\\": 6, \\\"sick_total\\\": 15, \\\"sick_used\\\": 0}]\");\nreturn rows.map(r => ({ json: r }));"
+      }
+    },
+    {
+      "id": "918b98a1-f541-4af4-8081-0f382582404b",
+      "name": "Insert LeaveBalances",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        -270,
+        510
+      ],
+      "parameters": {
+        "operation": "insert",
+        "dataTableId": {
+          "__rl": true,
+          "mode": "name",
+          "value": "LeaveBalances"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": null,
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000
+    },
+    {
+      "id": "41bb1a86-e79d-43da-a52e-38702be65756",
+      "name": "Create ExpensePolicy",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        -20,
+        0
+      ],
+      "parameters": {
+        "resource": "table",
+        "operation": "create",
+        "tableName": "ExpensePolicy",
+        "columns": {
+          "column": [
+            {
+              "name": "category",
+              "type": "string"
+            },
+            {
+              "name": "monthly_cap_aed",
+              "type": "string"
+            },
+            {
+              "name": "receipt_required_above",
+              "type": "string"
+            },
+            {
+              "name": "notes",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "onError": "continueRegularOutput",
+      "executeOnce": true
+    },
+    {
+      "id": "b365e6b9-f255-4248-bd65-e03284843c79",
+      "name": "Clear ExpensePolicy",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        -20,
+        170
+      ],
+      "parameters": {
+        "resource": "table",
+        "operation": "clear",
+        "dataTableId": {
+          "__rl": true,
+          "mode": "name",
+          "value": "ExpensePolicy"
+        }
+      },
+      "onError": "continueRegularOutput",
+      "executeOnce": true
+    },
+    {
+      "id": "2b8340a5-086a-4c9c-9983-aef5853f2bfd",
+      "name": "Seed ExpensePolicy",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -20,
+        340
+      ],
+      "parameters": {
+        "jsCode": "const rows = JSON.parse(\"[{\\\"category\\\": \\\"transport\\\", \\\"monthly_cap_aed\\\": 400, \\\"receipt_required_above\\\": 100, \\\"notes\\\": \\\"\\u0645\\u0648\\u0627\\u0635\\u0644\\u0627\\u062a \\u0627\\u0644\\u0645\\u0647\\u0627\\u0645 \\u0627\\u0644\\u0631\\u0633\\u0645\\u064a\\u0629 \\u062f\\u0627\\u062e\\u0644 \\u0627\\u0644\\u062f\\u0648\\u0644\\u0629\\\"}, {\\\"category\\\": \\\"hospitality\\\", \\\"monthly_cap_aed\\\": 1000, \\\"receipt_required_above\\\": 100, \\\"notes\\\": \\\"\\u0636\\u064a\\u0627\\u0641\\u0629 \\u0631\\u0633\\u0645\\u064a\\u0629 \\u0645\\u0639\\u062a\\u0645\\u062f\\u0629 \\u0645\\u0633\\u0628\\u0642\\u064b\\u0627\\\"}, {\\\"category\\\": \\\"training\\\", \\\"monthly_cap_aed\\\": 2000, \\\"receipt_required_above\\\": 100, \\\"notes\\\": \\\"\\u0631\\u0633\\u0648\\u0645 \\u0628\\u0631\\u0627\\u0645\\u062c \\u0648\\u0645\\u0624\\u062a\\u0645\\u0631\\u0627\\u062a \\u0645\\u0639\\u062a\\u0645\\u062f\\u0629\\\"}, {\\\"category\\\": \\\"communication\\\", \\\"monthly_cap_aed\\\": 300, \\\"receipt_required_above\\\": 100, \\\"notes\\\": \\\"\\u0628\\u062f\\u0644 \\u0627\\u062a\\u0635\\u0627\\u0644\\u0627\\u062a \\u0644\\u0644\\u0645\\u0647\\u0627\\u0645 \\u0627\\u0644\\u0645\\u064a\\u062f\\u0627\\u0646\\u064a\\u0629\\\"}, {\\\"category\\\": \\\"other\\\", \\\"monthly_cap_aed\\\": 500, \\\"receipt_required_above\\\": 100, \\\"notes\\\": \\\"\\u0628\\u0645\\u0648\\u062c\\u0628 \\u0648\\u0635\\u0641 \\u062a\\u0641\\u0635\\u064a\\u0644\\u064a \\u0625\\u0644\\u0632\\u0627\\u0645\\u064a\\\"}]\");\nreturn rows.map(r => ({ json: r }));"
+      }
+    },
+    {
+      "id": "3f65bd6f-5c2b-4432-a6cd-02cfd2261725",
+      "name": "Insert ExpensePolicy",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        -20,
+        510
+      ],
+      "parameters": {
+        "operation": "insert",
+        "dataTableId": {
+          "__rl": true,
+          "mode": "name",
+          "value": "ExpensePolicy"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": null,
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000
+    },
+    {
+      "id": "329c4025-1282-4bc1-8673-8783f18a06f2",
+      "name": "Create SystemCatalog",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        230,
+        0
+      ],
+      "parameters": {
+        "resource": "table",
+        "operation": "create",
+        "tableName": "SystemCatalog",
+        "columns": {
+          "column": [
+            {
+              "name": "system_id",
+              "type": "string"
+            },
+            {
+              "name": "name_ar",
+              "type": "string"
+            },
+            {
+              "name": "name_en",
+              "type": "string"
+            },
+            {
+              "name": "sensitivity",
+              "type": "string"
+            },
+            {
+              "name": "allowed_roles",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "onError": "continueRegularOutput",
+      "executeOnce": true
+    },
+    {
+      "id": "16cea736-6e38-4ddd-8b0d-c6369ba8dee9",
+      "name": "Clear SystemCatalog",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        230,
+        170
+      ],
+      "parameters": {
+        "resource": "table",
+        "operation": "clear",
+        "dataTableId": {
+          "__rl": true,
+          "mode": "name",
+          "value": "SystemCatalog"
+        }
+      },
+      "onError": "continueRegularOutput",
+      "executeOnce": true
+    },
+    {
+      "id": "7c6888fa-0d86-49a5-9418-db09200ea07b",
+      "name": "Seed SystemCatalog",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        230,
+        340
+      ],
+      "parameters": {
+        "jsCode": "const rows = JSON.parse(\"[{\\\"system_id\\\": \\\"SYS-BI\\\", \\\"name_ar\\\": \\\"\\u0645\\u0646\\u0635\\u0629 \\u0627\\u0644\\u062a\\u0642\\u0627\\u0631\\u064a\\u0631 \\u0648\\u0627\\u0644\\u0645\\u0624\\u0634\\u0631\\u0627\\u062a\\\", \\\"name_en\\\": \\\"BI & Reports Platform\\\", \\\"sensitivity\\\": \\\"normal\\\", \\\"allowed_roles\\\": \\\"specialist;manager;finance\\\"}, {\\\"system_id\\\": \\\"SYS-CRM\\\", \\\"name_ar\\\": \\\"\\u0646\\u0638\\u0627\\u0645 \\u0639\\u0644\\u0627\\u0642\\u0627\\u062a \\u0627\\u0644\\u0645\\u062a\\u0639\\u0627\\u0645\\u0644\\u064a\\u0646\\\", \\\"name_en\\\": \\\"Customer Relations System\\\", \\\"sensitivity\\\": \\\"sensitive\\\", \\\"allowed_roles\\\": \\\"specialist;manager;customer_service\\\"}, {\\\"system_id\\\": \\\"SYS-ERP\\\", \\\"name_ar\\\": \\\"\\u0646\\u0638\\u0627\\u0645 \\u0627\\u0644\\u0645\\u0648\\u0627\\u0631\\u062f \\u0627\\u0644\\u0645\\u0624\\u0633\\u0633\\u064a\\u0629\\\", \\\"name_en\\\": \\\"Enterprise Resource System\\\", \\\"sensitivity\\\": \\\"critical\\\", \\\"allowed_roles\\\": \\\"finance;manager\\\"}, {\\\"system_id\\\": \\\"SYS-HRMS\\\", \\\"name_ar\\\": \\\"\\u0646\\u0638\\u0627\\u0645 \\u0627\\u0644\\u0645\\u0648\\u0627\\u0631\\u062f \\u0627\\u0644\\u0628\\u0634\\u0631\\u064a\\u0629\\\", \\\"name_en\\\": \\\"HR Management System\\\", \\\"sensitivity\\\": \\\"sensitive\\\", \\\"allowed_roles\\\": \\\"hr;manager\\\"}]\");\nreturn rows.map(r => ({ json: r }));"
+      }
+    },
+    {
+      "id": "548aa038-9a55-4332-8d08-69b451a741c9",
+      "name": "Insert SystemCatalog",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        230,
+        510
+      ],
+      "parameters": {
+        "operation": "insert",
+        "dataTableId": {
+          "__rl": true,
+          "mode": "name",
+          "value": "SystemCatalog"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": null,
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000
+    },
+    {
+      "id": "de4c0263-d91d-49f4-9eed-5682bc1df40a",
+      "name": "Create Transactions",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        480,
+        0
+      ],
+      "parameters": {
+        "resource": "table",
+        "operation": "create",
+        "tableName": "Transactions",
+        "columns": {
+          "column": [
+            {
+              "name": "txn_id",
+              "type": "string"
+            },
+            {
+              "name": "ts",
+              "type": "string"
+            },
+            {
+              "name": "employee_id",
+              "type": "string"
+            },
+            {
+              "name": "employee_name",
+              "type": "string"
+            },
+            {
+              "name": "skill_id",
+              "type": "string"
+            },
+            {
+              "name": "type_ar",
+              "type": "string"
+            },
+            {
+              "name": "payload_json",
+              "type": "string"
+            },
+            {
+              "name": "status",
+              "type": "string"
+            },
+            {
+              "name": "approval_chain",
+              "type": "string"
+            },
+            {
+              "name": "chain_pos",
+              "type": "string"
+            },
+            {
+              "name": "current_approver",
+              "type": "string"
+            },
+            {
+              "name": "decision_note",
+              "type": "string"
+            },
+            {
+              "name": "output_ref",
+              "type": "string"
+            },
+            {
+              "name": "sla_hours",
+              "type": "string"
+            },
+            {
+              "name": "updated_at",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "onError": "continueRegularOutput",
+      "executeOnce": true
+    },
+    {
+      "id": "7aa85752-71d0-483a-9fbb-d922b6df954f",
+      "name": "Clear Transactions",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        480,
+        170
+      ],
+      "parameters": {
+        "resource": "table",
+        "operation": "clear",
+        "dataTableId": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Transactions"
+        }
+      },
+      "onError": "continueRegularOutput",
+      "executeOnce": true
+    },
+    {
+      "id": "b7d72abb-b18c-4c3e-98cd-3cd8b4c9b8da",
+      "name": "Seed Transactions",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        480,
+        340
+      ],
+      "parameters": {
+        "jsCode": "const rows = JSON.parse(\"[{\\\"txn_id\\\": \\\"TXN-SEED-OVERLAP\\\", \\\"ts\\\": \\\"2026-08-10T22:11:22\\\", \\\"employee_id\\\": \\\"EMP-1003\\\", \\\"employee_name\\\": \\\"\\u0633\\u0627\\u0644\\u0645 \\u0627\\u0644\\u0646\\u0642\\u0628\\u064a (\\u062a\\u062c\\u0631\\u064a\\u0628\\u064a)\\\", \\\"skill_id\\\": \\\"leave-request\\\", \\\"type_ar\\\": \\\"\\u0637\\u0644\\u0628 \\u0625\\u062c\\u0627\\u0632\\u0629\\\", \\\"payload_json\\\": \\\"{\\\\\\\"leave_type\\\\\\\": \\\\\\\"annual\\\\\\\", \\\\\\\"start_date\\\\\\\": \\\\\\\"2026-08-19\\\\\\\", \\\\\\\"end_date\\\\\\\": \\\\\\\"2026-08-23\\\\\\\", \\\\\\\"working_days\\\\\\\": 3, \\\\\\\"reason\\\\\\\": \\\\\\\"\\u0625\\u062c\\u0627\\u0632\\u0629 \\u0639\\u0627\\u0626\\u0644\\u064a\\u0629\\\\\\\"}\\\", \\\"status\\\": \\\"executed\\\", \\\"approval_chain\\\": \\\"manager\\\", \\\"chain_pos\\\": 1, \\\"current_approver\\\": \\\"\\\", \\\"decision_note\\\": \\\"\\u0627\\u0639\\u062a\\u0645\\u062f\\u062a\\\", \\\"output_ref\\\": \\\"\\\", \\\"sla_hours\\\": 48, \\\"updated_at\\\": \\\"2026-08-11T22:11:22\\\"}, {\\\"txn_id\\\": \\\"TXN-SEED-CHASE\\\", \\\"ts\\\": \\\"2026-08-11T16:11:22\\\", \\\"employee_id\\\": \\\"EMP-1004\\\", \\\"employee_name\\\": \\\"\\u0631\\u0627\\u0634\\u062f \\u0627\\u0644\\u0643\\u062a\\u0628\\u064a (\\u062a\\u062c\\u0631\\u064a\\u0628\\u064a)\\\", \\\"skill_id\\\": \\\"expense-claim\\\", \\\"type_ar\\\": \\\"\\u0645\\u0637\\u0627\\u0644\\u0628\\u0629 \\u0646\\u0641\\u0642\\u0627\\u062a / \\u0628\\u062f\\u0644\\u0627\\u062a\\\", \\\"payload_json\\\": \\\"{\\\\\\\"category\\\\\\\": \\\\\\\"training\\\\\\\", \\\\\\\"amount_aed\\\\\\\": 850, \\\\\\\"expense_date\\\\\\\": \\\\\\\"2026-08-06\\\\\\\", \\\\\\\"description\\\\\\\": \\\\\\\"\\u0631\\u0633\\u0648\\u0645 \\u0648\\u0631\\u0634\\u0629 \\u062a\\u062f\\u0631\\u064a\\u0628\\u064a\\u0629 \\u0645\\u0639\\u062a\\u0645\\u062f\\u0629\\\\\\\", \\\\\\\"receipt_ref\\\\\\\": \\\\\\\"RCPT-7741\\\\\\\"}\\\", \\\"status\\\": \\\"awaiting_manager\\\", \\\"approval_chain\\\": \\\"manager;finance\\\", \\\"chain_pos\\\": 0, \\\"current_approver\\\": \\\"manager\\\", \\\"decision_note\\\": \\\"\\\", \\\"output_ref\\\": \\\"\\\", \\\"sla_hours\\\": 24, \\\"updated_at\\\": \\\"2026-08-11T16:11:22\\\"}, {\\\"txn_id\\\": \\\"TXN-SEED-CERT\\\", \\\"ts\\\": \\\"2026-08-03T22:11:22\\\", \\\"employee_id\\\": \\\"EMP-1006\\\", \\\"employee_name\\\": \\\"\\u062e\\u0627\\u0644\\u062f \\u0627\\u0644\\u0647\\u0627\\u0645\\u0644\\u064a (\\u062a\\u062c\\u0631\\u064a\\u0628\\u064a)\\\", \\\"skill_id\\\": \\\"salary-certificate\\\", \\\"type_ar\\\": \\\"\\u0634\\u0647\\u0627\\u062f\\u0629 \\u0631\\u0627\\u062a\\u0628 / \\u0644\\u0645\\u0646 \\u064a\\u0647\\u0645\\u0647 \\u0627\\u0644\\u0623\\u0645\\u0631\\\", \\\"payload_json\\\": \\\"{\\\\\\\"certificate_type\\\\\\\": \\\\\\\"employment\\\\\\\", \\\\\\\"addressed_to\\\\\\\": \\\\\\\"\\u0644\\u0645\\u0646 \\u064a\\u0647\\u0645\\u0647 \\u0627\\u0644\\u0623\\u0645\\u0631\\\\\\\", \\\\\\\"language\\\\\\\": \\\\\\\"ar\\\\\\\"}\\\", \\\"status\\\": \\\"executed\\\", \\\"approval_chain\\\": \\\"\\\", \\\"chain_pos\\\": 0, \\\"current_approver\\\": \\\"\\\", \\\"decision_note\\\": \\\"\\\", \\\"output_ref\\\": \\\"CERT-118204\\\", \\\"sla_hours\\\": 1, \\\"updated_at\\\": \\\"2026-08-03T22:11:22\\\"}]\");\nconst stale = new Date(Date.now() - 30 * 3600 * 1000).toISOString();\n// re-arm the SLA anchor relative to now so the chaser always has a live case\nfor (const r of rows) if (r.txn_id === 'TXN-SEED-CHASE') { r.ts = stale; r.updated_at = stale; }\nreturn rows.map(r => ({ json: r }));"
+      }
+    },
+    {
+      "id": "08953890-e217-4d92-a42d-6225119b9add",
+      "name": "Insert Transactions",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        480,
+        510
+      ],
+      "parameters": {
+        "operation": "insert",
+        "dataTableId": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Transactions"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": null,
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000
+    },
+    {
+      "id": "89d91545-610f-41b2-b3ad-60e916f5ac18",
+      "name": "Create AuditLog",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        730,
+        0
+      ],
+      "parameters": {
+        "resource": "table",
+        "operation": "create",
+        "tableName": "AuditLog",
+        "columns": {
+          "column": [
+            {
+              "name": "ts",
+              "type": "string"
+            },
+            {
+              "name": "session_id",
+              "type": "string"
+            },
+            {
+              "name": "employee_id",
+              "type": "string"
+            },
+            {
+              "name": "skill_id",
+              "type": "string"
+            },
+            {
+              "name": "service",
+              "type": "string"
+            },
+            {
+              "name": "request_json",
+              "type": "string"
+            },
+            {
+              "name": "result_summary",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "onError": "continueRegularOutput",
+      "executeOnce": true
+    },
+    {
+      "id": "7e1e8bc7-9847-443f-b802-ec66d0fe9f8f",
+      "name": "Clear AuditLog",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        730,
+        170
+      ],
+      "parameters": {
+        "resource": "table",
+        "operation": "clear",
+        "dataTableId": {
+          "__rl": true,
+          "mode": "name",
+          "value": "AuditLog"
+        }
+      },
+      "onError": "continueRegularOutput",
+      "executeOnce": true
+    },
+    {
+      "id": "2e3657e8-3def-48b4-ab5f-d365504a5d0d",
+      "name": "Seed AuditLog",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        730,
+        340
+      ],
+      "parameters": {
+        "jsCode": "const rows = JSON.parse(\"[{\\\"ts\\\": \\\"2026-08-10T22:11:22\\\", \\\"session_id\\\": \\\"S-seed-1\\\", \\\"employee_id\\\": \\\"EMP-1003\\\", \\\"skill_id\\\": \\\"leave-request\\\", \\\"service\\\": \\\"get_leave_balance\\\", \\\"request_json\\\": \\\"{}\\\", \\\"result_summary\\\": \\\"OK {\\\\\\\"annual_remaining\\\\\\\":26,...}\\\"}, {\\\"ts\\\": \\\"2026-08-10T22:11:22\\\", \\\"session_id\\\": \\\"S-seed-1\\\", \\\"employee_id\\\": \\\"EMP-1003\\\", \\\"skill_id\\\": \\\"leave-request\\\", \\\"service\\\": \\\"submit_transaction\\\", \\\"request_json\\\": \\\"{\\\\\\\"leave_type\\\\\\\":\\\\\\\"annual\\\\\\\"}\\\", \\\"result_summary\\\": \\\"OK TXN-SEED-OVERLAP awaiting_manager\\\"}]\");\nreturn rows.map(r => ({ json: r }));"
+      }
+    },
+    {
+      "id": "786b0c7a-1107-4242-a036-63e342372955",
+      "name": "Insert AuditLog",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        730,
+        510
+      ],
+      "parameters": {
+        "operation": "insert",
+        "dataTableId": {
+          "__rl": true,
+          "mode": "name",
+          "value": "AuditLog"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": null,
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000
+    },
+    {
+      "id": "329ab004-e48b-4c26-b181-5099e35a4a14",
+      "name": "Note 0fa95714",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -660,
-        -260
+        -1020,
+        -360
       ],
       "parameters": {
-        "content": "## Demo Reset\n`POST /munjiz/reset` — canonical balances + a 30-hour-old pending claim so the SLA chaser has something to rescue on stage.",
-        "width": 560,
-        "height": 150,
+        "content": "## Provision & Seed\n`POST /munjiz/reset` (or run it manually) creates the six **n8n Data Tables**,\nclears them and loads the synthetic seed.\n\nNo Google Sheet, no spreadsheet id, no OAuth - the datastore lives inside n8n.\nIdempotent, so this is also the reset button between rehearsals.",
+        "width": 640,
+        "height": 220,
         "color": 4
       }
     }
@@ -249,84 +791,282 @@
       "main": [
         [
           {
-            "node": "Compute Anchors",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Compute Anchors": {
-      "main": [
-        [
-          {
-            "node": "Emit Bal 1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Emit Bal 1": {
-      "main": [
-        [
-          {
-            "node": "Reset Balance 1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Reset Balance 1": {
-      "main": [
-        [
-          {
-            "node": "Emit Bal 2",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Emit Bal 2": {
-      "main": [
-        [
-          {
-            "node": "Reset Balance 2",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Reset Balance 2": {
-      "main": [
-        [
-          {
-            "node": "Emit Stale Txn",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Emit Stale Txn": {
-      "main": [
-        [
-          {
-            "node": "Seed Stale Txn",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Seed Stale Txn": {
-      "main": [
-        [
-          {
             "node": "Respond Reset",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Employees": {
+      "main": [
+        [
+          {
+            "node": "Clear Employees",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Clear Employees": {
+      "main": [
+        [
+          {
+            "node": "Seed Employees",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Seed Employees": {
+      "main": [
+        [
+          {
+            "node": "Insert Employees",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Respond Reset": {
+      "main": [
+        [
+          {
+            "node": "Create Employees",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Seed Manually": {
+      "main": [
+        [
+          {
+            "node": "Create Employees",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create LeaveBalances": {
+      "main": [
+        [
+          {
+            "node": "Clear LeaveBalances",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Clear LeaveBalances": {
+      "main": [
+        [
+          {
+            "node": "Seed LeaveBalances",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Seed LeaveBalances": {
+      "main": [
+        [
+          {
+            "node": "Insert LeaveBalances",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert Employees": {
+      "main": [
+        [
+          {
+            "node": "Create LeaveBalances",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create ExpensePolicy": {
+      "main": [
+        [
+          {
+            "node": "Clear ExpensePolicy",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Clear ExpensePolicy": {
+      "main": [
+        [
+          {
+            "node": "Seed ExpensePolicy",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Seed ExpensePolicy": {
+      "main": [
+        [
+          {
+            "node": "Insert ExpensePolicy",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert LeaveBalances": {
+      "main": [
+        [
+          {
+            "node": "Create ExpensePolicy",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create SystemCatalog": {
+      "main": [
+        [
+          {
+            "node": "Clear SystemCatalog",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Clear SystemCatalog": {
+      "main": [
+        [
+          {
+            "node": "Seed SystemCatalog",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Seed SystemCatalog": {
+      "main": [
+        [
+          {
+            "node": "Insert SystemCatalog",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert ExpensePolicy": {
+      "main": [
+        [
+          {
+            "node": "Create SystemCatalog",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Transactions": {
+      "main": [
+        [
+          {
+            "node": "Clear Transactions",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Clear Transactions": {
+      "main": [
+        [
+          {
+            "node": "Seed Transactions",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Seed Transactions": {
+      "main": [
+        [
+          {
+            "node": "Insert Transactions",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert SystemCatalog": {
+      "main": [
+        [
+          {
+            "node": "Create Transactions",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create AuditLog": {
+      "main": [
+        [
+          {
+            "node": "Clear AuditLog",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Clear AuditLog": {
+      "main": [
+        [
+          {
+            "node": "Seed AuditLog",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Seed AuditLog": {
+      "main": [
+        [
+          {
+            "node": "Insert AuditLog",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert Transactions": {
+      "main": [
+        [
+          {
+            "node": "Create AuditLog",
             "type": "main",
             "index": 0
           }

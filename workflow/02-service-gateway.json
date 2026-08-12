@@ -2,7 +2,7 @@
   "name": "مُنجِز — 02 Service Gateway (sub)",
   "nodes": [
     {
-      "id": "d07b384e-9865-429f-b1fd-1cd58652d835",
+      "id": "1f584ac5-2486-4b93-a0df-195795a03f3a",
       "name": "Gateway Input",
       "type": "n8n-nodes-base.executeWorkflowTrigger",
       "typeVersion": 1.1,
@@ -39,7 +39,7 @@
       }
     },
     {
-      "id": "c7a394f3-e321-40ae-ba89-7ebb1b8dd9d9",
+      "id": "4eb38492-3aa9-453f-aca2-f5d94dc521b1",
       "name": "Fetch Skills Index",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -64,7 +64,7 @@
       "waitBetweenTries": 3000
     },
     {
-      "id": "3e8f57f5-476c-428d-85f4-50bc04b4eae3",
+      "id": "42809fc2-2edd-4d62-a56b-aed77afa8ebc",
       "name": "Gate Check",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -77,7 +77,7 @@
       }
     },
     {
-      "id": "55849c2f-749d-44bf-8a09-a5117e484b7e",
+      "id": "b3faedd7-3692-448d-948d-7a525ac8ddfb",
       "name": "Denied?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
@@ -110,7 +110,7 @@
       }
     },
     {
-      "id": "8b3f0d11-cae9-4cee-8a6e-cdc01d4d94f5",
+      "id": "fee8b2a9-c63e-492d-9232-e5bd279d5565",
       "name": "Denied Result",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -123,7 +123,7 @@
       }
     },
     {
-      "id": "6887f6ef-27ae-4445-85e0-08512999dc43",
+      "id": "f503988d-fd47-4ec0-860c-47b9b94b4580",
       "name": "Service Switch",
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
@@ -326,7 +326,7 @@
       }
     },
     {
-      "id": "2cf3e2b0-ee71-4dd4-b2b4-a7d484583899",
+      "id": "77ec16bf-e0cc-410e-9b8e-faec1d2f167a",
       "name": "svc: not_implemented",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -339,41 +339,36 @@
       }
     },
     {
-      "id": "da48cfdf-3cbd-48d5-93b4-96b017dbcbd0",
+      "id": "4dc4c5d8-e296-4dd1-883b-e3e3942111ec",
       "name": "Read Employees (profile)",
-      "type": "n8n-nodes-base.googleSheets",
-      "typeVersion": 4.5,
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
       "position": [
         -60,
         -320
       ],
       "parameters": {
-        "operation": "read",
-        "documentId": {
+        "operation": "get",
+        "dataTableId": {
           "__rl": true,
-          "value": "REPLACE_WITH_SPREADSHEET_ID",
-          "mode": "id"
+          "mode": "name",
+          "value": "Employees"
         },
-        "sheetName": {
-          "__rl": true,
-          "value": "Employees",
-          "mode": "name"
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": []
         },
-        "options": {}
+        "options": {},
+        "returnAll": true
       },
-      "credentials": {
-        "googleSheetsOAuth2Api": {
-          "id": "SHEETS_CRED_ID",
-          "name": "Google Sheets (demo)"
-        }
-      },
+      "executeOnce": true,
       "alwaysOutputData": true,
       "retryOnFail": true,
       "maxTries": 3,
-      "waitBetweenTries": 4000
+      "waitBetweenTries": 2000
     },
     {
-      "id": "5d52e842-7881-4bb2-ad21-50d4c3dcae6d",
+      "id": "91435d32-63ce-4e0b-9030-f4cfe593cf53",
       "name": "svc: get_employee_profile",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -386,41 +381,36 @@
       }
     },
     {
-      "id": "53db9346-34bd-4af3-a6c4-8c2c6462f140",
+      "id": "023ba9c6-6e6d-4cbe-8c03-8c81a5a0296f",
       "name": "Read LeaveBalances (svc)",
-      "type": "n8n-nodes-base.googleSheets",
-      "typeVersion": 4.5,
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
       "position": [
         -60,
         -150
       ],
       "parameters": {
-        "operation": "read",
-        "documentId": {
+        "operation": "get",
+        "dataTableId": {
           "__rl": true,
-          "value": "REPLACE_WITH_SPREADSHEET_ID",
-          "mode": "id"
+          "mode": "name",
+          "value": "LeaveBalances"
         },
-        "sheetName": {
-          "__rl": true,
-          "value": "LeaveBalances",
-          "mode": "name"
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": []
         },
-        "options": {}
+        "options": {},
+        "returnAll": true
       },
-      "credentials": {
-        "googleSheetsOAuth2Api": {
-          "id": "SHEETS_CRED_ID",
-          "name": "Google Sheets (demo)"
-        }
-      },
+      "executeOnce": true,
       "alwaysOutputData": true,
       "retryOnFail": true,
       "maxTries": 3,
-      "waitBetweenTries": 4000
+      "waitBetweenTries": 2000
     },
     {
-      "id": "4ce94567-1726-4749-b028-adbd6bce6ec9",
+      "id": "5d74f51b-2e26-4318-bbf8-73d152285bd5",
       "name": "svc: get_leave_balance",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -433,75 +423,65 @@
       }
     },
     {
-      "id": "d763de5c-e233-4af9-b577-f5a77d233171",
+      "id": "b4e0c42c-969b-4ea1-b978-a72a9316c689",
       "name": "Read Employees (salary)",
-      "type": "n8n-nodes-base.googleSheets",
-      "typeVersion": 4.5,
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
       "position": [
         -60,
         20
       ],
       "parameters": {
-        "operation": "read",
-        "documentId": {
+        "operation": "get",
+        "dataTableId": {
           "__rl": true,
-          "value": "REPLACE_WITH_SPREADSHEET_ID",
-          "mode": "id"
+          "mode": "name",
+          "value": "Employees"
         },
-        "sheetName": {
-          "__rl": true,
-          "value": "Employees",
-          "mode": "name"
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": []
         },
-        "options": {}
+        "options": {},
+        "returnAll": true
       },
-      "credentials": {
-        "googleSheetsOAuth2Api": {
-          "id": "SHEETS_CRED_ID",
-          "name": "Google Sheets (demo)"
-        }
-      },
+      "executeOnce": true,
       "alwaysOutputData": true,
       "retryOnFail": true,
       "maxTries": 3,
-      "waitBetweenTries": 4000
+      "waitBetweenTries": 2000
     },
     {
-      "id": "d79c5bdc-2fdc-4fa0-b3a9-1ee14301f912",
+      "id": "a79b0d37-43da-4722-96f7-9ad6d56ed36f",
       "name": "Read Transactions (salary)",
-      "type": "n8n-nodes-base.googleSheets",
-      "typeVersion": 4.5,
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
       "position": [
         160,
         20
       ],
       "parameters": {
-        "operation": "read",
-        "documentId": {
+        "operation": "get",
+        "dataTableId": {
           "__rl": true,
-          "value": "REPLACE_WITH_SPREADSHEET_ID",
-          "mode": "id"
+          "mode": "name",
+          "value": "Transactions"
         },
-        "sheetName": {
-          "__rl": true,
-          "value": "Transactions",
-          "mode": "name"
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": []
         },
-        "options": {}
+        "options": {},
+        "returnAll": true
       },
-      "credentials": {
-        "googleSheetsOAuth2Api": {
-          "id": "SHEETS_CRED_ID",
-          "name": "Google Sheets (demo)"
-        }
-      },
+      "executeOnce": true,
       "alwaysOutputData": true,
       "retryOnFail": true,
       "maxTries": 3,
-      "waitBetweenTries": 4000
+      "waitBetweenTries": 2000
     },
     {
-      "id": "c19c451f-3889-4613-b19a-e00e818fef25",
+      "id": "2bfc049b-fb46-4cae-a9db-dff4ada4513c",
       "name": "svc: get_salary_record",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -514,75 +494,65 @@
       }
     },
     {
-      "id": "8374ca7f-1608-4aee-99a5-2c195d821ef6",
+      "id": "82f30a56-d884-419c-a10f-7591a842e29b",
       "name": "Read Transactions (policy)",
-      "type": "n8n-nodes-base.googleSheets",
-      "typeVersion": 4.5,
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
       "position": [
         -60,
         190
       ],
       "parameters": {
-        "operation": "read",
-        "documentId": {
+        "operation": "get",
+        "dataTableId": {
           "__rl": true,
-          "value": "REPLACE_WITH_SPREADSHEET_ID",
-          "mode": "id"
+          "mode": "name",
+          "value": "Transactions"
         },
-        "sheetName": {
-          "__rl": true,
-          "value": "Transactions",
-          "mode": "name"
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": []
         },
-        "options": {}
+        "options": {},
+        "returnAll": true
       },
-      "credentials": {
-        "googleSheetsOAuth2Api": {
-          "id": "SHEETS_CRED_ID",
-          "name": "Google Sheets (demo)"
-        }
-      },
+      "executeOnce": true,
       "alwaysOutputData": true,
       "retryOnFail": true,
       "maxTries": 3,
-      "waitBetweenTries": 4000
+      "waitBetweenTries": 2000
     },
     {
-      "id": "35ddea74-3b27-4862-a472-560ba4c42c72",
+      "id": "09242d50-7a66-4d29-b26c-cc36497720e1",
       "name": "Read ExpensePolicy (svc)",
-      "type": "n8n-nodes-base.googleSheets",
-      "typeVersion": 4.5,
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
       "position": [
         160,
         190
       ],
       "parameters": {
-        "operation": "read",
-        "documentId": {
+        "operation": "get",
+        "dataTableId": {
           "__rl": true,
-          "value": "REPLACE_WITH_SPREADSHEET_ID",
-          "mode": "id"
+          "mode": "name",
+          "value": "ExpensePolicy"
         },
-        "sheetName": {
-          "__rl": true,
-          "value": "ExpensePolicy",
-          "mode": "name"
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": []
         },
-        "options": {}
+        "options": {},
+        "returnAll": true
       },
-      "credentials": {
-        "googleSheetsOAuth2Api": {
-          "id": "SHEETS_CRED_ID",
-          "name": "Google Sheets (demo)"
-        }
-      },
+      "executeOnce": true,
       "alwaysOutputData": true,
       "retryOnFail": true,
       "maxTries": 3,
-      "waitBetweenTries": 4000
+      "waitBetweenTries": 2000
     },
     {
-      "id": "d856514e-6c0b-493e-9b1e-f1c38815d90b",
+      "id": "749491b9-e0a7-464e-ab08-caca64cb678c",
       "name": "svc: get_expense_policy",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -595,41 +565,36 @@
       }
     },
     {
-      "id": "9845b1dd-fc76-4bf6-9013-9dfbe3ce7ac4",
+      "id": "15155554-892c-4cad-8d03-95d4b905544d",
       "name": "Read Employees (roles)",
-      "type": "n8n-nodes-base.googleSheets",
-      "typeVersion": 4.5,
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
       "position": [
         -60,
         360
       ],
       "parameters": {
-        "operation": "read",
-        "documentId": {
+        "operation": "get",
+        "dataTableId": {
           "__rl": true,
-          "value": "REPLACE_WITH_SPREADSHEET_ID",
-          "mode": "id"
+          "mode": "name",
+          "value": "Employees"
         },
-        "sheetName": {
-          "__rl": true,
-          "value": "Employees",
-          "mode": "name"
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": []
         },
-        "options": {}
+        "options": {},
+        "returnAll": true
       },
-      "credentials": {
-        "googleSheetsOAuth2Api": {
-          "id": "SHEETS_CRED_ID",
-          "name": "Google Sheets (demo)"
-        }
-      },
+      "executeOnce": true,
       "alwaysOutputData": true,
       "retryOnFail": true,
       "maxTries": 3,
-      "waitBetweenTries": 4000
+      "waitBetweenTries": 2000
     },
     {
-      "id": "7fef70ba-7764-4dad-9552-275da1d7de1c",
+      "id": "6698007a-b20d-41ea-ae33-f64fdae587b3",
       "name": "svc: get_it_roles",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -642,41 +607,36 @@
       }
     },
     {
-      "id": "d642d455-9c55-47f3-bc7b-934c2c4992c5",
+      "id": "b0d80cb8-a679-4c64-9dde-b13191f03e2d",
       "name": "Read SystemCatalog (svc)",
-      "type": "n8n-nodes-base.googleSheets",
-      "typeVersion": 4.5,
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
       "position": [
         -60,
         530
       ],
       "parameters": {
-        "operation": "read",
-        "documentId": {
+        "operation": "get",
+        "dataTableId": {
           "__rl": true,
-          "value": "REPLACE_WITH_SPREADSHEET_ID",
-          "mode": "id"
+          "mode": "name",
+          "value": "SystemCatalog"
         },
-        "sheetName": {
-          "__rl": true,
-          "value": "SystemCatalog",
-          "mode": "name"
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": []
         },
-        "options": {}
+        "options": {},
+        "returnAll": true
       },
-      "credentials": {
-        "googleSheetsOAuth2Api": {
-          "id": "SHEETS_CRED_ID",
-          "name": "Google Sheets (demo)"
-        }
-      },
+      "executeOnce": true,
       "alwaysOutputData": true,
       "retryOnFail": true,
       "maxTries": 3,
-      "waitBetweenTries": 4000
+      "waitBetweenTries": 2000
     },
     {
-      "id": "315b1a85-9bbd-4a0d-a42b-1a7041054663",
+      "id": "971cfbb7-e78d-40e0-a017-fe94383b49a4",
       "name": "svc: get_system_catalog",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -689,75 +649,65 @@
       }
     },
     {
-      "id": "8ce9382b-ec6d-42f8-b191-80026d304279",
+      "id": "ab9c5ded-f9f6-48df-9655-d497ca47b807",
       "name": "Read Employees (overlap)",
-      "type": "n8n-nodes-base.googleSheets",
-      "typeVersion": 4.5,
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
       "position": [
         -60,
         700
       ],
       "parameters": {
-        "operation": "read",
-        "documentId": {
+        "operation": "get",
+        "dataTableId": {
           "__rl": true,
-          "value": "REPLACE_WITH_SPREADSHEET_ID",
-          "mode": "id"
+          "mode": "name",
+          "value": "Employees"
         },
-        "sheetName": {
-          "__rl": true,
-          "value": "Employees",
-          "mode": "name"
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": []
         },
-        "options": {}
+        "options": {},
+        "returnAll": true
       },
-      "credentials": {
-        "googleSheetsOAuth2Api": {
-          "id": "SHEETS_CRED_ID",
-          "name": "Google Sheets (demo)"
-        }
-      },
+      "executeOnce": true,
       "alwaysOutputData": true,
       "retryOnFail": true,
       "maxTries": 3,
-      "waitBetweenTries": 4000
+      "waitBetweenTries": 2000
     },
     {
-      "id": "aab90f05-8b5a-45fd-9ee3-a18d0c86e355",
+      "id": "bebb1086-9026-49e6-b85f-c4a2a5e5e09a",
       "name": "Read Transactions (overlap)",
-      "type": "n8n-nodes-base.googleSheets",
-      "typeVersion": 4.5,
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
       "position": [
         160,
         700
       ],
       "parameters": {
-        "operation": "read",
-        "documentId": {
+        "operation": "get",
+        "dataTableId": {
           "__rl": true,
-          "value": "REPLACE_WITH_SPREADSHEET_ID",
-          "mode": "id"
+          "mode": "name",
+          "value": "Transactions"
         },
-        "sheetName": {
-          "__rl": true,
-          "value": "Transactions",
-          "mode": "name"
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": []
         },
-        "options": {}
+        "options": {},
+        "returnAll": true
       },
-      "credentials": {
-        "googleSheetsOAuth2Api": {
-          "id": "SHEETS_CRED_ID",
-          "name": "Google Sheets (demo)"
-        }
-      },
+      "executeOnce": true,
       "alwaysOutputData": true,
       "retryOnFail": true,
       "maxTries": 3,
-      "waitBetweenTries": 4000
+      "waitBetweenTries": 2000
     },
     {
-      "id": "b12eb1d9-965f-40bf-a742-466705b95cea",
+      "id": "22dce44e-c2a3-4e63-9b37-c158d010d65b",
       "name": "svc: check_leave_overlap",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -770,41 +720,36 @@
       }
     },
     {
-      "id": "d4ae8624-43a5-417e-8dc4-e121a5e00b92",
+      "id": "88f47bf3-f5a0-4a6c-a1ce-1263d4efe0ff",
       "name": "Read Employees (submit)",
-      "type": "n8n-nodes-base.googleSheets",
-      "typeVersion": 4.5,
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
       "position": [
         -60,
         870
       ],
       "parameters": {
-        "operation": "read",
-        "documentId": {
+        "operation": "get",
+        "dataTableId": {
           "__rl": true,
-          "value": "REPLACE_WITH_SPREADSHEET_ID",
-          "mode": "id"
+          "mode": "name",
+          "value": "Employees"
         },
-        "sheetName": {
-          "__rl": true,
-          "value": "Employees",
-          "mode": "name"
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": []
         },
-        "options": {}
+        "options": {},
+        "returnAll": true
       },
-      "credentials": {
-        "googleSheetsOAuth2Api": {
-          "id": "SHEETS_CRED_ID",
-          "name": "Google Sheets (demo)"
-        }
-      },
+      "executeOnce": true,
       "alwaysOutputData": true,
       "retryOnFail": true,
       "maxTries": 3,
-      "waitBetweenTries": 4000
+      "waitBetweenTries": 2000
     },
     {
-      "id": "5c3ad3fc-659f-4ff7-94d1-d05585ee8cac",
+      "id": "997311bf-9ebb-4c0a-b65a-90c6b81aa731",
       "name": "svc: submit_transaction",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -817,7 +762,7 @@
       }
     },
     {
-      "id": "32b99628-4c53-4f7d-9f4e-af5b315546ed",
+      "id": "93f31e4b-98a2-4f92-84c9-1ed6fa4b427d",
       "name": "Emit Txn Row",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -830,29 +775,24 @@
       }
     },
     {
-      "id": "cd393dee-2a63-45e2-bf64-4840d2f0f6e4",
+      "id": "d24e6a51-ffd2-49e1-afa2-78745db64612",
       "name": "Append Transaction",
-      "type": "n8n-nodes-base.googleSheets",
-      "typeVersion": 4.5,
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
       "position": [
         940,
         870
       ],
       "parameters": {
-        "operation": "append",
-        "documentId": {
+        "operation": "insert",
+        "dataTableId": {
           "__rl": true,
-          "value": "REPLACE_WITH_SPREADSHEET_ID",
-          "mode": "id"
-        },
-        "sheetName": {
-          "__rl": true,
-          "value": "Transactions",
-          "mode": "name"
+          "mode": "name",
+          "value": "Transactions"
         },
         "columns": {
           "mappingMode": "autoMapInputData",
-          "value": {},
+          "value": null,
           "matchingColumns": [],
           "schema": [],
           "attemptToConvertTypes": false,
@@ -860,18 +800,12 @@
         },
         "options": {}
       },
-      "credentials": {
-        "googleSheetsOAuth2Api": {
-          "id": "SHEETS_CRED_ID",
-          "name": "Google Sheets (demo)"
-        }
-      },
       "retryOnFail": true,
       "maxTries": 3,
-      "waitBetweenTries": 4000
+      "waitBetweenTries": 2000
     },
     {
-      "id": "ed50657a-6046-413c-9b80-e69822ad5546",
+      "id": "d4449063-4f4d-4a08-af85-2664b030a4bb",
       "name": "Carry Submit Result",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -884,7 +818,7 @@
       }
     },
     {
-      "id": "0f4ac23f-cb44-452e-9ff7-6a488f85799c",
+      "id": "0028bf9c-ba45-461f-ab75-9fae83de146e",
       "name": "Build Audit Row",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -897,29 +831,24 @@
       }
     },
     {
-      "id": "eca9a7d9-b18d-4bb6-a89e-e0b17dab62f1",
+      "id": "70c06de4-6caf-489d-abe4-dc6c29caba9a",
       "name": "Append AuditLog",
-      "type": "n8n-nodes-base.googleSheets",
-      "typeVersion": 4.5,
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
       "position": [
         1620,
         60
       ],
       "parameters": {
-        "operation": "append",
-        "documentId": {
+        "operation": "insert",
+        "dataTableId": {
           "__rl": true,
-          "value": "REPLACE_WITH_SPREADSHEET_ID",
-          "mode": "id"
-        },
-        "sheetName": {
-          "__rl": true,
-          "value": "AuditLog",
-          "mode": "name"
+          "mode": "name",
+          "value": "AuditLog"
         },
         "columns": {
           "mappingMode": "autoMapInputData",
-          "value": {},
+          "value": null,
           "matchingColumns": [],
           "schema": [],
           "attemptToConvertTypes": false,
@@ -927,18 +856,12 @@
         },
         "options": {}
       },
-      "credentials": {
-        "googleSheetsOAuth2Api": {
-          "id": "SHEETS_CRED_ID",
-          "name": "Google Sheets (demo)"
-        }
-      },
       "retryOnFail": true,
       "maxTries": 3,
-      "waitBetweenTries": 4000
+      "waitBetweenTries": 2000
     },
     {
-      "id": "fbc7f8fc-4635-446b-abdc-f455440c7d30",
+      "id": "58e615fa-3997-409e-90a9-4fdec2219aaf",
       "name": "Return Result",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -951,8 +874,8 @@
       }
     },
     {
-      "id": "ec6acee2-e304-4981-8adf-2bc473998000",
-      "name": "Note 0f09bad0",
+      "id": "982193ae-f23c-4bd2-aab6-ba9db4fb361d",
+      "name": "Note 0081df36",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [

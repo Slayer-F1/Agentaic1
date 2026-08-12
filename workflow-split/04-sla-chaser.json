@@ -2,7 +2,7 @@
   "name": "مُنجِز — 04 SLA Chaser",
   "nodes": [
     {
-      "id": "9e7bfb19-d3f5-439e-89c0-de5c496ca85f",
+      "id": "8df5cc44-3286-4e5b-9e43-7dac84b3f9c8",
       "name": "Every 5 Minutes",
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
@@ -22,7 +22,7 @@
       }
     },
     {
-      "id": "473f220c-25bf-4050-bb8e-bc0c7b18ab24",
+      "id": "e4ede728-9238-42ee-8bfc-d3f605c98811",
       "name": "Manual Test",
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
@@ -33,7 +33,7 @@
       "parameters": {}
     },
     {
-      "id": "b2701ab8-ea2b-4948-b073-23fba255100f",
+      "id": "51ba94ba-28ea-4b6f-bc76-2ec40cf9a7da",
       "name": "Chase Webhook",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
@@ -47,10 +47,10 @@
         "responseMode": "responseNode",
         "options": {}
       },
-      "webhookId": "22098a7e-b58e-4395-8779-0bda1fc755eb"
+      "webhookId": "a5796305-ae03-4b23-af1d-7893ae37f486"
     },
     {
-      "id": "499bf677-75e0-45ad-a3dc-4578d5ee8b68",
+      "id": "90b1841d-0352-4125-a139-227ada04315a",
       "name": "Respond Chase",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.2,
@@ -78,7 +78,7 @@
       }
     },
     {
-      "id": "7f62a0ba-4415-49da-8244-d8465e1f8205",
+      "id": "43413463-b0ff-4675-b250-58326c5c6ec7",
       "name": "Read All",
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
@@ -111,7 +111,7 @@
       }
     },
     {
-      "id": "06658f9a-fdd0-46bd-8970-a1a53bdb8c64",
+      "id": "2657ed09-1383-4435-9e07-a0049e888518",
       "name": "Find Stale",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -124,7 +124,7 @@
       }
     },
     {
-      "id": "a686658f-71f4-4fc4-ad91-19abbb08273b",
+      "id": "4c6badf4-2dfb-413d-aef3-a26615d30e47",
       "name": "Any Stale?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
@@ -156,7 +156,7 @@
       }
     },
     {
-      "id": "ae3eb79e-e936-488f-b0ae-a0a987e927f0",
+      "id": "775c1bc3-8fb9-4dc9-ab85-c8f12d1d59d6",
       "name": "Nothing ✓",
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
@@ -167,7 +167,7 @@
       "parameters": {}
     },
     {
-      "id": "ba274ce9-3889-4b7a-8160-0bc74c185df6",
+      "id": "daa8f8cf-e577-4567-ac6d-6b05251bd120",
       "name": "Chaser Agent",
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 2.2,
@@ -190,7 +190,7 @@
       "waitBetweenTries": 8000
     },
     {
-      "id": "9d6e9808-9ce4-424f-a999-590edc36bd6d",
+      "id": "f4407c07-bc50-4224-9718-0ed86e76ec0d",
       "name": "Gemini Chat Model (chaser)",
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1,
@@ -212,7 +212,7 @@
       }
     },
     {
-      "id": "11de3aa3-7adf-4ccb-8067-adb4b90b004b",
+      "id": "8041f06d-0c8c-4172-8e7c-e19bdea42b31",
       "name": "Chaser Output",
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "typeVersion": 1.2,
@@ -226,7 +226,7 @@
       }
     },
     {
-      "id": "6990eb45-dc0e-4092-abca-09e447c7dd30",
+      "id": "41edc6a6-4e48-495d-b101-5f958fc81534",
       "name": "Flatten",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -239,7 +239,7 @@
       }
     },
     {
-      "id": "17e64795-6de9-42a1-abd5-f39f69a4141c",
+      "id": "9874c209-b4fa-4045-82ab-e6eb4c42e826",
       "name": "Audit Rows",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -252,29 +252,24 @@
       }
     },
     {
-      "id": "1ee586d0-d81e-43da-9e91-69fc67ad5a1a",
+      "id": "d9c6a45a-d1be-4114-9bd8-c9c538f378ee",
       "name": "Append AuditLog (chaser)",
-      "type": "n8n-nodes-base.googleSheets",
-      "typeVersion": 4.5,
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
       "position": [
         520,
         -40
       ],
       "parameters": {
-        "operation": "append",
-        "documentId": {
+        "operation": "insert",
+        "dataTableId": {
           "__rl": true,
-          "value": "REPLACE_WITH_SPREADSHEET_ID",
-          "mode": "id"
-        },
-        "sheetName": {
-          "__rl": true,
-          "value": "AuditLog",
-          "mode": "name"
+          "mode": "name",
+          "value": "AuditLog"
         },
         "columns": {
           "mappingMode": "autoMapInputData",
-          "value": {},
+          "value": null,
           "matchingColumns": [],
           "schema": [],
           "attemptToConvertTypes": false,
@@ -282,18 +277,12 @@
         },
         "options": {}
       },
-      "credentials": {
-        "googleSheetsOAuth2Api": {
-          "id": "SHEETS_CRED_ID",
-          "name": "Google Sheets (demo)"
-        }
-      },
       "retryOnFail": true,
       "maxTries": 3,
-      "waitBetweenTries": 4000
+      "waitBetweenTries": 2000
     },
     {
-      "id": "ac483eb4-7d11-4ae5-890f-9fd962966d27",
+      "id": "209d1b8e-fce8-413e-ba44-195c834929fd",
       "name": "Carry Decisions",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -306,7 +295,7 @@
       }
     },
     {
-      "id": "6ca81348-3b2b-44a5-99d1-796334f4e5bc",
+      "id": "f1032ca5-84c5-476d-af03-9bebf39e599f",
       "name": "Chaser Switch",
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
@@ -369,54 +358,30 @@
       }
     },
     {
-      "id": "0ce4ef11-146c-48c2-8e7f-af1584619ffe",
+      "id": "b4c1ae68-9ef2-4893-b30f-2edd48b00c6e",
       "name": "Remind Approver",
-      "type": "n8n-nodes-base.gmail",
-      "typeVersion": 2.1,
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
       "position": [
         540,
         -140
       ],
-      "parameters": {
-        "sendTo": "={{ $json.approver_email || 'munjiz.demo.uae@gmail.com' }}",
-        "subject": "=⏰ مُنجِز: معاملة بانتظار اعتمادك — {{ $json.txn_id }}",
-        "message": "={{ $json.type_ar + ' للموظف ' + $json.employee + ' منذ ' + $json.age_hours + ' ساعة. ' + $json.justification_ar }}",
-        "options": {}
-      },
-      "credentials": {
-        "gmailOAuth2": {
-          "id": "GMAIL_CRED_ID",
-          "name": "Gmail (demo)"
-        }
-      },
-      "onError": "continueRegularOutput"
+      "parameters": {}
     },
     {
-      "id": "2a300587-dbe8-4600-8962-9f1dabafbda1",
+      "id": "1e595d86-d1b5-4a45-a4b6-a63f815e584a",
       "name": "Escalate",
-      "type": "n8n-nodes-base.gmail",
-      "typeVersion": 2.1,
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
       "position": [
         540,
         60
       ],
-      "parameters": {
-        "sendTo": "munjiz.demo.uae@gmail.com",
-        "subject": "=🔺 مُنجِز: معاملة تجاوزت SLA — {{ $json.txn_id }}",
-        "message": "={{ $json.type_ar + ' للموظف ' + $json.employee + ' متأخرة ' + $json.age_hours + ' ساعة (sla ' + $json.sla_hours + '). ' + $json.justification_ar }}",
-        "options": {}
-      },
-      "credentials": {
-        "gmailOAuth2": {
-          "id": "GMAIL_CRED_ID",
-          "name": "Gmail (demo)"
-        }
-      },
-      "onError": "continueRegularOutput"
+      "parameters": {}
     },
     {
-      "id": "c75a010f-cf88-455b-b0d6-41b5def517d9",
-      "name": "Note 4e22a6f6",
+      "id": "39114ee1-f3d4-4ab9-af66-05e45113de76",
+      "name": "Note a8e16f89",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [

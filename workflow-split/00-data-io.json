@@ -2,7 +2,7 @@
   "name": "مُنجِز — 00 Data IO (sub)",
   "nodes": [
     {
-      "id": "44d4a933-8859-4c85-a894-4f12086abae2",
+      "id": "aa226585-b54c-48bd-bcf4-4b0a1fb117ef",
       "name": "Data Input",
       "type": "n8n-nodes-base.executeWorkflowTrigger",
       "typeVersion": 1.1,
@@ -27,7 +27,7 @@
       }
     },
     {
-      "id": "1fb4aaa2-7bc7-42a4-a750-eae198f0d954",
+      "id": "eecdc450-4c92-42ea-bdf5-06e383532ebb",
       "name": "Action?",
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
@@ -90,41 +90,36 @@
       }
     },
     {
-      "id": "657a3fb5-e269-466e-b8c9-ac609233e6f7",
+      "id": "9bdb9e58-df06-4ae5-9b29-48199a344f8c",
       "name": "Read Tab",
-      "type": "n8n-nodes-base.googleSheets",
-      "typeVersion": 4.5,
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
       "position": [
         -200,
         -140
       ],
       "parameters": {
-        "operation": "read",
-        "documentId": {
+        "operation": "get",
+        "dataTableId": {
           "__rl": true,
-          "value": "REPLACE_WITH_SPREADSHEET_ID",
-          "mode": "id"
+          "mode": "name",
+          "value": "={{ $('Data Input').first().json.tab }}"
         },
-        "sheetName": {
-          "__rl": true,
-          "value": "={{ $('Data Input').first().json.tab }}",
-          "mode": "name"
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": []
         },
-        "options": {}
+        "options": {},
+        "returnAll": true
       },
-      "credentials": {
-        "googleSheetsOAuth2Api": {
-          "id": "SHEETS_CRED_ID",
-          "name": "Google Sheets (demo)"
-        }
-      },
+      "executeOnce": true,
       "alwaysOutputData": true,
       "retryOnFail": true,
       "maxTries": 3,
-      "waitBetweenTries": 4000
+      "waitBetweenTries": 2000
     },
     {
-      "id": "a9eb6b04-fcff-4812-a889-ae26224a44b6",
+      "id": "31c4efbf-c893-4529-b80e-dff7ed1152bc",
       "name": "Wrap Rows",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -137,225 +132,141 @@
       }
     },
     {
-      "id": "140e5dbe-b3d1-44f0-a300-4e79df934343",
+      "id": "a0eaf1af-056a-4a22-94cb-ec493ef63c57",
       "name": "Read Employees",
-      "type": "n8n-nodes-base.googleSheets",
-      "typeVersion": 4.5,
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
       "position": [
         -200,
         140
       ],
       "parameters": {
-        "operation": "read",
-        "documentId": {
+        "operation": "get",
+        "dataTableId": {
           "__rl": true,
-          "value": "REPLACE_WITH_SPREADSHEET_ID",
-          "mode": "id"
+          "mode": "name",
+          "value": "Employees"
         },
-        "sheetName": {
-          "__rl": true,
-          "value": "Employees",
-          "mode": "name"
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": []
         },
-        "options": {}
+        "options": {},
+        "returnAll": true
       },
-      "credentials": {
-        "googleSheetsOAuth2Api": {
-          "id": "SHEETS_CRED_ID",
-          "name": "Google Sheets (demo)"
-        }
-      },
+      "executeOnce": true,
       "alwaysOutputData": true,
       "retryOnFail": true,
       "maxTries": 3,
-      "waitBetweenTries": 4000
+      "waitBetweenTries": 2000
     },
     {
-      "id": "f27b81c5-dc4f-4c2c-9f7a-69de9aef6027",
+      "id": "38048e4f-7b14-4d3a-bd2a-0400641871ef",
       "name": "Read LeaveBalances",
-      "type": "n8n-nodes-base.googleSheets",
-      "typeVersion": 4.5,
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
       "position": [
         20,
         140
       ],
       "parameters": {
-        "operation": "read",
-        "documentId": {
+        "operation": "get",
+        "dataTableId": {
           "__rl": true,
-          "value": "REPLACE_WITH_SPREADSHEET_ID",
-          "mode": "id"
+          "mode": "name",
+          "value": "LeaveBalances"
         },
-        "sheetName": {
-          "__rl": true,
-          "value": "LeaveBalances",
-          "mode": "name"
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": []
         },
-        "options": {}
+        "options": {},
+        "returnAll": true
       },
-      "credentials": {
-        "googleSheetsOAuth2Api": {
-          "id": "SHEETS_CRED_ID",
-          "name": "Google Sheets (demo)"
-        }
-      },
+      "executeOnce": true,
       "alwaysOutputData": true,
       "retryOnFail": true,
       "maxTries": 3,
-      "waitBetweenTries": 4000
+      "waitBetweenTries": 2000
     },
     {
-      "id": "fa2729e1-e4ef-4136-a8bf-ba0e124dbc4d",
-      "name": "Read ExpensePolicy",
-      "type": "n8n-nodes-base.googleSheets",
-      "typeVersion": 4.5,
+      "id": "fba7bd78-0305-4f81-97dd-4a21bfc8c979",
+      "name": "Read Transactions",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
       "position": [
         240,
         140
       ],
       "parameters": {
-        "operation": "read",
-        "documentId": {
+        "operation": "get",
+        "dataTableId": {
           "__rl": true,
-          "value": "REPLACE_WITH_SPREADSHEET_ID",
-          "mode": "id"
+          "mode": "name",
+          "value": "Transactions"
         },
-        "sheetName": {
-          "__rl": true,
-          "value": "ExpensePolicy",
-          "mode": "name"
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": []
         },
-        "options": {}
+        "options": {},
+        "returnAll": true
       },
-      "credentials": {
-        "googleSheetsOAuth2Api": {
-          "id": "SHEETS_CRED_ID",
-          "name": "Google Sheets (demo)"
-        }
-      },
+      "executeOnce": true,
       "alwaysOutputData": true,
       "retryOnFail": true,
       "maxTries": 3,
-      "waitBetweenTries": 4000
+      "waitBetweenTries": 2000
     },
     {
-      "id": "f98f4330-d526-46a5-8211-380605d89def",
-      "name": "Read SystemCatalog",
-      "type": "n8n-nodes-base.googleSheets",
-      "typeVersion": 4.5,
+      "id": "2c14f580-f2d2-4761-93b6-92efccd13ee0",
+      "name": "Read AuditLog",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
       "position": [
         460,
         140
       ],
       "parameters": {
-        "operation": "read",
-        "documentId": {
+        "operation": "get",
+        "dataTableId": {
           "__rl": true,
-          "value": "REPLACE_WITH_SPREADSHEET_ID",
-          "mode": "id"
+          "mode": "name",
+          "value": "AuditLog"
         },
-        "sheetName": {
-          "__rl": true,
-          "value": "SystemCatalog",
-          "mode": "name"
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": []
         },
-        "options": {}
+        "options": {},
+        "returnAll": false,
+        "limit": 120,
+        "orderBy": true,
+        "orderByColumn": "createdAt",
+        "orderByDirection": "DESC"
       },
-      "credentials": {
-        "googleSheetsOAuth2Api": {
-          "id": "SHEETS_CRED_ID",
-          "name": "Google Sheets (demo)"
-        }
-      },
+      "executeOnce": true,
       "alwaysOutputData": true,
       "retryOnFail": true,
       "maxTries": 3,
-      "waitBetweenTries": 4000
+      "waitBetweenTries": 2000
     },
     {
-      "id": "5c4d463b-5ac4-45c6-94aa-340b6d8ddfbe",
-      "name": "Read Transactions",
-      "type": "n8n-nodes-base.googleSheets",
-      "typeVersion": 4.5,
+      "id": "c57d5278-8c38-4f41-9177-0155b53ab536",
+      "name": "Assemble All",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
       "position": [
         680,
         140
       ],
       "parameters": {
-        "operation": "read",
-        "documentId": {
-          "__rl": true,
-          "value": "REPLACE_WITH_SPREADSHEET_ID",
-          "mode": "id"
-        },
-        "sheetName": {
-          "__rl": true,
-          "value": "Transactions",
-          "mode": "name"
-        },
-        "options": {}
-      },
-      "credentials": {
-        "googleSheetsOAuth2Api": {
-          "id": "SHEETS_CRED_ID",
-          "name": "Google Sheets (demo)"
-        }
-      },
-      "alwaysOutputData": true,
-      "retryOnFail": true,
-      "maxTries": 3,
-      "waitBetweenTries": 4000
-    },
-    {
-      "id": "189aa893-d524-4665-b9ec-1c620a21d65b",
-      "name": "Read AuditLog",
-      "type": "n8n-nodes-base.googleSheets",
-      "typeVersion": 4.5,
-      "position": [
-        900,
-        140
-      ],
-      "parameters": {
-        "operation": "read",
-        "documentId": {
-          "__rl": true,
-          "value": "REPLACE_WITH_SPREADSHEET_ID",
-          "mode": "id"
-        },
-        "sheetName": {
-          "__rl": true,
-          "value": "AuditLog",
-          "mode": "name"
-        },
-        "options": {}
-      },
-      "credentials": {
-        "googleSheetsOAuth2Api": {
-          "id": "SHEETS_CRED_ID",
-          "name": "Google Sheets (demo)"
-        }
-      },
-      "alwaysOutputData": true,
-      "retryOnFail": true,
-      "maxTries": 3,
-      "waitBetweenTries": 4000
-    },
-    {
-      "id": "357f97a2-919d-46bb-9966-f39727ebd7da",
-      "name": "Assemble All",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        1120,
-        140
-      ],
-      "parameters": {
-        "jsCode": "const grab = (n) => { try { return $(n).all().map(i => i.json).filter(r => r && Object.keys(r).length > 0); } catch (e) { return []; } };\nreturn [{ json: {\n  employees: grab('Read Employees'), balances: grab('Read LeaveBalances'),\n  policy: grab('Read ExpensePolicy'), systems: grab('Read SystemCatalog'),\n  transactions: grab('Read Transactions'), audit: grab('Read AuditLog'),\n} }];\n"
+        "jsCode": "const grab = (n) => { try { return $(n).all().map(i => i.json).filter(r => r && Object.keys(r).length > 0); } catch (e) { return []; } };\nreturn [{ json: {\n  employees: grab('Read Employees'), balances: grab('Read LeaveBalances'),\n  transactions: grab('Read Transactions'), audit: grab('Read AuditLog'),\n} }];\n"
       }
     },
     {
-      "id": "336cbc68-a2ec-402c-9f91-cc3891935aeb",
-      "name": "Note 680106eb",
+      "id": "81a397ff-4a4a-4c4f-af41-dbace1eeacb9",
+      "name": "Note 2f30e363",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
@@ -423,28 +334,6 @@
       ]
     },
     "Read LeaveBalances": {
-      "main": [
-        [
-          {
-            "node": "Read ExpensePolicy",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Read ExpensePolicy": {
-      "main": [
-        [
-          {
-            "node": "Read SystemCatalog",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Read SystemCatalog": {
       "main": [
         [
           {

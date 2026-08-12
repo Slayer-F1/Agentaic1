@@ -2,7 +2,7 @@
   "name": "مُنجِز — 06 Error Handler",
   "nodes": [
     {
-      "id": "16af8dfe-d395-4373-9f18-8ca20ee0af86",
+      "id": "cdf12247-dc2c-41c8-83fd-0cd5f7db45fa",
       "name": "Error Trigger",
       "type": "n8n-nodes-base.errorTrigger",
       "typeVersion": 1,
@@ -13,7 +13,7 @@
       "parameters": {}
     },
     {
-      "id": "75044de5-cd07-4843-8497-10b523d13ecb",
+      "id": "0c81d250-b169-4040-a1a6-2a7d6680e0ca",
       "name": "Extract",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -22,34 +22,41 @@
         0
       ],
       "parameters": {
-        "jsCode": "const j = $json;\nreturn [{ json: { wf: (j.workflow || {}).name || '?', node: (j.execution || {}).lastNodeExecuted || '?',\n  msg: ((j.execution || {}).error || {}).message || '?', at: new Date().toISOString() } }];\n"
+        "jsCode": "const j = $json;\nconst wfName = (j.workflow || {}).name || '?';\nconst nodeName = (j.execution || {}).lastNodeExecuted || '?';\nconst msg = ((j.execution || {}).error || {}).message || '?';\nreturn [{ json: { ts: new Date().toISOString(), session_id: 'error-handler',\n  employee_id: '', skill_id: '', service: 'workflow_error',\n  request_json: JSON.stringify({ workflow: wfName, node: nodeName }),\n  result_summary: msg } }];\n"
       }
     },
     {
-      "id": "01d6be1e-2b5c-4e85-ab53-380f8228ab88",
+      "id": "c78c4d2d-d896-432b-ba27-5238d088d6f1",
       "name": "Notify",
-      "type": "n8n-nodes-base.gmail",
-      "typeVersion": 2.1,
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
       "position": [
         -60,
         0
       ],
       "parameters": {
-        "sendTo": "munjiz.demo.uae@gmail.com",
-        "subject": "=⚙️ مُنجِز — خطأ تشغيلي: {{ $json.wf }}",
-        "message": "={{ 'Node: ' + $json.node + ' — ' + $json.msg + ' @ ' + $json.at }}",
+        "operation": "insert",
+        "dataTableId": {
+          "__rl": true,
+          "mode": "name",
+          "value": "AuditLog"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": null,
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
         "options": {}
       },
-      "credentials": {
-        "gmailOAuth2": {
-          "id": "GMAIL_CRED_ID",
-          "name": "Gmail (demo)"
-        }
-      },
-      "onError": "continueRegularOutput"
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000
     },
     {
-      "id": "4b1463c8-d457-4853-844f-559ba5add6e9",
+      "id": "951aba57-7e1e-49b1-bc04-e1966d273a63",
       "name": "Logged ✓",
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
@@ -60,8 +67,8 @@
       "parameters": {}
     },
     {
-      "id": "861cb434-e148-427b-bf89-dd571ef41eac",
-      "name": "Note c31c3ee1",
+      "id": "5fd71664-8820-4666-811a-0e3dcb78a8c2",
+      "name": "Note 18d00e01",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [

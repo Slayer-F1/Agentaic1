@@ -269,6 +269,8 @@ dialog .dlg-f{padding:14px 20px;border-top:1px solid var(--line);display:flex;ga
 <script>
 "use strict";
 const $=(s,e=document)=>e.querySelector(s), $$=(s,e=document)=>[...e.querySelectorAll(s)];
+/* Each poll runs a real n8n workflow, so keep it modest and pause when hidden. */
+const POLL_MS=10000;
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
 /* ---------------- i18n ---------------- */
@@ -649,7 +651,8 @@ function boot(){
  $("#composer").addEventListener("submit",e=>{e.preventDefault();sendChat();});
  $("#btnNew").addEventListener("click",()=>newSession());
  fetchState(true).then(()=>{welcome();});
- pollT=setInterval(fetchState,3000);
+ pollT=setInterval(()=>{if(!document.hidden)fetchState();},POLL_MS);
+ document.addEventListener("visibilitychange",()=>{if(!document.hidden)fetchState();});
 }
 applyLang();boot();
 </script>

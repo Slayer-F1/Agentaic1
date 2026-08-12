@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
 """One-command deploy of the Munjiz workflows into the running n8n container.
 
-    python tools/deploy.py                          # import + publish as-is
-    python tools/deploy.py --spreadsheet-id <ID>    # also wire the Google Sheet
+    python tools/deploy.py            # import, activate, bind credentials, seed
+    python tools/deploy.py --split    # deploy the 8-file granular set instead
 
 Run it AFTER you have created the n8n owner account at http://localhost:<port>
 (n8n does not register webhooks on an instance that has not been set up).
 
-Never touches credentials: the Gemini / Sheets / Gmail keys are entered by you in
-the n8n UI and stay encrypted inside the n8n_data volume.
+Never touches credentials: the Gemini key is entered by you in the n8n UI and
+stays encrypted inside the n8n_data volume. There is no other credential - the
+datastore is n8n's own Data Tables, provisioned by this script.
 """
 import argparse
 import json
@@ -30,7 +31,6 @@ SPLIT_DIR = os.path.join(ROOT, "workflow-split")
 MERGED_IDS = ["munjizDataIo0000", "munjizMain000001", "munjizGateway002", "munjizErrorHnd06"]
 SPLIT_IDS = ["munjizDataIo0000", "munjizChatAgent1", "munjizGateway002", "munjizApprovals3",
              "munjizSlaChaser4", "munjizDashApi005", "munjizErrorHnd06", "munjizDemoReset7"]
-PLACEHOLDER = "REPLACE_WITH_SPREADSHEET_ID"
 
 
 def run(args, check=True, quiet=False):
@@ -69,10 +69,9 @@ def wait_healthy(port, timeout=180):
     return False
 
 
+# The datastore is n8n's own Data Tables, so Gemini is the only credential.
 CRED_TYPES = {
     "googlePalmApi": "Google Gemini (AI Studio)",
-    "googleSheetsOAuth2Api": "Google Sheets",
-    "gmailOAuth2": "Gmail",
 }
 
 
@@ -126,8 +125,8 @@ def owner_exists(port):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--spreadsheet-id", default=None,
-                    help="Google Sheet id of your Munjiz Registry (replaces %s)" % PLACEHOLDER)
+    ap.add_argument("--no-seed", action="store_true",
+                    help="skip provisioning/seeding the data tables")
     ap.add_argument("--container", default="munjiz-n8n")
     ap.add_argument("--port", default=None)
     ap.add_argument("--skip-owner-check", action="store_true")
@@ -165,23 +164,17 @@ def main():
         print("   missing credential types: %s" % ", ".join(missing))
         print("   (create them in the n8n UI; re-run and every node is bound automatically)")
 
-    staged, sheet_hits, cred_hits = 0, 0, 0
+    staged, cred_hits = 0, 0
     for fn in sorted(os.listdir(src_dir)):
         if not fn.endswith(".json"):
             continue
         text = open(os.path.join(src_dir, fn), encoding="utf-8").read()
-        if a.spreadsheet_id and PLACEHOLDER in text:
-            text = text.replace(PLACEHOLDER, a.spreadsheet_id)
-            sheet_hits += 1
         doc = json.loads(text)
         cred_hits += wire_credentials(doc, creds)
         with open(os.path.join(tmp, fn), "w", encoding="utf-8") as f:
             json.dump(doc, f, ensure_ascii=False, indent=2)
         staged += 1
-    print("-> staged %d workflows (sheet id in %d files, %d credential refs bound)"
-          % (staged, sheet_hits, cred_hits))
-    if not a.spreadsheet_id:
-        print("   note: no --spreadsheet-id given; Sheets nodes keep the placeholder")
+    print("-> staged %d workflows (%d credential refs bound)" % (staged, cred_hits))
 
     # 2. copy into the container and import (stable ids => updates in place, no duplicates)
     # Unique destination per run: docker cp writes as root while the container
@@ -223,6 +216,18 @@ def main():
         sys.exit(1)
 
     shutil.rmtree(tmp, ignore_errors=True)
+
+    if not a.no_seed:
+        print("-> provisioning data tables (create + clear + seed)")
+        try:
+            req = urllib.request.Request(
+                "http://localhost:%s/webhook/munjiz/reset" % port,
+                data=b"{}", headers={"Content-Type": "application/json"}, method="POST")
+            with urllib.request.urlopen(req, timeout=180) as r:
+                print("   %s" % r.read(120).decode("utf-8", "replace").strip())
+        except Exception as e:
+            print("   !! seeding failed: %s (run it later from the portal's reset button)" % e)
+
     url = "http://localhost:%s/webhook/munjiz/state" % port
     try:
         with urllib.request.urlopen(url, timeout=30) as r:
@@ -235,11 +240,11 @@ def main():
         else:
             print("Workflows are live, but the response body is empty: the workflow ran and")
             print("stopped before responding - almost always a missing credential.")
-            print("Add the Gemini / Sheets / Gmail credentials in the n8n UI (and pass")
-            print("--spreadsheet-id), then re-run. See n8n -> Executions for the failing node.")
+            print("Add the Google Gemini credential in the n8n UI, then re-run.")
+            print("See n8n -> Executions for the failing node.")
     except urllib.error.HTTPError as e:
         print("-> webhook responded HTTP %s (workflow reached, likely missing credentials)" % e.code)
-        print("   add the Gemini / Sheets / Gmail credentials in the n8n UI, then retry")
+        print("   add the Google Gemini credential in the n8n UI, then retry")
     except Exception as e:
         print("!! webhook not reachable: %s" % e)
         print("   check that workflow 05 shows as Active in the n8n UI")
