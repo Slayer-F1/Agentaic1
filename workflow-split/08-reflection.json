@@ -1,0 +1,494 @@
+{
+  "name": "مُنجِز — 08 Reflection (learning pass)",
+  "nodes": [
+    {
+      "id": "ed0a1efe-17a8-42dd-9595-d119e769b544",
+      "name": "Every 15 Minutes",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -1200,
+        -140
+      ],
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 15
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "186af773-5966-4f98-9bef-e130f8e48d74",
+      "name": "Reflect Manually",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1200,
+        30
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "0d39e529-30f7-4c21-b786-5ab1f2a4504a",
+      "name": "Reflect Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -1200,
+        200
+      ],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "munjiz/reflect",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "webhookId": "9a249ab3-e44f-449a-92d1-b304cf182ce2"
+    },
+    {
+      "id": "c0bb9ff5-4d5f-4829-b2ad-f414a72298c9",
+      "name": "Respond Reflect",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.2,
+      "position": [
+        -1000,
+        200
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"ok\": true, \"started\": true } }}",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              },
+              {
+                "name": "Access-Control-Allow-Headers",
+                "value": "Content-Type"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "f553e5dc-d39e-4f2d-a514-46530e3d9b02",
+      "name": "Read All (reflect)",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        -960,
+        30
+      ],
+      "parameters": {
+        "source": "database",
+        "workflowId": {
+          "__rl": true,
+          "value": "munjizDataIo0000",
+          "mode": "list",
+          "cachedResultName": "مُنجِز — 00 Data IO (sub)"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "action": "read_all",
+            "tab": ""
+          },
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      }
+    },
+    {
+      "id": "a8b17d1a-676c-4a6e-b451-3b9dcc444900",
+      "name": "Gather Batch",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -740,
+        30
+      ],
+      "parameters": {
+        "jsCode": "const d = $json;\nconst now = Date.now();\n// Only look at the recent slice: reflection is cheap because it is bounded.\nconst recent = (d.transactions || []).filter(t => {\n  const ts = new Date(t.updated_at || t.ts).getTime();\n  return !isNaN(ts) && (now - ts) < 24 * 3600 * 1000;\n});\nconst audit = (d.audit || []).slice(0, 40);\nconst denials = audit.filter(a => String(a.result_summary || '').startsWith('DENIED'));\nconst batch = recent.map(t => ({ txn_id: t.txn_id, skill_id: t.skill_id,\n  status: t.status, type_ar: t.type_ar, employee_id: t.employee_id,\n  payload: t.payload_json, decision_note: t.decision_note }));\nreturn [{ json: { batch, batch_size: batch.length,\n  denial_count: denials.length,\n  denials: denials.map(a => ({ skill_id: a.skill_id, service: a.service })),\n  now: new Date().toISOString() } }];\n"
+      }
+    },
+    {
+      "id": "ebfa1a17-ab2f-4ff5-9482-8013ceda8aac",
+      "name": "Anything To Learn?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -520,
+        30
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.batch_size }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "703ac527-6db4-43c5-9479-e5fd83a48065",
+      "name": "Nothing New ✓",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -300,
+        200
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "34a03f43-fbac-40e0-891a-60f17b3ba561",
+      "name": "Fetch Reflection Charter",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -300,
+        -80
+      ],
+      "parameters": {
+        "method": "GET",
+        "url": "https://raw.githubusercontent.com/Slayer-F1/Agentaic1/main/skills/reflection.skill.md",
+        "options": {
+          "timeout": 20000,
+          "response": {
+            "response": {
+              "responseFormat": "text"
+            }
+          }
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 3000
+    },
+    {
+      "id": "d07b6cb4-1c7d-4147-9b8e-3f40e137d031",
+      "name": "Reflection Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        -60,
+        -80
+      ],
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ 'ميثاق المراجعة:\\n' + $json.data + '\\n\\nدفعة المعاملات الأخيرة:\\n' + JSON.stringify($('Gather Batch').first().json.batch) + '\\n\\nحالات رفض الحوكمة:\\n' + JSON.stringify($('Gather Batch').first().json.denials) }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "أنت «مراجع ما بعد الدور» في منظومة مُنجِز. تعمل بعد أن حصل الموظفون على إجاباتهم، ومهمتك الوحيدة تحسين ذاكرة المنظومة ومهاراتها. التزم حرفيًا بميثاق المراجعة المحمّل أدناه، وخصوصًا القائمة السلبية والفصل بين الذاكرة والمهارة. ابدأ دائمًا بـ read_memory قبل أي كتابة. مرور بلا تحديث = فرصة ضائعة، لكن لا تكتب ما تمنعه القائمة السلبية. أعد JSON فقط.",
+          "maxIterations": 12,
+          "returnIntermediateSteps": true
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 2,
+      "waitBetweenTries": 8000
+    },
+    {
+      "id": "4f2e32f6-07e0-4304-b18e-f35bbf119a05",
+      "name": "Gemini Chat Model (reflect)",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -180,
+        180
+      ],
+      "parameters": {
+        "modelName": "models/gemini-2.5-flash",
+        "options": {
+          "temperature": 0.3
+        }
+      },
+      "credentials": {
+        "googlePalmApi": {
+          "id": "GEMINI_CRED_ID",
+          "name": "Google Gemini (AI Studio)"
+        }
+      }
+    },
+    {
+      "id": "c61b6cbf-28ef-4d8b-8aad-1eae9c039085",
+      "name": "Reflection Output",
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        -20,
+        180
+      ],
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"memory_writes\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"action\": {\n            \"type\": \"string\"\n          },\n          \"scope\": {\n            \"type\": \"string\"\n          },\n          \"content\": {\n            \"type\": \"string\"\n          },\n          \"why\": {\n            \"type\": \"string\"\n          }\n        },\n        \"required\": [\n          \"action\",\n          \"content\",\n          \"why\"\n        ]\n      }\n    },\n    \"patch_proposals\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"skill_id\": {\n            \"type\": \"string\"\n          },\n          \"proposed_text\": {\n            \"type\": \"string\"\n          },\n          \"rationale\": {\n            \"type\": \"string\"\n          }\n        },\n        \"required\": [\n          \"skill_id\",\n          \"proposed_text\",\n          \"rationale\"\n        ]\n      }\n    },\n    \"skipped_reason\": {\n      \"type\": \"string\",\n      \"description\": \"إن لم تُجرِ أي تحديث، اذكر لماذا صراحةً\"\n    }\n  },\n  \"required\": [\n    \"memory_writes\",\n    \"patch_proposals\"\n  ]\n}"
+      }
+    },
+    {
+      "id": "d9f3a84d-fd2d-47aa-8fb8-9fbb104fb47b",
+      "name": "call_service (learning)",
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        140,
+        180
+      ],
+      "parameters": {
+        "name": "call_service",
+        "description": "بوابة الخدمات نفسها، لكن صلاحيتك محصورة في: read_memory (اقرأ الذاكرة أولًا)، write_memory (add/replace/remove مع content)، propose_skill_patch (skill_id + proposed_text + rationale). أي خدمة أخرى سترفضها الحوكمة.",
+        "source": "database",
+        "workflowId": {
+          "__rl": true,
+          "value": "munjizGateway002",
+          "mode": "list",
+          "cachedResultName": "مُنجِز — 02 Service Gateway (sub)"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "service": "={{ $fromAI('service', 'read_memory | write_memory | propose_skill_patch', 'string') }}",
+            "payload": "={{ $fromAI('payload', 'JSON string payload for the service', 'string') }}",
+            "skill_id": "reflection",
+            "employee_id": "={{ $fromAI('employee_id', 'the employee this memory is about, or empty for org scope', 'string') }}",
+            "session_id": "reflection"
+          },
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      }
+    },
+    {
+      "id": "606c04a3-bde1-4cf4-b212-54d66ef95a36",
+      "name": "Log Reflection",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        180,
+        -80
+      ],
+      "parameters": {
+        "jsCode": "const o = $json.output || {};\nconst n = (o.memory_writes || []).length + (o.patch_proposals || []).length;\nreturn [{ json: { ts: new Date().toISOString(), session_id: 'reflection',\n  employee_id: '', skill_id: 'reflection', service: 'reflection_pass',\n  request_json: JSON.stringify({ batch: $('Gather Batch').first().json.batch_size }),\n  result_summary: n + ' تحديث: ' + ((o.memory_writes || []).map(m => m.why).join(' | ')\n    || o.skipped_reason || 'لا جديد') } }];\n"
+      }
+    },
+    {
+      "id": "c4dc5488-18b3-4e76-b725-2b91100b31dd",
+      "name": "Append Reflection Log",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        400,
+        -80
+      ],
+      "parameters": {
+        "operation": "insert",
+        "dataTableId": {
+          "__rl": true,
+          "mode": "name",
+          "value": "AuditLog"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": null,
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000
+    },
+    {
+      "id": "9e8eefb1-6a5f-4173-b711-2741767efd9c",
+      "name": "Note 781d980c",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1220,
+        -420
+      ],
+      "parameters": {
+        "content": "## 08 Reflection — حلقة التعلّم\nA SECOND agent pass, after the employee already has their answer.\n\nIts charter (`skills/reflection.skill.md`) is itself a governed skill, so the\nreviewer cannot rewrite its own rules. The gateway restricts it to three\nservices; memory is capped at 2200 chars per scope, and on overflow the write\nis refused with the full inventory attached so it must merge or delete.\n\nIt may only FILE a skill proposal — approval is a human act (criterion ⑥).",
+        "width": 680,
+        "height": 250,
+        "color": 4
+      }
+    }
+  ],
+  "connections": {
+    "Reflect Webhook": {
+      "main": [
+        [
+          {
+            "node": "Respond Reflect",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Every 15 Minutes": {
+      "main": [
+        [
+          {
+            "node": "Read All (reflect)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reflect Manually": {
+      "main": [
+        [
+          {
+            "node": "Read All (reflect)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Respond Reflect": {
+      "main": [
+        [
+          {
+            "node": "Read All (reflect)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read All (reflect)": {
+      "main": [
+        [
+          {
+            "node": "Gather Batch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gather Batch": {
+      "main": [
+        [
+          {
+            "node": "Anything To Learn?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Anything To Learn?": {
+      "main": [
+        [
+          {
+            "node": "Fetch Reflection Charter",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Nothing New ✓",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini Chat Model (reflect)": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Reflection Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reflection Output": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Reflection Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "call_service (learning)": {
+      "ai_tool": [
+        [
+          {
+            "node": "Reflection Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reflection Agent": {
+      "main": [
+        [
+          {
+            "node": "Log Reflection",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log Reflection": {
+      "main": [
+        [
+          {
+            "node": "Append Reflection Log",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {},
+  "id": "munjizReflect008"
+}

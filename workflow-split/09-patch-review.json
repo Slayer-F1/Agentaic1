@@ -1,0 +1,302 @@
+{
+  "name": "مُنجِز — 09 Patch Review",
+  "nodes": [
+    {
+      "id": "dd47ebfa-dc73-4487-9021-d8276a61e044",
+      "name": "POST Patch",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -700,
+        0
+      ],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "munjiz/patch",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "webhookId": "44fc38de-1be5-45e6-8b49-1c8d4bd386e4"
+    },
+    {
+      "id": "f940bfb2-952d-4830-8c20-8dabbc63c1d4",
+      "name": "Read SkillPatches (review)",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        -480,
+        0
+      ],
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "mode": "name",
+          "value": "SkillPatches"
+        },
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": []
+        },
+        "options": {},
+        "returnAll": true
+      },
+      "executeOnce": true,
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000
+    },
+    {
+      "id": "536851f3-e714-4596-b9fe-9c1e9b4433e9",
+      "name": "Apply Patch Decision",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -260,
+        0
+      ],
+      "parameters": {
+        "jsCode": "const b = $('POST Patch').first().json.body || {};\nconst rows = $input.all().map(i => i.json).filter(r => r && r.patch_id);\nconst t = rows.find(r => r.patch_id === b.patch_id);\nif (!t) return [{ json: { ok: false, error: 'PATCH_NOT_FOUND' } }];\nif (t.status !== 'pending') return [{ json: { ok: false, error: 'NOT_PENDING',\n  status: t.status } }];\nconst d = String(b.decision || '').toLowerCase();\nif (d !== 'approve' && d !== 'reject')\n  return [{ json: { ok: false, error: 'INVALID_DECISION' } }];\nreturn [{ json: { ok: true, row: { ...t, status: d === 'approve' ? 'approved' : 'rejected',\n  reviewed_by: b.reviewer || 'owner', review_note: String(b.note || '').slice(0, 300),\n  updated_at: new Date().toISOString() } } }];\n"
+      }
+    },
+    {
+      "id": "722a2997-9b02-41b7-b69c-8bb722c3c817",
+      "name": "Decision OK?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -40,
+        0
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.ok }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "aeb9bd7b-ebee-4ea6-b597-8e6911042e51",
+      "name": "Respond Patch Error",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.2,
+      "position": [
+        180,
+        160
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"ok\": false, \"error\": $json.error } }}",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              },
+              {
+                "name": "Access-Control-Allow-Headers",
+                "value": "Content-Type"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "796397b1-62ce-4a11-834c-31ee4fb8ca47",
+      "name": "Emit Patch Update",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        180,
+        -80
+      ],
+      "parameters": {
+        "jsCode": "return [{ json: $json.row }];"
+      }
+    },
+    {
+      "id": "22968218-9361-41bb-bca7-45096a546089",
+      "name": "Save Patch Decision",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        400,
+        -80
+      ],
+      "parameters": {
+        "operation": "upsert",
+        "dataTableId": {
+          "__rl": true,
+          "mode": "name",
+          "value": "SkillPatches"
+        },
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "patch_id",
+              "condition": "eq",
+              "keyValue": "={{ $json.patch_id }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": null,
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000
+    },
+    {
+      "id": "c7626be0-04ed-4691-b078-431a5ff18c5a",
+      "name": "Respond Patch",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.2,
+      "position": [
+        620,
+        -80
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"ok\": true, \"status\": $json.status } }}",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              },
+              {
+                "name": "Access-Control-Allow-Headers",
+                "value": "Content-Type"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "cff6866a-5cc2-42ba-9f36-a579972388c2",
+      "name": "Note 9415d387",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -720,
+        -240
+      ],
+      "parameters": {
+        "content": "## 09 Patch Review\n`POST /munjiz/patch {patch_id, decision, note, reviewer}`.\nAn approved proposal becomes a **learned layer** appended to the governed\nbase skill at load time — the agent still cannot touch the base file in git.",
+        "width": 600,
+        "height": 180,
+        "color": 4
+      }
+    }
+  ],
+  "connections": {
+    "POST Patch": {
+      "main": [
+        [
+          {
+            "node": "Read SkillPatches (review)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read SkillPatches (review)": {
+      "main": [
+        [
+          {
+            "node": "Apply Patch Decision",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Apply Patch Decision": {
+      "main": [
+        [
+          {
+            "node": "Decision OK?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Decision OK?": {
+      "main": [
+        [
+          {
+            "node": "Emit Patch Update",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond Patch Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Emit Patch Update": {
+      "main": [
+        [
+          {
+            "node": "Save Patch Decision",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save Patch Decision": {
+      "main": [
+        [
+          {
+            "node": "Respond Patch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {},
+  "id": "munjizPatchRev09"
+}

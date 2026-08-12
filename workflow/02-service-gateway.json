@@ -2,7 +2,7 @@
   "name": "مُنجِز — 02 Service Gateway (sub)",
   "nodes": [
     {
-      "id": "1f584ac5-2486-4b93-a0df-195795a03f3a",
+      "id": "04cf591f-f783-43fd-a876-45253d1be465",
       "name": "Gateway Input",
       "type": "n8n-nodes-base.executeWorkflowTrigger",
       "typeVersion": 1.1,
@@ -39,7 +39,7 @@
       }
     },
     {
-      "id": "4eb38492-3aa9-453f-aca2-f5d94dc521b1",
+      "id": "eb330320-e87c-4579-b388-5f5ea05de415",
       "name": "Fetch Skills Index",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -64,7 +64,7 @@
       "waitBetweenTries": 3000
     },
     {
-      "id": "42809fc2-2edd-4d62-a56b-aed77afa8ebc",
+      "id": "22d576be-6945-4f04-ae6d-8d9b32002858",
       "name": "Gate Check",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -77,7 +77,7 @@
       }
     },
     {
-      "id": "b3faedd7-3692-448d-948d-7a525ac8ddfb",
+      "id": "6e599266-e48e-41d6-bc65-cc26f2d64af8",
       "name": "Denied?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
@@ -110,7 +110,7 @@
       }
     },
     {
-      "id": "fee8b2a9-c63e-492d-9232-e5bd279d5565",
+      "id": "b66b5874-3592-4bef-af73-97b3da609a4d",
       "name": "Denied Result",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -123,7 +123,7 @@
       }
     },
     {
-      "id": "f503988d-fd47-4ec0-860c-47b9b94b4580",
+      "id": "b12e5b56-4530-4e5e-bd3e-2ef36664bcdd",
       "name": "Service Switch",
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
@@ -306,6 +306,75 @@
                 "conditions": [
                   {
                     "leftValue": "={{ $json.service }}",
+                    "rightValue": "read_memory",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "read_memory"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.service }}",
+                    "rightValue": "write_memory",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "write_memory"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.service }}",
+                    "rightValue": "propose_skill_patch",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "propose_skill_patch"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.service }}",
                     "rightValue": "submit_transaction",
                     "operator": {
                       "type": "string",
@@ -326,20 +395,20 @@
       }
     },
     {
-      "id": "77ec16bf-e0cc-410e-9b8e-faec1d2f167a",
+      "id": "068e64a6-1012-4c57-9a78-ae929ba3af2b",
       "name": "svc: not_implemented",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
         -60,
-        1420
+        1930
       ],
       "parameters": {
         "jsCode": "return [{ json: { ...$json, result: { error: 'SERVICE_NOT_IMPLEMENTED',\n  message: 'الخدمة مسموحة في المهارة لكنها غير مبنية في البوابة بعد - أبلغ الموظف بذلك.',\n  service: $json.service } } }];\n"
       }
     },
     {
-      "id": "4dc4c5d8-e296-4dd1-883b-e3e3942111ec",
+      "id": "77981027-8806-4f5e-90bd-54e7a52cb417",
       "name": "Read Employees (profile)",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -368,7 +437,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "91435d32-63ce-4e0b-9030-f4cfe593cf53",
+      "id": "33461733-def8-4105-8066-2b2d27f955f2",
       "name": "svc: get_employee_profile",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -381,7 +450,7 @@
       }
     },
     {
-      "id": "023ba9c6-6e6d-4cbe-8c03-8c81a5a0296f",
+      "id": "dab747c3-cd11-4ce2-9569-09b70f7dd1ed",
       "name": "Read LeaveBalances (svc)",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -410,7 +479,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "5d74f51b-2e26-4318-bbf8-73d152285bd5",
+      "id": "b759c8e7-838b-4a01-8586-6549090ab50a",
       "name": "svc: get_leave_balance",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -423,7 +492,7 @@
       }
     },
     {
-      "id": "b4e0c42c-969b-4ea1-b978-a72a9316c689",
+      "id": "7a47f9bd-bd56-4863-8164-10566c43c15f",
       "name": "Read Employees (salary)",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -452,7 +521,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "a79b0d37-43da-4722-96f7-9ad6d56ed36f",
+      "id": "3d9d017e-a06d-4a97-a8e6-49c7261468e4",
       "name": "Read Transactions (salary)",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -481,7 +550,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "2bfc049b-fb46-4cae-a9db-dff4ada4513c",
+      "id": "7b623cef-8135-40f4-92f4-cb360195f05c",
       "name": "svc: get_salary_record",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -494,7 +563,7 @@
       }
     },
     {
-      "id": "82f30a56-d884-419c-a10f-7591a842e29b",
+      "id": "29306f5e-52da-4c0a-8534-d33b5d2fc23e",
       "name": "Read Transactions (policy)",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -523,7 +592,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "09242d50-7a66-4d29-b26c-cc36497720e1",
+      "id": "12d63cfc-f345-4f7e-bdbf-43225b520b9b",
       "name": "Read ExpensePolicy (svc)",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -552,7 +621,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "749491b9-e0a7-464e-ab08-caca64cb678c",
+      "id": "a5dc8ea0-33c1-4069-ad55-77f4cd5452dc",
       "name": "svc: get_expense_policy",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -565,7 +634,7 @@
       }
     },
     {
-      "id": "15155554-892c-4cad-8d03-95d4b905544d",
+      "id": "11adbf4a-8713-4312-a8c1-77b9e1228a85",
       "name": "Read Employees (roles)",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -594,7 +663,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "6698007a-b20d-41ea-ae33-f64fdae587b3",
+      "id": "d74b7cb2-5fb8-4ab6-b6ca-d9776780c411",
       "name": "svc: get_it_roles",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -607,7 +676,7 @@
       }
     },
     {
-      "id": "b0d80cb8-a679-4c64-9dde-b13191f03e2d",
+      "id": "d6092942-819b-4adb-abf5-c9ab182ba9aa",
       "name": "Read SystemCatalog (svc)",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -636,7 +705,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "971cfbb7-e78d-40e0-a017-fe94383b49a4",
+      "id": "35e1b2cf-9e2c-4182-927f-f121851627c9",
       "name": "svc: get_system_catalog",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -649,7 +718,7 @@
       }
     },
     {
-      "id": "ab9c5ded-f9f6-48df-9655-d497ca47b807",
+      "id": "a6a346ff-8c4a-40f3-b7ca-3778b04a3570",
       "name": "Read Employees (overlap)",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -678,7 +747,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "bebb1086-9026-49e6-b85f-c4a2a5e5e09a",
+      "id": "2b6ce1e1-9236-4088-9e52-80ae7a0d27eb",
       "name": "Read Transactions (overlap)",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -707,7 +776,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "22dce44e-c2a3-4e63-9b37-c158d010d65b",
+      "id": "62a0768e-acd9-4965-a6cb-4c5231541bcc",
       "name": "svc: check_leave_overlap",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -720,13 +789,139 @@
       }
     },
     {
-      "id": "88f47bf3-f5a0-4a6c-a1ce-1263d4efe0ff",
-      "name": "Read Employees (submit)",
+      "id": "3a858fa5-c158-40dc-8de4-2436fe9034bf",
+      "name": "Read Memory (svc)",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
       "position": [
         -60,
         870
+      ],
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Memory"
+        },
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": []
+        },
+        "options": {},
+        "returnAll": true
+      },
+      "executeOnce": true,
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000
+    },
+    {
+      "id": "5121f465-4f3e-4a97-ab67-ce86fff75c3d",
+      "name": "svc: read_memory",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        160,
+        870
+      ],
+      "parameters": {
+        "jsCode": "const j = $('Gate Check').first().json;\nconst rows = $input.all().map(i => i.json).filter(r => r && r.memory_id);\nconst mine = rows.filter(r => r.status === 'active' && (r.scope === 'org'\n  || (r.scope === 'employee' && r.subject_id === j.employee_id)));\nreturn [{ json: { ...j, result: { memories: mine.map(m => ({\n  memory_id: m.memory_id, scope: m.scope, content: m.content })) } } }];\n"
+      }
+    },
+    {
+      "id": "18b66be4-3c05-4a27-b41d-5dafd562dd25",
+      "name": "Read Memory (write)",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        -60,
+        1040
+      ],
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Memory"
+        },
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": []
+        },
+        "options": {},
+        "returnAll": true
+      },
+      "executeOnce": true,
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000
+    },
+    {
+      "id": "0e3c0fb1-92f5-4f3e-92fe-ddaa73831105",
+      "name": "svc: write_memory",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        160,
+        1040
+      ],
+      "parameters": {
+        "jsCode": "const j = $('Gate Check').first().json;\nconst LIMIT = 2200;  // characters, model-independent - the whole GC policy\nconst rows = $input.all().map(i => i.json).filter(r => r && r.memory_id);\nconst p = j.payload || {};\nconst scope = p.scope === 'org' ? 'org' : 'employee';\nconst subject = scope === 'org' ? '' : (p.subject_id || j.employee_id);\nconst scoped = rows.filter(r => r.status === 'active' && r.scope === scope\n  && (scope === 'org' || r.subject_id === subject));\nconst used = scoped.reduce((n, r) => n + String(r.content || '').length, 0);\nconst action = p.action || 'add';\nconst now = new Date().toISOString();\nif (action === 'remove' || action === 'replace') {\n  const target = scoped.find(r => r.memory_id === p.memory_id\n    || (p.match && String(r.content || '').includes(p.match)));\n  if (!target) return [{ json: { ...j, result: { error: 'MEMORY_NOT_FOUND' } } }];\n  const row = { ...target, updated_at: now };\n  if (action === 'remove') { row.status = 'retired'; }\n  else { row.content = String(p.content || '').slice(0, 400); }\n  return [{ json: { ...j, memory_row: row,\n    result: { ok: true, action, memory_id: row.memory_id } } }];\n}\nconst content = String(p.content || '').trim().slice(0, 400);\nif (!content) return [{ json: { ...j, result: { error: 'EMPTY_CONTENT' } } }];\nif (scoped.some(r => r.content === content))\n  return [{ json: { ...j, result: { ok: true, deduped: true } } }];\nif (used + content.length > LIMIT) {\n  return [{ json: { ...j, result: { error: 'MEMORY_BUDGET_EXCEEDED',\n    usage: used + '/' + LIMIT,\n    message: 'الذاكرة ممتلئة. ادمج مدخلات متداخلة أو احذف الأقل أهمية من القائمة ثم أعد المحاولة في الدور نفسه.',\n    current_entries: scoped.map(r => ({ memory_id: r.memory_id, content: r.content }))\n  } } }];\n}\nconst row = { memory_id: 'MEM-' + Date.now(), scope, subject_id: subject,\n  content, source: p.source || 'reflection', status: 'active', use_count: '0',\n  created_at: now, updated_at: now };\nreturn [{ json: { ...j, memory_row: row, result: { ok: true, action: 'add',\n  memory_id: row.memory_id, usage: (used + content.length) + '/' + LIMIT } } }];\n"
+      }
+    },
+    {
+      "id": "b7e4529a-aece-4180-b77b-880b03d5dac1",
+      "name": "Read SkillPatches (svc)",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        -60,
+        1210
+      ],
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "mode": "name",
+          "value": "SkillPatches"
+        },
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": []
+        },
+        "options": {},
+        "returnAll": true
+      },
+      "executeOnce": true,
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000
+    },
+    {
+      "id": "4ef2c6c8-f3c1-4a35-adbe-4e75d80b4c48",
+      "name": "svc: propose_skill_patch",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        160,
+        1210
+      ],
+      "parameters": {
+        "jsCode": "const j = $('Gate Check').first().json;\nconst p = j.payload || {};\nconst now = new Date().toISOString();\nconst text = String(p.proposed_text || '').trim().slice(0, 600);\nif (!text || !p.skill_id)\n  return [{ json: { ...j, result: { error: 'SKILL_ID_AND_TEXT_REQUIRED' } } }];\nconst rows = $input.all().map(i => i.json).filter(r => r && r.patch_id);\nif (rows.some(r => r.status === 'pending' && r.skill_id === p.skill_id\n  && r.proposed_text === text))\n  return [{ json: { ...j, result: { ok: true, deduped: true } } }];\nconst row = { patch_id: 'PATCH-' + Date.now(), skill_id: p.skill_id,\n  kind: p.kind || 'add_rule', proposed_text: text,\n  rationale: String(p.rationale || '').slice(0, 400),\n  evidence: String(p.evidence || '').slice(0, 200), status: 'pending',\n  created_by: 'agent', reviewed_by: '', review_note: '',\n  created_at: now, updated_at: now };\nreturn [{ json: { ...j, patch_row: row, result: { ok: true, patch_id: row.patch_id,\n  status: 'pending', message: 'اقتراح مسجّل بانتظار اعتماد مالك الإجراء' } } }];\n"
+      }
+    },
+    {
+      "id": "86af305d-831a-429e-b849-00e8e06b8978",
+      "name": "Read Employees (submit)",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        -60,
+        1380
       ],
       "parameters": {
         "operation": "get",
@@ -749,39 +944,163 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "997311bf-9ebb-4c0a-b65a-90c6b81aa731",
+      "id": "350166f9-1ad6-4793-bb7f-3499c00c0e3c",
       "name": "svc: submit_transaction",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
         160,
-        870
+        1380
       ],
       "parameters": {
         "jsCode": "const j = $('Gate Check').first().json;\nconst emps = $input.all().map(i => i.json);\nconst me = emps.find(r => r.employee_id === j.employee_id) || {};\nconst now = new Date();\nconst txn_id = 'TXN-' + now.getTime();\nconst meta = j.skill_meta || { approval_chain: ['manager'], auto_execute: false, sla_hours: 48 };\nconst chain = meta.approval_chain || []; // governed chain ONLY - never from the model\nfor (const k of Object.keys(j.payload)) if (k.startsWith('_')) delete j.payload[k];\nconst auto = chain.length === 0; // empty chain = instant execution\nlet output_ref = '';\nif (auto && j.skill_id === 'salary-certificate') output_ref = 'CERT-' + String(now.getTime()).slice(-6);\nconst status = auto ? 'executed' : 'awaiting_' + chain[0];\nconst row = {\n  txn_id, ts: now.toISOString(), employee_id: j.employee_id,\n  employee_name: me.name_ar || j.employee_id, skill_id: j.skill_id,\n  type_ar: meta.title_ar || j.skill_id,\n  payload_json: JSON.stringify(j.payload), status,\n  approval_chain: chain.join(';'), chain_pos: 0,\n  current_approver: chain[0] || '', decision_note: '', output_ref,\n  sla_hours: meta.sla_hours || 48, updated_at: now.toISOString(),\n};\nreturn [{ json: { ...j, txn_row: row, result: { txn_id, status, output_ref,\n  approval_chain: chain, message: auto ? 'نُفّذت المعاملة فورًا' : 'أُرسلت لسلسلة الاعتماد' } } }];\n"
       }
     },
     {
-      "id": "93f31e4b-98a2-4f92-84c9-1ed6fa4b427d",
+      "id": "7d292d88-816c-4629-9bc2-948ea17339d0",
+      "name": "Emit Memory Row",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        720,
+        1040
+      ],
+      "parameters": {
+        "jsCode": "const j = $('svc: write_memory').first().json;\nreturn j.memory_row ? [{ json: j.memory_row }] : [];\n"
+      },
+      "alwaysOutputData": true
+    },
+    {
+      "id": "f2a98faf-7c07-467f-b785-419bbed5afce",
+      "name": "Save Memory",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        940,
+        1040
+      ],
+      "parameters": {
+        "operation": "upsert",
+        "dataTableId": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Memory"
+        },
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "memory_id",
+              "condition": "eq",
+              "keyValue": "={{ $json.memory_id }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": null,
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000
+    },
+    {
+      "id": "bee66a7f-52b5-426f-96b8-f330d51496d4",
+      "name": "Carry Memory Result",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1160,
+        1040
+      ],
+      "parameters": {
+        "jsCode": "return [{ json: $('svc: write_memory').first().json }];"
+      }
+    },
+    {
+      "id": "ae61e4d2-ac7f-40da-8ec6-94826e016ae4",
+      "name": "Emit Patch Row",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        720,
+        1210
+      ],
+      "parameters": {
+        "jsCode": "const j = $('svc: propose_skill_patch').first().json;\nreturn j.patch_row ? [{ json: j.patch_row }] : [];\n"
+      },
+      "alwaysOutputData": true
+    },
+    {
+      "id": "ec5c723f-dfa6-4303-b978-4f3f6237623e",
+      "name": "Save Skill Patch",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        940,
+        1210
+      ],
+      "parameters": {
+        "operation": "insert",
+        "dataTableId": {
+          "__rl": true,
+          "mode": "name",
+          "value": "SkillPatches"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": null,
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000
+    },
+    {
+      "id": "e8e5a022-8c7a-4392-9fc1-530c7d179d8f",
+      "name": "Carry Patch Result",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1160,
+        1210
+      ],
+      "parameters": {
+        "jsCode": "return [{ json: $('svc: propose_skill_patch').first().json }];"
+      }
+    },
+    {
+      "id": "55968194-9afd-49de-9fae-5687fd76176b",
       "name": "Emit Txn Row",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
         720,
-        870
+        1380
       ],
       "parameters": {
         "jsCode": "return [{ json: $json.txn_row }];"
       }
     },
     {
-      "id": "d24e6a51-ffd2-49e1-afa2-78745db64612",
+      "id": "25f7eac5-8edd-4756-a6e3-ac2076355e68",
       "name": "Append Transaction",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
       "position": [
         940,
-        870
+        1380
       ],
       "parameters": {
         "operation": "insert",
@@ -805,20 +1124,20 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "d4449063-4f4d-4a08-af85-2664b030a4bb",
+      "id": "02d701dc-0906-4028-ab55-29c1e17fd246",
       "name": "Carry Submit Result",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
         1160,
-        870
+        1380
       ],
       "parameters": {
         "jsCode": "return [{ json: $('svc: submit_transaction').first().json }];"
       }
     },
     {
-      "id": "0028bf9c-ba45-461f-ab75-9fae83de146e",
+      "id": "a5eadaa6-a8db-40ec-8f2a-625674f306f9",
       "name": "Build Audit Row",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -831,7 +1150,7 @@
       }
     },
     {
-      "id": "70c06de4-6caf-489d-abe4-dc6c29caba9a",
+      "id": "9d397185-321e-4be0-be8b-de8fc4d90367",
       "name": "Append AuditLog",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -861,7 +1180,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "58e615fa-3997-409e-90a9-4fdec2219aaf",
+      "id": "43bdcb7e-50b2-46d4-9cae-8f2ca77fed58",
       "name": "Return Result",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -870,12 +1189,12 @@
         60
       ],
       "parameters": {
-        "jsCode": "const src = $('Build Audit Row').first().json;\n// find the full item that produced the audit row\nlet full = null;\nfor (const n of ['Denied Result','svc: get_employee_profile','svc: get_leave_balance',\n  'svc: get_salary_record','svc: get_expense_policy','svc: get_it_roles',\n  'svc: get_system_catalog','svc: check_leave_overlap','Carry Submit Result','svc: not_implemented']) {\n  try { const it = $(n).first(); if (it && it.json && it.json.result) { full = it.json; break; } } catch (e) {}\n}\nreturn [{ json: { service: src.service, result: (full && full.result) || { error: 'NO_RESULT' } } }];\n"
+        "jsCode": "const src = $('Build Audit Row').first().json;\n// find the full item that produced the audit row\nlet full = null;\nfor (const n of ['Denied Result','svc: get_employee_profile','svc: get_leave_balance',\n  'svc: get_salary_record','svc: get_expense_policy','svc: get_it_roles',\n  'svc: get_system_catalog','svc: check_leave_overlap','Carry Submit Result',\n  'Carry Memory Result','Carry Patch Result','svc: read_memory','svc: not_implemented']) {\n  try { const it = $(n).first(); if (it && it.json && it.json.result) { full = it.json; break; } } catch (e) {}\n}\nreturn [{ json: { service: src.service, result: (full && full.result) || { error: 'NO_RESULT' } } }];\n"
       }
     },
     {
-      "id": "982193ae-f23c-4bd2-aab6-ba9db4fb361d",
-      "name": "Note 0081df36",
+      "id": "fc930385-58de-409b-a910-49ff795232bb",
+      "name": "Note b91f1b5b",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
@@ -989,6 +1308,27 @@
         [
           {
             "node": "Read Employees (overlap)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Read Memory (svc)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Read Memory (write)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Read SkillPatches (svc)",
             "type": "main",
             "index": 0
           }
@@ -1119,11 +1459,110 @@
         ]
       ]
     },
+    "Read Memory (svc)": {
+      "main": [
+        [
+          {
+            "node": "svc: read_memory",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Memory (write)": {
+      "main": [
+        [
+          {
+            "node": "svc: write_memory",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read SkillPatches (svc)": {
+      "main": [
+        [
+          {
+            "node": "svc: propose_skill_patch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
     "Read Employees (submit)": {
       "main": [
         [
           {
             "node": "svc: submit_transaction",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "svc: write_memory": {
+      "main": [
+        [
+          {
+            "node": "Emit Memory Row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Emit Memory Row": {
+      "main": [
+        [
+          {
+            "node": "Save Memory",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save Memory": {
+      "main": [
+        [
+          {
+            "node": "Carry Memory Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "svc: propose_skill_patch": {
+      "main": [
+        [
+          {
+            "node": "Emit Patch Row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Emit Patch Row": {
+      "main": [
+        [
+          {
+            "node": "Save Skill Patch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save Skill Patch": {
+      "main": [
+        [
+          {
+            "node": "Carry Patch Result",
             "type": "main",
             "index": 0
           }
@@ -1241,6 +1680,39 @@
       ]
     },
     "svc: check_leave_overlap": {
+      "main": [
+        [
+          {
+            "node": "Build Audit Row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "svc: read_memory": {
+      "main": [
+        [
+          {
+            "node": "Build Audit Row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Carry Memory Result": {
+      "main": [
+        [
+          {
+            "node": "Build Audit Row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Carry Patch Result": {
       "main": [
         [
           {

@@ -120,6 +120,38 @@ AUDIT = [
      "request_json": "{\"leave_type\":\"annual\"}", "result_summary": "OK TXN-SEED-OVERLAP awaiting_manager"},
 ]
 
+# ---------------------------------------------------------------------------
+# Learning stores (Hermes-style). Memory holds DECLARATIVE facts — "who the
+# employee is / what the standing situation is" — never procedures; procedures
+# belong in skills. SkillPatches holds agent-proposed refinements to a skill,
+# which stay PENDING until a human approves them: the agent may never edit the
+# approved base procedure in git, only propose a layer on top of it.
+# ---------------------------------------------------------------------------
+
+MEMORY = [
+    {"memory_id": "MEM-0001", "scope": "org", "subject_id": "",
+     "content": "تُغلق إدارة المالية حساباتها الشهرية في آخر ثلاثة أيام عمل من كل شهر، وتتأخر اعتمادات المطالبات في تلك الفترة.",
+     "source": "seed", "status": "active", "use_count": "0",
+     "created_at": iso(now - timedelta(days=20)), "updated_at": iso(now - timedelta(days=20))},
+    {"memory_id": "MEM-0002", "scope": "employee", "subject_id": "EMP-1001",
+     "content": "يفضّل أحمد المهيري الردود المختصرة والمباشرة، ويطلب دائمًا تأكيد التواريخ بالتقويم الميلادي.",
+     "source": "seed", "status": "active", "use_count": "0",
+     "created_at": iso(now - timedelta(days=6)), "updated_at": iso(now - timedelta(days=6))},
+    {"memory_id": "MEM-0003", "scope": "employee", "subject_id": "EMP-1004",
+     "content": "راشد الكتبي يقدّم مطالبات نفقات تدريبية بشكل متكرر، وغالبًا ما ينسى إرفاق رقم الإيصال.",
+     "source": "seed", "status": "active", "use_count": "0",
+     "created_at": iso(now - timedelta(days=3)), "updated_at": iso(now - timedelta(days=3))},
+]
+
+SKILL_PATCHES = [
+    {"patch_id": "PATCH-0001", "skill_id": "expense-claim", "kind": "add_rule",
+     "proposed_text": "عند اختيار الفئة training: ذكّر الموظف برقم الإيصال قبل عرض بطاقة المعاينة، فقد لوحظ تكرار نسيانه.",
+     "rationale": "ثلاث مطالبات تدريبية متتالية رُدّت لغياب رقم الإيصال.",
+     "evidence": "TXN-SEED-CHASE", "status": "pending", "created_by": "agent",
+     "reviewed_by": "", "review_note": "",
+     "created_at": iso(now - timedelta(hours=5)), "updated_at": iso(now - timedelta(hours=5))},
+]
+
 TABS = {
     "Employees": (["employee_id", "name_ar", "name_en", "role", "department", "grade", "manager_id",
                    "email", "status", "it_roles", "joined_date", "monthly_salary_aed", "allowances_aed"], EMPLOYEES),
@@ -131,6 +163,11 @@ TABS = {
                       "output_ref", "sla_hours", "updated_at"], TRANSACTIONS),
     "AuditLog": (["ts", "session_id", "employee_id", "skill_id", "service", "request_json",
                   "result_summary"], AUDIT),
+    "Memory": (["memory_id", "scope", "subject_id", "content", "source", "status",
+                "use_count", "created_at", "updated_at"], MEMORY),
+    "SkillPatches": (["patch_id", "skill_id", "kind", "proposed_text", "rationale", "evidence",
+                      "status", "created_by", "reviewed_by", "review_note",
+                      "created_at", "updated_at"], SKILL_PATCHES),
 }
 
 

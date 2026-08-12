@@ -1,6 +1,6 @@
 {
   "registry": "Munjiz Skill Registry — سجل مهارات مُنجِز",
-  "governance": "Only skills with status='approved' are loadable. The service gateway enforces allowed_services per skill and writes an audit row for every call. Changing a skill = a reviewed git commit (version bump required).",
+  "governance": "Only skills with status='approved' are loadable. The service gateway enforces allowed_services per skill and writes an audit row for every call. Changing a skill = a reviewed git commit (version bump required). The reflection pass is itself a governed skill: it may only call the three learning services, and it can never edit an approved skill - only file a pending proposal.",
   "skills": [
     {
       "id": "leave-request",
@@ -8,11 +8,30 @@
       "status": "approved",
       "title_ar": "طلب إجازة",
       "title_en": "Leave Request",
-      "keywords": ["إجازة", "اجازة", "إجازه", "leave", "vacation", "annual", "sick", "مرضية", "سنوية", "طارئة", "emergency"],
+      "keywords": [
+        "إجازة",
+        "اجازة",
+        "إجازه",
+        "leave",
+        "vacation",
+        "annual",
+        "sick",
+        "مرضية",
+        "سنوية",
+        "طارئة",
+        "emergency"
+      ],
       "skill_path": "skills/leave-request.skill.md",
       "profile_path": "profiles/hr-officer.profile.md",
-      "allowed_services": ["get_employee_profile", "get_leave_balance", "check_leave_overlap", "submit_transaction"],
-      "approval_chain": ["manager"],
+      "allowed_services": [
+        "get_employee_profile",
+        "get_leave_balance",
+        "check_leave_overlap",
+        "submit_transaction"
+      ],
+      "approval_chain": [
+        "manager"
+      ],
       "auto_execute": false,
       "sla_hours": 48
     },
@@ -22,10 +41,23 @@
       "status": "approved",
       "title_ar": "شهادة راتب / لمن يهمه الأمر",
       "title_en": "Salary / Employment Certificate",
-      "keywords": ["شهادة", "راتب", "لمن يهمه الأمر", "certificate", "salary", "employment", "بنك", "سفارة"],
+      "keywords": [
+        "شهادة",
+        "راتب",
+        "لمن يهمه الأمر",
+        "certificate",
+        "salary",
+        "employment",
+        "بنك",
+        "سفارة"
+      ],
       "skill_path": "skills/salary-certificate.skill.md",
       "profile_path": "profiles/hr-officer.profile.md",
-      "allowed_services": ["get_employee_profile", "get_salary_record", "submit_transaction"],
+      "allowed_services": [
+        "get_employee_profile",
+        "get_salary_record",
+        "submit_transaction"
+      ],
       "approval_chain": [],
       "auto_execute": true,
       "sla_hours": 1
@@ -36,11 +68,28 @@
       "status": "approved",
       "title_ar": "مطالبة نفقات / بدلات",
       "title_en": "Expense / Allowance Claim",
-      "keywords": ["نفقات", "مصاريف", "بدل", "مطالبة", "expense", "claim", "reimbursement", "allowance", "فاتورة"],
+      "keywords": [
+        "نفقات",
+        "مصاريف",
+        "بدل",
+        "مطالبة",
+        "expense",
+        "claim",
+        "reimbursement",
+        "allowance",
+        "فاتورة"
+      ],
       "skill_path": "skills/expense-claim.skill.md",
       "profile_path": "profiles/finance-officer.profile.md",
-      "allowed_services": ["get_employee_profile", "get_expense_policy", "submit_transaction"],
-      "approval_chain": ["manager", "finance"],
+      "allowed_services": [
+        "get_employee_profile",
+        "get_expense_policy",
+        "submit_transaction"
+      ],
+      "approval_chain": [
+        "manager",
+        "finance"
+      ],
       "auto_execute": false,
       "sla_hours": 72
     },
@@ -50,13 +99,55 @@
       "status": "approved",
       "title_ar": "طلب صلاحية نظام",
       "title_en": "IT System Access Request",
-      "keywords": ["صلاحية", "نظام", "وصول", "access", "system", "permission", "حساب", "دخول", "it"],
+      "keywords": [
+        "صلاحية",
+        "نظام",
+        "وصول",
+        "access",
+        "system",
+        "permission",
+        "حساب",
+        "دخول",
+        "it"
+      ],
       "skill_path": "skills/it-access-request.skill.md",
       "profile_path": "profiles/it-officer.profile.md",
-      "allowed_services": ["get_employee_profile", "get_it_roles", "get_system_catalog", "submit_transaction"],
-      "approval_chain": ["manager", "it_security"],
+      "allowed_services": [
+        "get_employee_profile",
+        "get_it_roles",
+        "get_system_catalog",
+        "submit_transaction"
+      ],
+      "approval_chain": [
+        "manager",
+        "it_security"
+      ],
       "auto_execute": false,
       "sla_hours": 24
+    },
+    {
+      "id": "reflection",
+      "version": "1.0.0",
+      "status": "approved",
+      "title_ar": "مراجعة ما بعد الدور (التعلّم)",
+      "title_en": "Post-turn Reflection (Learning)",
+      "keywords": [
+        "reflection",
+        "learning",
+        "تعلّم",
+        "مراجعة"
+      ],
+      "skill_path": "skills/reflection.skill.md",
+      "profile_path": "profiles/general.profile.md",
+      "allowed_services": [
+        "read_memory",
+        "write_memory",
+        "propose_skill_patch"
+      ],
+      "approval_chain": [],
+      "auto_execute": true,
+      "sla_hours": 1,
+      "internal": true
     }
   ]
 }

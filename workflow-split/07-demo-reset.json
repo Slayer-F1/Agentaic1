@@ -2,7 +2,7 @@
   "name": "مُنجِز — 07 Provision & Seed",
   "nodes": [
     {
-      "id": "cd6e0ea2-15ba-42a9-9191-c8498c2b8589",
+      "id": "b39e0302-c05c-4dd8-88ec-3bf17618f16d",
       "name": "POST Reset",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
@@ -16,10 +16,10 @@
         "responseMode": "responseNode",
         "options": {}
       },
-      "webhookId": "ceb51506-4e0c-4ea5-ab77-a3911385b911"
+      "webhookId": "6002e020-6575-426b-b09b-755d86d5002d"
     },
     {
-      "id": "6107400e-0219-40ed-9482-448c5f437e6e",
+      "id": "70722751-cb4c-44f3-8404-458ab3656d45",
       "name": "Seed Manually",
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
@@ -30,7 +30,7 @@
       "parameters": {}
     },
     {
-      "id": "637e483d-312b-47c5-8595-a76915f37392",
+      "id": "be85a88f-3348-43e6-84a1-e841ab3111a2",
       "name": "Respond Reset",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.2,
@@ -58,7 +58,7 @@
       }
     },
     {
-      "id": "e56aaf9a-dc8f-4603-a4c3-fcba1353779a",
+      "id": "ec56d128-6c6d-4f93-8b6d-4a0b2d45d6ea",
       "name": "Create Employees",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -132,7 +132,7 @@
       "executeOnce": true
     },
     {
-      "id": "57bc63eb-ea3e-4855-9ca5-87d7d3724f43",
+      "id": "2eb474a0-cdb3-454f-b457-c52a1f346026",
       "name": "Clear Employees",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -153,7 +153,7 @@
       "executeOnce": true
     },
     {
-      "id": "abc5f185-9364-4372-99ed-1c970fae86ef",
+      "id": "2659b8ff-eea6-4910-b0ab-2cda94490297",
       "name": "Seed Employees",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -166,7 +166,7 @@
       }
     },
     {
-      "id": "f54179d6-163c-40dd-ad46-9c8b744f5fbd",
+      "id": "73420eb3-7663-4abf-9545-137203a23a20",
       "name": "Insert Employees",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -196,7 +196,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "e247432e-6143-409d-bf38-5772a2a64ab7",
+      "id": "0a7c6768-2074-4cac-8de3-164b3aad6f80",
       "name": "Create LeaveBalances",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -238,7 +238,7 @@
       "executeOnce": true
     },
     {
-      "id": "a9ed1a61-4a7b-4b11-aab3-8e329d066f87",
+      "id": "9fa7e687-c6bf-4a62-b25f-9ba64513bb46",
       "name": "Clear LeaveBalances",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -259,7 +259,7 @@
       "executeOnce": true
     },
     {
-      "id": "2a7fee31-1744-4a6d-ac0f-e58d39344280",
+      "id": "7ab40946-79b8-43a3-b395-f27cd6169e9c",
       "name": "Seed LeaveBalances",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -272,7 +272,7 @@
       }
     },
     {
-      "id": "918b98a1-f541-4af4-8081-0f382582404b",
+      "id": "6a344d81-1f3b-4e68-9ba1-fc9660299382",
       "name": "Insert LeaveBalances",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -302,7 +302,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "41bb1a86-e79d-43da-a52e-38702be65756",
+      "id": "998da2d8-c8b1-4db3-b50c-80327cd0d80d",
       "name": "Create ExpensePolicy",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -340,7 +340,7 @@
       "executeOnce": true
     },
     {
-      "id": "b365e6b9-f255-4248-bd65-e03284843c79",
+      "id": "d6ff394d-fcb3-4470-af8b-d8ed11cc66f3",
       "name": "Clear ExpensePolicy",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -361,7 +361,7 @@
       "executeOnce": true
     },
     {
-      "id": "2b8340a5-086a-4c9c-9983-aef5853f2bfd",
+      "id": "4d10d7ee-c48e-40e4-8845-593571a9a3d4",
       "name": "Seed ExpensePolicy",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -374,7 +374,7 @@
       }
     },
     {
-      "id": "3f65bd6f-5c2b-4432-a6cd-02cfd2261725",
+      "id": "13c1c772-8110-4ea2-af53-1b149c8a8864",
       "name": "Insert ExpensePolicy",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -404,7 +404,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "329c4025-1282-4bc1-8673-8783f18a06f2",
+      "id": "c8e2259d-e28a-4560-b189-502096bb57bc",
       "name": "Create SystemCatalog",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -446,7 +446,7 @@
       "executeOnce": true
     },
     {
-      "id": "16cea736-6e38-4ddd-8b0d-c6369ba8dee9",
+      "id": "893b1a97-ef12-4d96-a25f-fc9222c700a4",
       "name": "Clear SystemCatalog",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -467,7 +467,7 @@
       "executeOnce": true
     },
     {
-      "id": "7c6888fa-0d86-49a5-9418-db09200ea07b",
+      "id": "4d7c0243-55a1-4352-9d13-ce5a28260ea7",
       "name": "Seed SystemCatalog",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -480,7 +480,7 @@
       }
     },
     {
-      "id": "548aa038-9a55-4332-8d08-69b451a741c9",
+      "id": "3fb0072b-8c01-4c16-9958-dd5e6346633f",
       "name": "Insert SystemCatalog",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -510,7 +510,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "de4c0263-d91d-49f4-9eed-5682bc1df40a",
+      "id": "1750133b-bbf5-4897-9e84-835e004fc2a1",
       "name": "Create Transactions",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -592,7 +592,7 @@
       "executeOnce": true
     },
     {
-      "id": "7aa85752-71d0-483a-9fbb-d922b6df954f",
+      "id": "8248cfb5-a83e-4bfd-815c-41dff3aa8c0b",
       "name": "Clear Transactions",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -613,7 +613,7 @@
       "executeOnce": true
     },
     {
-      "id": "b7d72abb-b18c-4c3e-98cd-3cd8b4c9b8da",
+      "id": "0c49ebdb-285b-45b1-92ec-d36f74266f68",
       "name": "Seed Transactions",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -622,11 +622,11 @@
         340
       ],
       "parameters": {
-        "jsCode": "const rows = JSON.parse(\"[{\\\"txn_id\\\": \\\"TXN-SEED-OVERLAP\\\", \\\"ts\\\": \\\"2026-08-10T22:11:22\\\", \\\"employee_id\\\": \\\"EMP-1003\\\", \\\"employee_name\\\": \\\"\\u0633\\u0627\\u0644\\u0645 \\u0627\\u0644\\u0646\\u0642\\u0628\\u064a (\\u062a\\u062c\\u0631\\u064a\\u0628\\u064a)\\\", \\\"skill_id\\\": \\\"leave-request\\\", \\\"type_ar\\\": \\\"\\u0637\\u0644\\u0628 \\u0625\\u062c\\u0627\\u0632\\u0629\\\", \\\"payload_json\\\": \\\"{\\\\\\\"leave_type\\\\\\\": \\\\\\\"annual\\\\\\\", \\\\\\\"start_date\\\\\\\": \\\\\\\"2026-08-19\\\\\\\", \\\\\\\"end_date\\\\\\\": \\\\\\\"2026-08-23\\\\\\\", \\\\\\\"working_days\\\\\\\": 3, \\\\\\\"reason\\\\\\\": \\\\\\\"\\u0625\\u062c\\u0627\\u0632\\u0629 \\u0639\\u0627\\u0626\\u0644\\u064a\\u0629\\\\\\\"}\\\", \\\"status\\\": \\\"executed\\\", \\\"approval_chain\\\": \\\"manager\\\", \\\"chain_pos\\\": 1, \\\"current_approver\\\": \\\"\\\", \\\"decision_note\\\": \\\"\\u0627\\u0639\\u062a\\u0645\\u062f\\u062a\\\", \\\"output_ref\\\": \\\"\\\", \\\"sla_hours\\\": 48, \\\"updated_at\\\": \\\"2026-08-11T22:11:22\\\"}, {\\\"txn_id\\\": \\\"TXN-SEED-CHASE\\\", \\\"ts\\\": \\\"2026-08-11T16:11:22\\\", \\\"employee_id\\\": \\\"EMP-1004\\\", \\\"employee_name\\\": \\\"\\u0631\\u0627\\u0634\\u062f \\u0627\\u0644\\u0643\\u062a\\u0628\\u064a (\\u062a\\u062c\\u0631\\u064a\\u0628\\u064a)\\\", \\\"skill_id\\\": \\\"expense-claim\\\", \\\"type_ar\\\": \\\"\\u0645\\u0637\\u0627\\u0644\\u0628\\u0629 \\u0646\\u0641\\u0642\\u0627\\u062a / \\u0628\\u062f\\u0644\\u0627\\u062a\\\", \\\"payload_json\\\": \\\"{\\\\\\\"category\\\\\\\": \\\\\\\"training\\\\\\\", \\\\\\\"amount_aed\\\\\\\": 850, \\\\\\\"expense_date\\\\\\\": \\\\\\\"2026-08-06\\\\\\\", \\\\\\\"description\\\\\\\": \\\\\\\"\\u0631\\u0633\\u0648\\u0645 \\u0648\\u0631\\u0634\\u0629 \\u062a\\u062f\\u0631\\u064a\\u0628\\u064a\\u0629 \\u0645\\u0639\\u062a\\u0645\\u062f\\u0629\\\\\\\", \\\\\\\"receipt_ref\\\\\\\": \\\\\\\"RCPT-7741\\\\\\\"}\\\", \\\"status\\\": \\\"awaiting_manager\\\", \\\"approval_chain\\\": \\\"manager;finance\\\", \\\"chain_pos\\\": 0, \\\"current_approver\\\": \\\"manager\\\", \\\"decision_note\\\": \\\"\\\", \\\"output_ref\\\": \\\"\\\", \\\"sla_hours\\\": 24, \\\"updated_at\\\": \\\"2026-08-11T16:11:22\\\"}, {\\\"txn_id\\\": \\\"TXN-SEED-CERT\\\", \\\"ts\\\": \\\"2026-08-03T22:11:22\\\", \\\"employee_id\\\": \\\"EMP-1006\\\", \\\"employee_name\\\": \\\"\\u062e\\u0627\\u0644\\u062f \\u0627\\u0644\\u0647\\u0627\\u0645\\u0644\\u064a (\\u062a\\u062c\\u0631\\u064a\\u0628\\u064a)\\\", \\\"skill_id\\\": \\\"salary-certificate\\\", \\\"type_ar\\\": \\\"\\u0634\\u0647\\u0627\\u062f\\u0629 \\u0631\\u0627\\u062a\\u0628 / \\u0644\\u0645\\u0646 \\u064a\\u0647\\u0645\\u0647 \\u0627\\u0644\\u0623\\u0645\\u0631\\\", \\\"payload_json\\\": \\\"{\\\\\\\"certificate_type\\\\\\\": \\\\\\\"employment\\\\\\\", \\\\\\\"addressed_to\\\\\\\": \\\\\\\"\\u0644\\u0645\\u0646 \\u064a\\u0647\\u0645\\u0647 \\u0627\\u0644\\u0623\\u0645\\u0631\\\\\\\", \\\\\\\"language\\\\\\\": \\\\\\\"ar\\\\\\\"}\\\", \\\"status\\\": \\\"executed\\\", \\\"approval_chain\\\": \\\"\\\", \\\"chain_pos\\\": 0, \\\"current_approver\\\": \\\"\\\", \\\"decision_note\\\": \\\"\\\", \\\"output_ref\\\": \\\"CERT-118204\\\", \\\"sla_hours\\\": 1, \\\"updated_at\\\": \\\"2026-08-03T22:11:22\\\"}]\");\nconst stale = new Date(Date.now() - 30 * 3600 * 1000).toISOString();\n// re-arm the SLA anchor relative to now so the chaser always has a live case\nfor (const r of rows) if (r.txn_id === 'TXN-SEED-CHASE') { r.ts = stale; r.updated_at = stale; }\nreturn rows.map(r => ({ json: r }));"
+        "jsCode": "const rows = JSON.parse(\"[{\\\"txn_id\\\": \\\"TXN-SEED-OVERLAP\\\", \\\"ts\\\": \\\"2026-08-10T22:48:36\\\", \\\"employee_id\\\": \\\"EMP-1003\\\", \\\"employee_name\\\": \\\"\\u0633\\u0627\\u0644\\u0645 \\u0627\\u0644\\u0646\\u0642\\u0628\\u064a (\\u062a\\u062c\\u0631\\u064a\\u0628\\u064a)\\\", \\\"skill_id\\\": \\\"leave-request\\\", \\\"type_ar\\\": \\\"\\u0637\\u0644\\u0628 \\u0625\\u062c\\u0627\\u0632\\u0629\\\", \\\"payload_json\\\": \\\"{\\\\\\\"leave_type\\\\\\\": \\\\\\\"annual\\\\\\\", \\\\\\\"start_date\\\\\\\": \\\\\\\"2026-08-19\\\\\\\", \\\\\\\"end_date\\\\\\\": \\\\\\\"2026-08-23\\\\\\\", \\\\\\\"working_days\\\\\\\": 3, \\\\\\\"reason\\\\\\\": \\\\\\\"\\u0625\\u062c\\u0627\\u0632\\u0629 \\u0639\\u0627\\u0626\\u0644\\u064a\\u0629\\\\\\\"}\\\", \\\"status\\\": \\\"executed\\\", \\\"approval_chain\\\": \\\"manager\\\", \\\"chain_pos\\\": 1, \\\"current_approver\\\": \\\"\\\", \\\"decision_note\\\": \\\"\\u0627\\u0639\\u062a\\u0645\\u062f\\u062a\\\", \\\"output_ref\\\": \\\"\\\", \\\"sla_hours\\\": 48, \\\"updated_at\\\": \\\"2026-08-11T22:48:36\\\"}, {\\\"txn_id\\\": \\\"TXN-SEED-CHASE\\\", \\\"ts\\\": \\\"2026-08-11T16:48:36\\\", \\\"employee_id\\\": \\\"EMP-1004\\\", \\\"employee_name\\\": \\\"\\u0631\\u0627\\u0634\\u062f \\u0627\\u0644\\u0643\\u062a\\u0628\\u064a (\\u062a\\u062c\\u0631\\u064a\\u0628\\u064a)\\\", \\\"skill_id\\\": \\\"expense-claim\\\", \\\"type_ar\\\": \\\"\\u0645\\u0637\\u0627\\u0644\\u0628\\u0629 \\u0646\\u0641\\u0642\\u0627\\u062a / \\u0628\\u062f\\u0644\\u0627\\u062a\\\", \\\"payload_json\\\": \\\"{\\\\\\\"category\\\\\\\": \\\\\\\"training\\\\\\\", \\\\\\\"amount_aed\\\\\\\": 850, \\\\\\\"expense_date\\\\\\\": \\\\\\\"2026-08-06\\\\\\\", \\\\\\\"description\\\\\\\": \\\\\\\"\\u0631\\u0633\\u0648\\u0645 \\u0648\\u0631\\u0634\\u0629 \\u062a\\u062f\\u0631\\u064a\\u0628\\u064a\\u0629 \\u0645\\u0639\\u062a\\u0645\\u062f\\u0629\\\\\\\", \\\\\\\"receipt_ref\\\\\\\": \\\\\\\"RCPT-7741\\\\\\\"}\\\", \\\"status\\\": \\\"awaiting_manager\\\", \\\"approval_chain\\\": \\\"manager;finance\\\", \\\"chain_pos\\\": 0, \\\"current_approver\\\": \\\"manager\\\", \\\"decision_note\\\": \\\"\\\", \\\"output_ref\\\": \\\"\\\", \\\"sla_hours\\\": 24, \\\"updated_at\\\": \\\"2026-08-11T16:48:36\\\"}, {\\\"txn_id\\\": \\\"TXN-SEED-CERT\\\", \\\"ts\\\": \\\"2026-08-03T22:48:36\\\", \\\"employee_id\\\": \\\"EMP-1006\\\", \\\"employee_name\\\": \\\"\\u062e\\u0627\\u0644\\u062f \\u0627\\u0644\\u0647\\u0627\\u0645\\u0644\\u064a (\\u062a\\u062c\\u0631\\u064a\\u0628\\u064a)\\\", \\\"skill_id\\\": \\\"salary-certificate\\\", \\\"type_ar\\\": \\\"\\u0634\\u0647\\u0627\\u062f\\u0629 \\u0631\\u0627\\u062a\\u0628 / \\u0644\\u0645\\u0646 \\u064a\\u0647\\u0645\\u0647 \\u0627\\u0644\\u0623\\u0645\\u0631\\\", \\\"payload_json\\\": \\\"{\\\\\\\"certificate_type\\\\\\\": \\\\\\\"employment\\\\\\\", \\\\\\\"addressed_to\\\\\\\": \\\\\\\"\\u0644\\u0645\\u0646 \\u064a\\u0647\\u0645\\u0647 \\u0627\\u0644\\u0623\\u0645\\u0631\\\\\\\", \\\\\\\"language\\\\\\\": \\\\\\\"ar\\\\\\\"}\\\", \\\"status\\\": \\\"executed\\\", \\\"approval_chain\\\": \\\"\\\", \\\"chain_pos\\\": 0, \\\"current_approver\\\": \\\"\\\", \\\"decision_note\\\": \\\"\\\", \\\"output_ref\\\": \\\"CERT-118204\\\", \\\"sla_hours\\\": 1, \\\"updated_at\\\": \\\"2026-08-03T22:48:36\\\"}]\");\nconst stale = new Date(Date.now() - 30 * 3600 * 1000).toISOString();\n// re-arm the SLA anchor relative to now so the chaser always has a live case\nfor (const r of rows) if (r.txn_id === 'TXN-SEED-CHASE') { r.ts = stale; r.updated_at = stale; }\nreturn rows.map(r => ({ json: r }));"
       }
     },
     {
-      "id": "08953890-e217-4d92-a42d-6225119b9add",
+      "id": "87bf24d0-4f9a-4e0c-ab31-ac1cef3cdeed",
       "name": "Insert Transactions",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -656,7 +656,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "89d91545-610f-41b2-b3ad-60e916f5ac18",
+      "id": "1e93956e-3959-47f7-8fcd-b9e3a2937e9c",
       "name": "Create AuditLog",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -706,7 +706,7 @@
       "executeOnce": true
     },
     {
-      "id": "7e1e8bc7-9847-443f-b802-ec66d0fe9f8f",
+      "id": "2af20d71-7aec-4f9f-a85f-b56b793a0879",
       "name": "Clear AuditLog",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -727,7 +727,7 @@
       "executeOnce": true
     },
     {
-      "id": "2e3657e8-3def-48b4-ab5f-d365504a5d0d",
+      "id": "ed76ffd5-4d71-42f1-8779-79994889dcc6",
       "name": "Seed AuditLog",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -736,11 +736,11 @@
         340
       ],
       "parameters": {
-        "jsCode": "const rows = JSON.parse(\"[{\\\"ts\\\": \\\"2026-08-10T22:11:22\\\", \\\"session_id\\\": \\\"S-seed-1\\\", \\\"employee_id\\\": \\\"EMP-1003\\\", \\\"skill_id\\\": \\\"leave-request\\\", \\\"service\\\": \\\"get_leave_balance\\\", \\\"request_json\\\": \\\"{}\\\", \\\"result_summary\\\": \\\"OK {\\\\\\\"annual_remaining\\\\\\\":26,...}\\\"}, {\\\"ts\\\": \\\"2026-08-10T22:11:22\\\", \\\"session_id\\\": \\\"S-seed-1\\\", \\\"employee_id\\\": \\\"EMP-1003\\\", \\\"skill_id\\\": \\\"leave-request\\\", \\\"service\\\": \\\"submit_transaction\\\", \\\"request_json\\\": \\\"{\\\\\\\"leave_type\\\\\\\":\\\\\\\"annual\\\\\\\"}\\\", \\\"result_summary\\\": \\\"OK TXN-SEED-OVERLAP awaiting_manager\\\"}]\");\nreturn rows.map(r => ({ json: r }));"
+        "jsCode": "const rows = JSON.parse(\"[{\\\"ts\\\": \\\"2026-08-10T22:48:36\\\", \\\"session_id\\\": \\\"S-seed-1\\\", \\\"employee_id\\\": \\\"EMP-1003\\\", \\\"skill_id\\\": \\\"leave-request\\\", \\\"service\\\": \\\"get_leave_balance\\\", \\\"request_json\\\": \\\"{}\\\", \\\"result_summary\\\": \\\"OK {\\\\\\\"annual_remaining\\\\\\\":26,...}\\\"}, {\\\"ts\\\": \\\"2026-08-10T22:48:36\\\", \\\"session_id\\\": \\\"S-seed-1\\\", \\\"employee_id\\\": \\\"EMP-1003\\\", \\\"skill_id\\\": \\\"leave-request\\\", \\\"service\\\": \\\"submit_transaction\\\", \\\"request_json\\\": \\\"{\\\\\\\"leave_type\\\\\\\":\\\\\\\"annual\\\\\\\"}\\\", \\\"result_summary\\\": \\\"OK TXN-SEED-OVERLAP awaiting_manager\\\"}]\");\nreturn rows.map(r => ({ json: r }));"
       }
     },
     {
-      "id": "786b0c7a-1107-4242-a036-63e342372955",
+      "id": "64a8f440-a6bd-4c6a-88b2-ec1760617aeb",
       "name": "Insert AuditLog",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -770,8 +770,264 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "329ab004-e48b-4c26-b181-5099e35a4a14",
-      "name": "Note 0fa95714",
+      "id": "65c7e5d7-2244-4176-b77d-d240024830b1",
+      "name": "Create Memory",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        980,
+        0
+      ],
+      "parameters": {
+        "resource": "table",
+        "operation": "create",
+        "tableName": "Memory",
+        "columns": {
+          "column": [
+            {
+              "name": "memory_id",
+              "type": "string"
+            },
+            {
+              "name": "scope",
+              "type": "string"
+            },
+            {
+              "name": "subject_id",
+              "type": "string"
+            },
+            {
+              "name": "content",
+              "type": "string"
+            },
+            {
+              "name": "source",
+              "type": "string"
+            },
+            {
+              "name": "status",
+              "type": "string"
+            },
+            {
+              "name": "use_count",
+              "type": "string"
+            },
+            {
+              "name": "created_at",
+              "type": "string"
+            },
+            {
+              "name": "updated_at",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "onError": "continueRegularOutput",
+      "executeOnce": true
+    },
+    {
+      "id": "960d492e-2532-41cc-ad42-098133154e1b",
+      "name": "Clear Memory",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        980,
+        170
+      ],
+      "parameters": {
+        "resource": "table",
+        "operation": "clear",
+        "dataTableId": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Memory"
+        }
+      },
+      "onError": "continueRegularOutput",
+      "executeOnce": true
+    },
+    {
+      "id": "28914262-e467-464c-8557-1f7e3634b2b6",
+      "name": "Seed Memory",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        980,
+        340
+      ],
+      "parameters": {
+        "jsCode": "const rows = JSON.parse(\"[{\\\"memory_id\\\": \\\"MEM-0001\\\", \\\"scope\\\": \\\"org\\\", \\\"subject_id\\\": \\\"\\\", \\\"content\\\": \\\"\\u062a\\u064f\\u063a\\u0644\\u0642 \\u0625\\u062f\\u0627\\u0631\\u0629 \\u0627\\u0644\\u0645\\u0627\\u0644\\u064a\\u0629 \\u062d\\u0633\\u0627\\u0628\\u0627\\u062a\\u0647\\u0627 \\u0627\\u0644\\u0634\\u0647\\u0631\\u064a\\u0629 \\u0641\\u064a \\u0622\\u062e\\u0631 \\u062b\\u0644\\u0627\\u062b\\u0629 \\u0623\\u064a\\u0627\\u0645 \\u0639\\u0645\\u0644 \\u0645\\u0646 \\u0643\\u0644 \\u0634\\u0647\\u0631\\u060c \\u0648\\u062a\\u062a\\u0623\\u062e\\u0631 \\u0627\\u0639\\u062a\\u0645\\u0627\\u062f\\u0627\\u062a \\u0627\\u0644\\u0645\\u0637\\u0627\\u0644\\u0628\\u0627\\u062a \\u0641\\u064a \\u062a\\u0644\\u0643 \\u0627\\u0644\\u0641\\u062a\\u0631\\u0629.\\\", \\\"source\\\": \\\"seed\\\", \\\"status\\\": \\\"active\\\", \\\"use_count\\\": \\\"0\\\", \\\"created_at\\\": \\\"2026-07-23T22:48:36\\\", \\\"updated_at\\\": \\\"2026-07-23T22:48:36\\\"}, {\\\"memory_id\\\": \\\"MEM-0002\\\", \\\"scope\\\": \\\"employee\\\", \\\"subject_id\\\": \\\"EMP-1001\\\", \\\"content\\\": \\\"\\u064a\\u0641\\u0636\\u0651\\u0644 \\u0623\\u062d\\u0645\\u062f \\u0627\\u0644\\u0645\\u0647\\u064a\\u0631\\u064a \\u0627\\u0644\\u0631\\u062f\\u0648\\u062f \\u0627\\u0644\\u0645\\u062e\\u062a\\u0635\\u0631\\u0629 \\u0648\\u0627\\u0644\\u0645\\u0628\\u0627\\u0634\\u0631\\u0629\\u060c \\u0648\\u064a\\u0637\\u0644\\u0628 \\u062f\\u0627\\u0626\\u0645\\u064b\\u0627 \\u062a\\u0623\\u0643\\u064a\\u062f \\u0627\\u0644\\u062a\\u0648\\u0627\\u0631\\u064a\\u062e \\u0628\\u0627\\u0644\\u062a\\u0642\\u0648\\u064a\\u0645 \\u0627\\u0644\\u0645\\u064a\\u0644\\u0627\\u062f\\u064a.\\\", \\\"source\\\": \\\"seed\\\", \\\"status\\\": \\\"active\\\", \\\"use_count\\\": \\\"0\\\", \\\"created_at\\\": \\\"2026-08-06T22:48:36\\\", \\\"updated_at\\\": \\\"2026-08-06T22:48:36\\\"}, {\\\"memory_id\\\": \\\"MEM-0003\\\", \\\"scope\\\": \\\"employee\\\", \\\"subject_id\\\": \\\"EMP-1004\\\", \\\"content\\\": \\\"\\u0631\\u0627\\u0634\\u062f \\u0627\\u0644\\u0643\\u062a\\u0628\\u064a \\u064a\\u0642\\u062f\\u0651\\u0645 \\u0645\\u0637\\u0627\\u0644\\u0628\\u0627\\u062a \\u0646\\u0641\\u0642\\u0627\\u062a \\u062a\\u062f\\u0631\\u064a\\u0628\\u064a\\u0629 \\u0628\\u0634\\u0643\\u0644 \\u0645\\u062a\\u0643\\u0631\\u0631\\u060c \\u0648\\u063a\\u0627\\u0644\\u0628\\u064b\\u0627 \\u0645\\u0627 \\u064a\\u0646\\u0633\\u0649 \\u0625\\u0631\\u0641\\u0627\\u0642 \\u0631\\u0642\\u0645 \\u0627\\u0644\\u0625\\u064a\\u0635\\u0627\\u0644.\\\", \\\"source\\\": \\\"seed\\\", \\\"status\\\": \\\"active\\\", \\\"use_count\\\": \\\"0\\\", \\\"created_at\\\": \\\"2026-08-09T22:48:36\\\", \\\"updated_at\\\": \\\"2026-08-09T22:48:36\\\"}]\");\nreturn rows.map(r => ({ json: r }));"
+      }
+    },
+    {
+      "id": "7b6d37ce-aef9-4857-b24a-76897728be2f",
+      "name": "Insert Memory",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        980,
+        510
+      ],
+      "parameters": {
+        "operation": "insert",
+        "dataTableId": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Memory"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": null,
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000
+    },
+    {
+      "id": "546c7137-6690-4030-8e99-78b1fa5d2168",
+      "name": "Create SkillPatches",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        1230,
+        0
+      ],
+      "parameters": {
+        "resource": "table",
+        "operation": "create",
+        "tableName": "SkillPatches",
+        "columns": {
+          "column": [
+            {
+              "name": "patch_id",
+              "type": "string"
+            },
+            {
+              "name": "skill_id",
+              "type": "string"
+            },
+            {
+              "name": "kind",
+              "type": "string"
+            },
+            {
+              "name": "proposed_text",
+              "type": "string"
+            },
+            {
+              "name": "rationale",
+              "type": "string"
+            },
+            {
+              "name": "evidence",
+              "type": "string"
+            },
+            {
+              "name": "status",
+              "type": "string"
+            },
+            {
+              "name": "created_by",
+              "type": "string"
+            },
+            {
+              "name": "reviewed_by",
+              "type": "string"
+            },
+            {
+              "name": "review_note",
+              "type": "string"
+            },
+            {
+              "name": "created_at",
+              "type": "string"
+            },
+            {
+              "name": "updated_at",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "onError": "continueRegularOutput",
+      "executeOnce": true
+    },
+    {
+      "id": "09b357ed-1377-4d4b-89fe-33337d0ef610",
+      "name": "Clear SkillPatches",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        1230,
+        170
+      ],
+      "parameters": {
+        "resource": "table",
+        "operation": "clear",
+        "dataTableId": {
+          "__rl": true,
+          "mode": "name",
+          "value": "SkillPatches"
+        }
+      },
+      "onError": "continueRegularOutput",
+      "executeOnce": true
+    },
+    {
+      "id": "9ea2d082-d763-4191-a695-9ab2578252e5",
+      "name": "Seed SkillPatches",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1230,
+        340
+      ],
+      "parameters": {
+        "jsCode": "const rows = JSON.parse(\"[{\\\"patch_id\\\": \\\"PATCH-0001\\\", \\\"skill_id\\\": \\\"expense-claim\\\", \\\"kind\\\": \\\"add_rule\\\", \\\"proposed_text\\\": \\\"\\u0639\\u0646\\u062f \\u0627\\u062e\\u062a\\u064a\\u0627\\u0631 \\u0627\\u0644\\u0641\\u0626\\u0629 training: \\u0630\\u0643\\u0651\\u0631 \\u0627\\u0644\\u0645\\u0648\\u0638\\u0641 \\u0628\\u0631\\u0642\\u0645 \\u0627\\u0644\\u0625\\u064a\\u0635\\u0627\\u0644 \\u0642\\u0628\\u0644 \\u0639\\u0631\\u0636 \\u0628\\u0637\\u0627\\u0642\\u0629 \\u0627\\u0644\\u0645\\u0639\\u0627\\u064a\\u0646\\u0629\\u060c \\u0641\\u0642\\u062f \\u0644\\u0648\\u062d\\u0638 \\u062a\\u0643\\u0631\\u0627\\u0631 \\u0646\\u0633\\u064a\\u0627\\u0646\\u0647.\\\", \\\"rationale\\\": \\\"\\u062b\\u0644\\u0627\\u062b \\u0645\\u0637\\u0627\\u0644\\u0628\\u0627\\u062a \\u062a\\u062f\\u0631\\u064a\\u0628\\u064a\\u0629 \\u0645\\u062a\\u062a\\u0627\\u0644\\u064a\\u0629 \\u0631\\u064f\\u062f\\u0651\\u062a \\u0644\\u063a\\u064a\\u0627\\u0628 \\u0631\\u0642\\u0645 \\u0627\\u0644\\u0625\\u064a\\u0635\\u0627\\u0644.\\\", \\\"evidence\\\": \\\"TXN-SEED-CHASE\\\", \\\"status\\\": \\\"pending\\\", \\\"created_by\\\": \\\"agent\\\", \\\"reviewed_by\\\": \\\"\\\", \\\"review_note\\\": \\\"\\\", \\\"created_at\\\": \\\"2026-08-12T17:48:36\\\", \\\"updated_at\\\": \\\"2026-08-12T17:48:36\\\"}]\");\nreturn rows.map(r => ({ json: r }));"
+      }
+    },
+    {
+      "id": "9f97cca5-4c4f-4047-a638-f971493fce62",
+      "name": "Insert SkillPatches",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        1230,
+        510
+      ],
+      "parameters": {
+        "operation": "insert",
+        "dataTableId": {
+          "__rl": true,
+          "mode": "name",
+          "value": "SkillPatches"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": null,
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000
+    },
+    {
+      "id": "966e902b-cb41-49a2-9ca1-29a35e3aa57c",
+      "name": "Note b03d2bb0",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
@@ -1067,6 +1323,94 @@
         [
           {
             "node": "Create AuditLog",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Memory": {
+      "main": [
+        [
+          {
+            "node": "Clear Memory",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Clear Memory": {
+      "main": [
+        [
+          {
+            "node": "Seed Memory",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Seed Memory": {
+      "main": [
+        [
+          {
+            "node": "Insert Memory",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert AuditLog": {
+      "main": [
+        [
+          {
+            "node": "Create Memory",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create SkillPatches": {
+      "main": [
+        [
+          {
+            "node": "Clear SkillPatches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Clear SkillPatches": {
+      "main": [
+        [
+          {
+            "node": "Seed SkillPatches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Seed SkillPatches": {
+      "main": [
+        [
+          {
+            "node": "Insert SkillPatches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert Memory": {
+      "main": [
+        [
+          {
+            "node": "Create SkillPatches",
             "type": "main",
             "index": 0
           }

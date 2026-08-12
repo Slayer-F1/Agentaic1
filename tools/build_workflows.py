@@ -66,6 +66,8 @@ WF_IDS = {
     "06-error-handler.json": "munjizErrorHnd06",
     "07-demo-reset.json": "munjizDemoReset7",
 }
+WF_IDS["08-reflection.json"] = "munjizReflect008"
+WF_IDS["09-patch-review.json"] = "munjizPatchRev09"
 WF_IDS["01-main.json"] = "munjizMain000001"
 WF_IDS["03-error-handler.json"] = WF_IDS["06-error-handler.json"]
 WF_MAIN_ID = WF_IDS["01-main.json"]
@@ -426,6 +428,73 @@ SVC_CODES = {
         "return [{ json: { ...j, result: { requested_working_days: workingDays(s, e),\n"
         "  team_overlaps: overlaps } } }];\n"
     ),
+    "read_memory": (
+        "const j = $('Gate Check').first().json;\n"
+        "const rows = $input.all().map(i => i.json).filter(r => r && r.memory_id);\n"
+        "const mine = rows.filter(r => r.status === 'active' && (r.scope === 'org'\n"
+        "  || (r.scope === 'employee' && r.subject_id === j.employee_id)));\n"
+        "return [{ json: { ...j, result: { memories: mine.map(m => ({\n"
+        "  memory_id: m.memory_id, scope: m.scope, content: m.content })) } } }];\n"
+    ),
+    "write_memory": (
+        "const j = $('Gate Check').first().json;\n"
+        "const LIMIT = 2200;  // characters, model-independent - the whole GC policy\n"
+        "const rows = $input.all().map(i => i.json).filter(r => r && r.memory_id);\n"
+        "const p = j.payload || {};\n"
+        "const scope = p.scope === 'org' ? 'org' : 'employee';\n"
+        "const subject = scope === 'org' ? '' : (p.subject_id || j.employee_id);\n"
+        "const scoped = rows.filter(r => r.status === 'active' && r.scope === scope\n"
+        "  && (scope === 'org' || r.subject_id === subject));\n"
+        "const used = scoped.reduce((n, r) => n + String(r.content || '').length, 0);\n"
+        "const action = p.action || 'add';\n"
+        "const now = new Date().toISOString();\n"
+        "if (action === 'remove' || action === 'replace') {\n"
+        "  const target = scoped.find(r => r.memory_id === p.memory_id\n"
+        "    || (p.match && String(r.content || '').includes(p.match)));\n"
+        "  if (!target) return [{ json: { ...j, result: { error: 'MEMORY_NOT_FOUND' } } }];\n"
+        "  const row = { ...target, updated_at: now };\n"
+        "  if (action === 'remove') { row.status = 'retired'; }\n"
+        "  else { row.content = String(p.content || '').slice(0, 400); }\n"
+        "  return [{ json: { ...j, memory_row: row,\n"
+        "    result: { ok: true, action, memory_id: row.memory_id } } }];\n"
+        "}\n"
+        "const content = String(p.content || '').trim().slice(0, 400);\n"
+        "if (!content) return [{ json: { ...j, result: { error: 'EMPTY_CONTENT' } } }];\n"
+        "if (scoped.some(r => r.content === content))\n"
+        "  return [{ json: { ...j, result: { ok: true, deduped: true } } }];\n"
+        "if (used + content.length > LIMIT) {\n"
+        "  return [{ json: { ...j, result: { error: 'MEMORY_BUDGET_EXCEEDED',\n"
+        "    usage: used + '/' + LIMIT,\n"
+        "    message: 'الذاكرة ممتلئة. ادمج مدخلات متداخلة أو احذف الأقل أهمية من القائمة ثم أعد المحاولة في الدور نفسه.',\n"
+        "    current_entries: scoped.map(r => ({ memory_id: r.memory_id, content: r.content }))\n"
+        "  } } }];\n"
+        "}\n"
+        "const row = { memory_id: 'MEM-' + Date.now(), scope, subject_id: subject,\n"
+        "  content, source: p.source || 'reflection', status: 'active', use_count: '0',\n"
+        "  created_at: now, updated_at: now };\n"
+        "return [{ json: { ...j, memory_row: row, result: { ok: true, action: 'add',\n"
+        "  memory_id: row.memory_id, usage: (used + content.length) + '/' + LIMIT } } }];\n"
+    ),
+    "propose_skill_patch": (
+        "const j = $('Gate Check').first().json;\n"
+        "const p = j.payload || {};\n"
+        "const now = new Date().toISOString();\n"
+        "const text = String(p.proposed_text || '').trim().slice(0, 600);\n"
+        "if (!text || !p.skill_id)\n"
+        "  return [{ json: { ...j, result: { error: 'SKILL_ID_AND_TEXT_REQUIRED' } } }];\n"
+        "const rows = $input.all().map(i => i.json).filter(r => r && r.patch_id);\n"
+        "if (rows.some(r => r.status === 'pending' && r.skill_id === p.skill_id\n"
+        "  && r.proposed_text === text))\n"
+        "  return [{ json: { ...j, result: { ok: true, deduped: true } } }];\n"
+        "const row = { patch_id: 'PATCH-' + Date.now(), skill_id: p.skill_id,\n"
+        "  kind: p.kind || 'add_rule', proposed_text: text,\n"
+        "  rationale: String(p.rationale || '').slice(0, 400),\n"
+        "  evidence: String(p.evidence || '').slice(0, 200), status: 'pending',\n"
+        "  created_by: 'agent', reviewed_by: '', review_note: '',\n"
+        "  created_at: now, updated_at: now };\n"
+        "return [{ json: { ...j, patch_row: row, result: { ok: true, patch_id: row.patch_id,\n"
+        "  status: 'pending', message: 'اقتراح مسجّل بانتظار اعتماد مالك الإجراء' } } }];\n"
+    ),
     "submit_transaction": (
         "const j = $('Gate Check').first().json;\n"
         "const emps = $input.all().map(i => i.json);\n"
@@ -502,6 +571,9 @@ def build_gateway():
         "get_system_catalog": [("Read SystemCatalog (svc)", "SystemCatalog")],
         "check_leave_overlap": [("Read Employees (overlap)", "Employees"), ("Read Transactions (overlap)", "Transactions")],
         "submit_transaction": [("Read Employees (submit)", "Employees")],
+        "read_memory": [("Read Memory (svc)", "Memory")],
+        "write_memory": [("Read Memory (write)", "Memory")],
+        "propose_skill_patch": [("Read SkillPatches (svc)", "SkillPatches")],
     }
     for i, svc in enumerate(services):
         x = -60
@@ -520,6 +592,28 @@ def build_gateway():
         y += 170
 
     # submit path also appends the transaction row
+    mem_emit = wf.add(code("Emit Memory Row", (
+        "const j = $('svc: write_memory').first().json;\n"
+        "return j.memory_row ? [{ json: j.memory_row }] : [];\n"
+    ), (720, y - 510), alwaysOutputData=True))
+    mem_save = wf.add(dt_upsert("Save Memory", "Memory", "memory_id", (940, y - 510)))
+    mem_back = wf.add(code("Carry Memory Result",
+                           "return [{ json: $('svc: write_memory').first().json }];", (1160, y - 510)))
+    wf.link("svc: write_memory", mem_emit)
+    wf.link(mem_emit, mem_save)
+    wf.link(mem_save, mem_back)
+
+    pat_emit = wf.add(code("Emit Patch Row", (
+        "const j = $('svc: propose_skill_patch').first().json;\n"
+        "return j.patch_row ? [{ json: j.patch_row }] : [];\n"
+    ), (720, y - 340), alwaysOutputData=True))
+    pat_save = wf.add(dt_insert("Save Skill Patch", "SkillPatches", (940, y - 340)))
+    pat_back = wf.add(code("Carry Patch Result",
+                           "return [{ json: $('svc: propose_skill_patch').first().json }];", (1160, y - 340)))
+    wf.link("svc: propose_skill_patch", pat_emit)
+    wf.link(pat_emit, pat_save)
+    wf.link(pat_save, pat_back)
+
     tx_emit = wf.add(code("Emit Txn Row", "return [{ json: $json.txn_row }];", (720, y - 170)))
     tx_append = wf.add(dt_insert("Append Transaction", "Transactions", (940, y - 170)))
     tx_back = wf.add(code("Carry Submit Result",
@@ -528,6 +622,9 @@ def build_gateway():
     wf.link(tx_emit, tx_append)
     wf.link(tx_append, tx_back)
     ends[-1] = tx_back  # submit's end is after the append
+    # the two writing learning services must be audited AFTER their row is stored
+    for nm, carrier in (("svc: write_memory", mem_back), ("svc: propose_skill_patch", pat_back)):
+        ends[ends.index(nm)] = carrier
 
     ends.append(ni)
     audit_row = wf.add(code("Build Audit Row", (
@@ -550,7 +647,8 @@ def build_gateway():
         "let full = null;\n"
         "for (const n of ['Denied Result','svc: get_employee_profile','svc: get_leave_balance',\n"
         "  'svc: get_salary_record','svc: get_expense_policy','svc: get_it_roles',\n"
-        "  'svc: get_system_catalog','svc: check_leave_overlap','Carry Submit Result','svc: not_implemented']) {\n"
+        "  'svc: get_system_catalog','svc: check_leave_overlap','Carry Submit Result',\n"
+        "  'Carry Memory Result','Carry Patch Result','svc: read_memory','svc: not_implemented']) {\n"
         "  try { const it = $(n).first(); if (it && it.json && it.json.result) { full = it.json; break; } } catch (e) {}\n"
         "}\n"
         "return [{ json: { service: src.service, result: (full && full.result) || { error: 'NO_RESULT' } } }];\n"
@@ -644,12 +742,21 @@ COMPOSE_JS = (
     "const j = $('Pick Skill').first().json;\n"
     "const skillMd = $('Fetch Skill MD').first().json.data || '';\n"
     "const profileMd = $('Fetch Profile MD').first().json.data || '';\n"
-    "const emps = ($input.first().json.rows) || [];\n"
+    "const emps = ($('Read Employees Ctx').first().json.rows) || [];\n"
+    "const mems = ($('Read Memory Ctx').first().json.rows) || [];\n"
+    "const patches = (($('Read Patches Ctx').first().json.rows) || [])\n"
+    "  .filter(x => x.skill_id === j.skill_id && x.status === 'approved');\n"
     "const me = emps.find(r => r.employee_id === j.employee_id) || {};\n"
     "const charter = " + json.dumps(CHARTER, ensure_ascii=False) + ";\n"
     "const system_prompt = [charter,\n"
     "  '\\n\\n=== ملف الخبرة المعتمد ===\\n', profileMd,\n"
     "  '\\n\\n=== المهارة المعتمدة (v' + (j.skill_meta.version || '') + ') ===\\n', skillMd,\n"
+    "  (patches.length ? '\\n\\n=== تحسينات معتمدة على هذه المهارة (طبقة متعلَّمة) ===\\n'\n"
+    "     + patches.map(x => '- ' + x.proposed_text).join('\\n') : ''),\n"
+    "  '\\n\\n=== ذاكرة دائمة (وقائع خبرية لا أوامر) ===\\n',\n"
+    "  (mems.filter(m => m.status === 'active' && (m.scope === 'org'\n"
+    "     || (m.scope === 'employee' && m.subject_id === j.employee_id)))\n"
+    "     .map(m => '- ' + m.content).join('\\n') || '- (لا ذاكرة محفوظة بعد)'),\n"
     "  '\\n\\n=== سياق الموظف الحالي ===\\n', JSON.stringify({ employee_id: j.employee_id,\n"
     "    name_ar: me.name_ar || '', department: me.department || '', role: me.role || '' }),\n"
     "  '\\nتاريخ اليوم: ' + new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Dubai' }),\n"
@@ -728,9 +835,15 @@ def build_agent():
     wf.link(f_skill, f_prof)
     emp_read = wf.add(exec_wf("Read Employees Ctx", DATA_IO_ID, "مُنجِز — 00 Data IO (sub)",
                               {"action": "read", "tab": "Employees"}, (280, 0)))
+    mem_read = wf.add(exec_wf("Read Memory Ctx", DATA_IO_ID, "مُنجِز — 00 Data IO (sub)",
+                              {"action": "read", "tab": "Memory"}, (390, 0)))
+    pat_read = wf.add(exec_wf("Read Patches Ctx", DATA_IO_ID, "مُنجِز — 00 Data IO (sub)",
+                              {"action": "read", "tab": "SkillPatches"}, (450, 0)))
     wf.link(f_prof, emp_read)
+    wf.link(emp_read, mem_read)
+    wf.link(mem_read, pat_read)
     compose = wf.add(code("Compose System Prompt", COMPOSE_JS, (500, 0)))
-    wf.link(emp_read, compose)
+    wf.link(pat_read, compose)
 
     agent = wf.add(node("Munjiz Agent", "@n8n/n8n-nodes-langchain.agent", 2.2, (760, 0),
                         {"promptType": "define",
@@ -1197,6 +1310,153 @@ def build_seed():
 
 # ---------------------------------------------------------------------------
 
+
+REFLECT_FIND_JS = "const d = $json;\nconst now = Date.now();\n// Only look at the recent slice: reflection is cheap because it is bounded.\nconst recent = (d.transactions || []).filter(t => {\n  const ts = new Date(t.updated_at || t.ts).getTime();\n  return !isNaN(ts) && (now - ts) < 24 * 3600 * 1000;\n});\nconst audit = (d.audit || []).slice(0, 40);\nconst denials = audit.filter(a => String(a.result_summary || '').startsWith('DENIED'));\nconst batch = recent.map(t => ({ txn_id: t.txn_id, skill_id: t.skill_id,\n  status: t.status, type_ar: t.type_ar, employee_id: t.employee_id,\n  payload: t.payload_json, decision_note: t.decision_note }));\nreturn [{ json: { batch, batch_size: batch.length,\n  denial_count: denials.length,\n  denials: denials.map(a => ({ skill_id: a.skill_id, service: a.service })),\n  now: new Date().toISOString() } }];\n"
+REFLECT_SYS_MSG = 'أنت «مراجع ما بعد الدور» في منظومة مُنجِز. تعمل بعد أن حصل الموظفون على إجاباتهم، ومهمتك الوحيدة تحسين ذاكرة المنظومة ومهاراتها. التزم حرفيًا بميثاق المراجعة المحمّل أدناه، وخصوصًا القائمة السلبية والفصل بين الذاكرة والمهارة. ابدأ دائمًا بـ read_memory قبل أي كتابة. مرور بلا تحديث = فرصة ضائعة، لكن لا تكتب ما تمنعه القائمة السلبية. أعد JSON فقط.'
+REFLECT_SCHEMA = {'type': 'object', 'properties': {'memory_writes': {'type': 'array', 'items': {'type': 'object', 'properties': {'action': {'type': 'string'}, 'scope': {'type': 'string'}, 'content': {'type': 'string'}, 'why': {'type': 'string'}}, 'required': ['action', 'content', 'why']}}, 'patch_proposals': {'type': 'array', 'items': {'type': 'object', 'properties': {'skill_id': {'type': 'string'}, 'proposed_text': {'type': 'string'}, 'rationale': {'type': 'string'}}, 'required': ['skill_id', 'proposed_text', 'rationale']}}, 'skipped_reason': {'type': 'string', 'description': 'إن لم تُجرِ أي تحديث، اذكر لماذا صراحةً'}}, 'required': ['memory_writes', 'patch_proposals']}
+
+
+def build_reflection():
+    """The Hermes-style background review: a SECOND agent pass that runs after the
+    employee already has their answer, whose only job is to improve the system's
+    memory and skills. It is tool-restricted to the three learning services by the
+    same governance gateway that constrains the service agent, and it can only ever
+    FILE a skill proposal - never edit an approved skill."""
+    wf = Wf("مُنجِز — 08 Reflection (learning pass)")
+    sched = wf.add(node("Every 15 Minutes", "n8n-nodes-base.scheduleTrigger", 1.2, (-1200, -140),
+                        {"rule": {"interval": [{"field": "minutes", "minutesInterval": 15}]}}))
+    manual = wf.add(node("Reflect Manually", "n8n-nodes-base.manualTrigger", 1, (-1200, 30), {}))
+    hook = wf.add(node("Reflect Webhook", "n8n-nodes-base.webhook", 2, (-1200, 200),
+                       {"httpMethod": "POST", "path": "munjiz/reflect",
+                        "responseMode": "responseNode", "options": {}}, webhook=True))
+    ack = wf.add(respond("Respond Reflect", '={{ { "ok": true, "started": true } }}', (-1000, 200)))
+    wf.link(hook, ack)
+
+    rd = wf.add(exec_wf("Read All (reflect)", DATA_IO_ID, "مُنجِز — 00 Data IO (sub)",
+                        {"action": "read_all", "tab": ""}, (-960, 30)))
+    for t in (sched, manual, ack):
+        wf.link(t, rd)
+    find = wf.add(code("Gather Batch", REFLECT_FIND_JS, (-740, 30)))
+    wf.link(rd, find)
+    gate = wf.add(if_node("Anything To Learn?", "={{ $json.batch_size }}", "number", "gt", 0,
+                          (-520, 30)))
+    wf.link(find, gate)
+    idle = wf.add(node("Nothing New ✓", "n8n-nodes-base.noOp", 1, (-300, 200), {}))
+    wf.link(gate, idle, output=1)
+
+    charter = wf.add(http_raw("Fetch Reflection Charter", RAW_BASE + "skills/reflection.skill.md",
+                              (-300, -80)))
+    wf.link(gate, charter, output=0)
+
+    agent = wf.add(node("Reflection Agent", "@n8n/n8n-nodes-langchain.agent", 2.2, (-60, -80), {
+        "promptType": "define",
+        "text": "={{ 'ميثاق المراجعة:\\n' + $json.data + '\\n\\nدفعة المعاملات الأخيرة:\\n'"
+                " + JSON.stringify($('Gather Batch').first().json.batch)"
+                " + '\\n\\nحالات رفض الحوكمة:\\n'"
+                " + JSON.stringify($('Gather Batch').first().json.denials) }}",
+        "hasOutputParser": True,
+        "options": {"systemMessage": REFLECT_SYS_MSG, "maxIterations": 12,
+                    "returnIntermediateSteps": True},
+    }, retryOnFail=True, maxTries=2, waitBetweenTries=8000))
+    lm = wf.add(node("Gemini Chat Model (reflect)", "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+                     1, (-180, 180), {"modelName": "models/gemini-2.5-flash",
+                                      "options": {"temperature": 0.3}}, credentials=CRED_GEMINI))
+    wf.link(lm, agent, ctype="ai_languageModel")
+    parser = wf.add(node("Reflection Output", "@n8n/n8n-nodes-langchain.outputParserStructured",
+                         1.2, (-20, 180),
+                         {"schemaType": "manual",
+                          "inputSchema": json.dumps(REFLECT_SCHEMA, ensure_ascii=False, indent=2)}))
+    wf.link(parser, agent, ctype="ai_outputParser")
+    tool = wf.add(node("call_service (learning)", "@n8n/n8n-nodes-langchain.toolWorkflow", 2.2,
+                       (140, 180), {
+        "name": "call_service",
+        "description": ("بوابة الخدمات نفسها، لكن صلاحيتك محصورة في: read_memory (اقرأ الذاكرة أولًا)، "
+                        "write_memory (add/replace/remove مع content)، propose_skill_patch "
+                        "(skill_id + proposed_text + rationale). أي خدمة أخرى سترفضها الحوكمة."),
+        "source": "database",
+        "workflowId": wfref(GATEWAY_ID, "مُنجِز — 02 Service Gateway (sub)"),
+        "workflowInputs": {"mappingMode": "defineBelow", "value": {
+            "service": "={{ $fromAI('service', 'read_memory | write_memory | propose_skill_patch', 'string') }}",
+            "payload": "={{ $fromAI('payload', 'JSON string payload for the service', 'string') }}",
+            "skill_id": "reflection",
+            "employee_id": "={{ $fromAI('employee_id', 'the employee this memory is about, or empty for org scope', 'string') }}",
+            "session_id": "reflection",
+        }, "matchingColumns": [], "schema": [],
+            "attemptToConvertTypes": False, "convertFieldsToString": False}}))
+    wf.link(tool, agent, ctype="ai_tool")
+
+    log = wf.add(code("Log Reflection", (
+        "const o = $json.output || {};\n"
+        "const n = (o.memory_writes || []).length + (o.patch_proposals || []).length;\n"
+        "return [{ json: { ts: new Date().toISOString(), session_id: 'reflection',\n"
+        "  employee_id: '', skill_id: 'reflection', service: 'reflection_pass',\n"
+        "  request_json: JSON.stringify({ batch: $('Gather Batch').first().json.batch_size }),\n"
+        "  result_summary: n + ' تحديث: ' + ((o.memory_writes || []).map(m => m.why).join(' | ')\n"
+        "    || o.skipped_reason || 'لا جديد') } }];\n"
+    ), (180, -80)))
+    wf.link(agent, log)
+    logw = wf.add(dt_insert("Append Reflection Log", "AuditLog", (400, -80)))
+    wf.link(log, logw)
+
+    wf.nodes.append(sticky(chr(10).join([
+        "## 08 Reflection — حلقة التعلّم",
+        "A SECOND agent pass, after the employee already has their answer.",
+        "",
+        "Its charter (`skills/reflection.skill.md`) is itself a governed skill, so the",
+        "reviewer cannot rewrite its own rules. The gateway restricts it to three",
+        "services; memory is capped at 2200 chars per scope, and on overflow the write",
+        "is refused with the full inventory attached so it must merge or delete.",
+        "",
+        "It may only FILE a skill proposal — approval is a human act (criterion ⑥).",
+    ]), (-1220, -420), width=680, height=250))
+    return wf
+
+
+def build_patch_review():
+    """Human approval of agent-proposed skill refinements."""
+    wf = Wf("مُنجِز — 09 Patch Review")
+    hook = wf.add(node("POST Patch", "n8n-nodes-base.webhook", 2, (-700, 0),
+                       {"httpMethod": "POST", "path": "munjiz/patch",
+                        "responseMode": "responseNode", "options": {}}, webhook=True))
+    rd = wf.add(dt_read("Read SkillPatches (review)", "SkillPatches", (-480, 0)))
+    wf.link(hook, rd)
+    dec = wf.add(code("Apply Patch Decision", (
+        "const b = $('POST Patch').first().json.body || {};\n"
+        "const rows = $input.all().map(i => i.json).filter(r => r && r.patch_id);\n"
+        "const t = rows.find(r => r.patch_id === b.patch_id);\n"
+        "if (!t) return [{ json: { ok: false, error: 'PATCH_NOT_FOUND' } }];\n"
+        "if (t.status !== 'pending') return [{ json: { ok: false, error: 'NOT_PENDING',\n"
+        "  status: t.status } }];\n"
+        "const d = String(b.decision || '').toLowerCase();\n"
+        "if (d !== 'approve' && d !== 'reject')\n"
+        "  return [{ json: { ok: false, error: 'INVALID_DECISION' } }];\n"
+        "return [{ json: { ok: true, row: { ...t, status: d === 'approve' ? 'approved' : 'rejected',\n"
+        "  reviewed_by: b.reviewer || 'owner', review_note: String(b.note || '').slice(0, 300),\n"
+        "  updated_at: new Date().toISOString() } } }];\n"
+    ), (-260, 0)))
+    wf.link(rd, dec)
+    ok = wf.add(if_node("Decision OK?", "={{ $json.ok }}", "boolean", "true", "true",
+                        (-40, 0), single=True))
+    wf.link(dec, ok)
+    err = wf.add(respond("Respond Patch Error",
+                         '={{ { "ok": false, "error": $json.error } }}', (180, 160)))
+    wf.link(ok, err, output=1)
+    emit = wf.add(code("Emit Patch Update", "return [{ json: $json.row }];", (180, -80)))
+    wf.link(ok, emit, output=0)
+    save = wf.add(dt_upsert("Save Patch Decision", "SkillPatches", "patch_id", (400, -80)))
+    wf.link(emit, save)
+    resp = wf.add(respond("Respond Patch",
+                          '={{ { "ok": true, "status": $json.status } }}', (620, -80)))
+    wf.link(save, resp)
+    wf.nodes.append(sticky(chr(10).join([
+        "## 09 Patch Review",
+        "`POST /munjiz/patch {patch_id, decision, note, reviewer}`.",
+        "An approved proposal becomes a **learned layer** appended to the governed",
+        "base skill at load time — the agent still cannot touch the base file in git.",
+    ]), (-720, -240), width=600, height=180))
+    return wf
+
+
 def merge(name, wf_id, parts, gap=1500):
     """Combine several built workflows onto one canvas.
 
@@ -1280,6 +1540,8 @@ def main():
         ("05-dashboard-api.json", build_dash()),
         ("06-error-handler.json", build_error()),
         ("07-demo-reset.json", build_seed()),
+        ("08-reflection.json", build_reflection()),
+        ("09-patch-review.json", build_patch_review()),
     ])
 
     # Default set: the five trigger workflows merged onto one canvas.
@@ -1292,6 +1554,8 @@ def main():
         ("04 SLA Chaser", build_chaser()),
         ("05 Dashboard API", build_dash()),
         ("07 Provision & Seed", build_seed()),
+        ("08 Reflection", build_reflection()),
+        ("09 Patch Review", build_patch_review()),
     ])
     print("workflow/ (4 files, merged - the default import set)")
     bad = emit(OUT, [
