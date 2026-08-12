@@ -295,6 +295,9 @@ const AR={appTitle:"مُنجِز",appSub:"بوابة الخدمات الذاتي
  skillsReg:"سجل المهارات (حي من GitHub)",skillsHint:"كل مهارة = ملف SKILL.md مُعتمد بإصدار — تعديلها يمر عبر git",
  auditTitle:"سجل التدقيق",auditHint:"كل استدعاء خدمة يمر عبر بوابة الحوكمة ويُسجَّل — بما فيه المرفوض",
  chaseOk:"انطلق حارس الإنجاز",resetOk:"أُعيدت التهيئة",cert:"شهادة",instant:"فوري",
+ internalTag:"داخلية",
+ emptyBody:(w)=>`تعذّر إكمال الطلب: لم يُرجِع مسار العمل (${w}) أي رد. الغالب أن بيانات اعتماد Gemini غير مضافة في n8n — راجع Executions في n8n.`,
+ badBody:(w)=>`رد غير مفهوم من مسار العمل (${w}).`,
  confirmMsg:"أؤكد الإرسال",cancelMsg:"إلغاء الطلب",newTitle:"محادثة جديدة",
  stAwait:(s)=>({manager:"بانتظار المدير",finance:"بانتظار المالية",it_security:"بانتظار أمن المعلومات",hr_head:"بانتظار رئيس الموارد",ciso:"بانتظار CISO",finance_audit:"بانتظار التدقيق"}[s]||("بانتظار "+s)),
  stMap:{executed:"منفَّذة",rejected:"مرفوضة"},
@@ -320,6 +323,9 @@ const EN={appTitle:"Munjiz",appSub:"Skill-governed self-service portal — demo 
  skillsReg:"Skill registry (live from GitHub)",skillsHint:"Every skill is a versioned, approved SKILL.md — changes go through git",
  auditTitle:"Audit log",auditHint:"Every service call passes the governance gateway and is logged — including denials",
  chaseOk:"SLA chaser fired",resetOk:"Demo re-armed",cert:"Certificate",instant:"instant",
+ internalTag:"internal",
+ emptyBody:(w)=>`Request could not complete: the workflow (${w}) returned no body. Usually the Gemini credential is missing in n8n — check Executions there.`,
+ badBody:(w)=>`Unreadable response from the workflow (${w}).`,
  confirmMsg:"I confirm, submit it",cancelMsg:"Cancel the request",newTitle:"New conversation",
  stAwait:(s)=>"awaiting "+s,stMap:{executed:"executed",rejected:"rejected"},
  demoNote:"(demo mode — connect n8n for real processing)"};
@@ -430,6 +436,14 @@ function demoChat(msg){
 
 /* ---------------- networking ---------------- */
 let pollT=null,lastHash="";
+/* n8n answers 200 with an EMPTY body when a workflow stops before its Respond
+   node (a missing credential, most often). Parsing that blind threw a raw
+   SyntaxError at the user, so read text first and explain what happened. */
+async function safeJson(r,what){
+ const txt=await r.text();
+ if(!txt.trim())throw new Error(T.emptyBody(what));
+ try{return JSON.parse(txt);}catch(e){throw new Error(T.badBody(what));}
+}
 const url=p=>S.base.replace(/\/+$/,"")+p;
 function setConn(c){S.conn=c;const el=$("#conn");
  el.className="conn "+(c==="live"?"live":c==="demo"?"demo":c==="err"?"err":"");
@@ -445,13 +459,13 @@ async function fetchState(force){
  try{const c=new AbortController();const t=setTimeout(()=>c.abort(),9000);
   const r=await fetch(url("/munjiz/state"),{signal:c.signal});clearTimeout(t);
   if(!r.ok)throw new Error("HTTP "+r.status);
-  S.data=await r.json();S.demo=false;setConn("live");maybeRender(force);
+  S.data=await safeJson(r,"/munjiz/state");S.demo=false;setConn("live");maybeRender(force);
  }catch(e){setConn("err");}}
 async function post(p,body){
  if(S.demo){return demoPost(p,body);}
  const r=await fetch(url(p),{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
  if(!r.ok)throw new Error("HTTP "+r.status);
- const ct=r.headers.get("content-type")||"";return ct.includes("json")?r.json():{};}
+ return safeJson(r,p);}
 function demoPost(p,body){
  if(p==="/munjiz/reset"){S.data=demoData();S.demoStep=0;S.chat=[];welcome();maybeRender(true);
   return Promise.resolve({ok:true});}
@@ -589,9 +603,10 @@ function renderApprovals(){
 }
 function renderGov(){
  const grid=$("#skillGrid");
- grid.innerHTML=(S.data?.skills||[]).map(s=>`<div class="skill-card">
+ grid.innerHTML=(S.data?.skills||[]).map(s=>`<div class="skill-card${s.internal?" internal":""}">
   <h4>${esc(S.lang==="ar"?s.title_ar:s.title_en)} <span class="ver num">v${esc(s.version)}</span></h4>
   <div class="row"><span class="tag">${esc(s.id)}</span><span class="tag">${esc(s.status)}</span>
+   ${s.internal?`<span class="tag svc">${T.internalTag}</span>`:""}
    <span class="tag">SLA ${esc(s.sla_hours)}h</span></div>
   <div class="row">${(s.allowed_services||[]).map(x=>`<span class="tag svc">${esc(x)}</span>`).join("")}</div>
   <div class="row hint">${T.chain}: ${(s.approval_chain||[]).map(esc).join(" ← ")||T.instant}</div></div>`).join("");
@@ -603,7 +618,9 @@ function renderGov(){
     <td class="${denied?"":"hint"}">${denied?`<span class="status denied">${esc(a.result_summary)}</span>`:esc(String(a.result_summary).slice(0,90))}</td></tr>`;}).join("")+"</tbody>";
 }
 function renderSide(){
- $("#svcList").innerHTML=(S.data?.skills||[]).map(s=>`<div class="svc-card" data-skill="${esc(s.id)}">
+ /* internal skills (e.g. the reflection charter) are governed and appear under
+    Governance, but they are not services an employee can request. */
+ $("#svcList").innerHTML=(S.data?.skills||[]).filter(s=>!s.internal).map(s=>`<div class="svc-card" data-skill="${esc(s.id)}">
   <b>${esc(S.lang==="ar"?s.title_ar:s.title_en)}</b><span>v${esc(s.version)} · ${T.chain}: ${(s.approval_chain||[]).map(esc).join("←")||T.instant}</span></div>`).join("");
  $$(".svc-card",$("#svcList")).forEach(c=>c.addEventListener("click",()=>{
   const s=(S.data.skills||[]).find(x=>x.id===c.dataset.skill);

@@ -709,7 +709,7 @@ ROUTER_JS = (
     "try { index = JSON.parse($('Fetch Skills Index').first().json.data); } catch (e) {\n"
     "  try { index = $('Fetch Skills Index').first().json; } catch (e2) {}\n"
     "}\n"
-    "const skills = (index.skills || []).filter(s => s.status === 'approved');\n"
+    "const skills = (index.skills || []).filter(s => s.status === 'approved' && !s.internal);\n"
     "const listing = skills.map(s => ({ id: s.id, title_ar: s.title_ar, keywords: s.keywords }));\n"
     "const prompt = ['أنت مصنّف نوايا لبوابة خدمات موظفين. طلب الموظف:', b.message || '',\n"
     "  'المهارات المتاحة:', JSON.stringify(listing),\n"

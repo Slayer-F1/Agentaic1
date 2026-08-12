@@ -2,7 +2,7 @@
   "name": "مُنجِز — Main (chat + approvals + SLA + API + reset)",
   "nodes": [
     {
-      "id": "71d560a3-66e6-4ead-a9d9-81f79cc1b7ac",
+      "id": "94a9c3e6-22dc-4664-8105-cfd722d5dd6a",
       "name": "Chat Webhook",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
@@ -16,10 +16,10 @@
         "responseMode": "responseNode",
         "options": {}
       },
-      "webhookId": "3778f2ab-4faf-4120-9e37-9a1855e4de55"
+      "webhookId": "9922022f-7047-4d52-887d-114d7da8f6c1"
     },
     {
-      "id": "1b8abcab-6a6d-49dd-a74a-7fe062687a55",
+      "id": "9c804529-60ee-4a52-9780-82555b364176",
       "name": "Fetch Skills Index",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -44,7 +44,7 @@
       "waitBetweenTries": 3000
     },
     {
-      "id": "7ec6336b-20f2-491c-a0d9-eb591a75c7e7",
+      "id": "c10ece5b-9c01-499a-a20b-6d4dc7180ea6",
       "name": "Prepare Router",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -53,11 +53,11 @@
         0
       ],
       "parameters": {
-        "jsCode": "const b = $('Chat Webhook').first().json.body || {};\nlet index = {};\ntry { index = JSON.parse($('Fetch Skills Index').first().json.data); } catch (e) {\n  try { index = $('Fetch Skills Index').first().json; } catch (e2) {}\n}\nconst skills = (index.skills || []).filter(s => s.status === 'approved');\nconst listing = skills.map(s => ({ id: s.id, title_ar: s.title_ar, keywords: s.keywords }));\nconst prompt = ['أنت مصنّف نوايا لبوابة خدمات موظفين. طلب الموظف:', b.message || '',\n  'المهارات المتاحة:', JSON.stringify(listing),\n  'أعد JSON فقط: {\"skill_id\": \"<id أو null>\", \"confidence\": 0..1}. اختر null إذا لم يطابق الطلب أي مهارة بوضوح.'].join('\\n');\nreturn [{ json: {\n  employee_id: b.employee_id || '', session_id: b.session_id || ('S-' + Date.now()),\n  message: b.message || '', active_skill_id: b.active_skill_id || '',\n  skills, listing,\n  geminiBody: { contents: [{ role: 'user', parts: [{ text: prompt }] }],\n    generationConfig: { temperature: 0, response_mime_type: 'application/json' } },\n} }];\n"
+        "jsCode": "const b = $('Chat Webhook').first().json.body || {};\nlet index = {};\ntry { index = JSON.parse($('Fetch Skills Index').first().json.data); } catch (e) {\n  try { index = $('Fetch Skills Index').first().json; } catch (e2) {}\n}\nconst skills = (index.skills || []).filter(s => s.status === 'approved' && !s.internal);\nconst listing = skills.map(s => ({ id: s.id, title_ar: s.title_ar, keywords: s.keywords }));\nconst prompt = ['أنت مصنّف نوايا لبوابة خدمات موظفين. طلب الموظف:', b.message || '',\n  'المهارات المتاحة:', JSON.stringify(listing),\n  'أعد JSON فقط: {\"skill_id\": \"<id أو null>\", \"confidence\": 0..1}. اختر null إذا لم يطابق الطلب أي مهارة بوضوح.'].join('\\n');\nreturn [{ json: {\n  employee_id: b.employee_id || '', session_id: b.session_id || ('S-' + Date.now()),\n  message: b.message || '', active_skill_id: b.active_skill_id || '',\n  skills, listing,\n  geminiBody: { contents: [{ role: 'user', parts: [{ text: prompt }] }],\n    generationConfig: { temperature: 0, response_mime_type: 'application/json' } },\n} }];\n"
       }
     },
     {
-      "id": "077f3366-ade1-461a-aee5-f47527742fe0",
+      "id": "ce112267-4dfc-4de8-9157-6b179ef0e8e2",
       "name": "Has Active Skill?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
@@ -90,7 +90,7 @@
       }
     },
     {
-      "id": "77ad61a9-4dc4-4206-ad9e-864817c1a5e3",
+      "id": "a58e2168-0e81-4caa-9b5e-f1243e3d2a12",
       "name": "Gemini: Route Intent",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -121,7 +121,7 @@
       "waitBetweenTries": 6000
     },
     {
-      "id": "c7e62f0b-58f7-4235-a160-cec4b677b931",
+      "id": "17e24e7b-b269-4da8-aa15-9e347222466e",
       "name": "Parse Route",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -134,7 +134,7 @@
       }
     },
     {
-      "id": "9765b7b8-f867-408d-afa4-cd56af27ed52",
+      "id": "a3385d75-1b6e-4807-b4b0-97a60cc067cd",
       "name": "Pick Skill",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -147,7 +147,7 @@
       }
     },
     {
-      "id": "478f8daf-ec9e-45ce-895f-375e2326aa05",
+      "id": "2840f131-af96-4309-9768-054c4dea9c32",
       "name": "Matched?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
@@ -180,7 +180,7 @@
       }
     },
     {
-      "id": "f2d3fdc6-8739-4408-8093-045827bb61b5",
+      "id": "ee73d2b6-2573-4f0e-b4ab-8dfa6b7b3e8f",
       "name": "Respond: Services List",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.2,
@@ -208,7 +208,7 @@
       }
     },
     {
-      "id": "5ee82724-8570-45fd-a917-b0e1ff9b3460",
+      "id": "a5e0cb1d-04c3-4a68-b926-089930b40231",
       "name": "Fetch Skill MD",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -233,7 +233,7 @@
       "waitBetweenTries": 3000
     },
     {
-      "id": "760dc5e5-00ec-4e5d-98aa-6d0879f41cea",
+      "id": "8f307b08-26cc-432a-8330-713c21abfe0a",
       "name": "Fetch Profile MD",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -258,7 +258,7 @@
       "waitBetweenTries": 3000
     },
     {
-      "id": "ee69c156-3d62-47b7-ae45-31f99f057306",
+      "id": "c7b45fb7-28f3-4940-b442-462cdfdeee2f",
       "name": "Read Employees Ctx",
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
@@ -291,7 +291,7 @@
       }
     },
     {
-      "id": "94d9ac36-7b66-4fb8-9516-c5a84740b09a",
+      "id": "d203137e-6c54-4ce3-a2f7-a273aaa9f854",
       "name": "Read Memory Ctx",
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
@@ -324,7 +324,7 @@
       }
     },
     {
-      "id": "b0093cb5-6d91-4779-ab19-9f2041f2a235",
+      "id": "31531f70-94f1-4a2d-bbb1-757bbd29ab5d",
       "name": "Read Patches Ctx",
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
@@ -357,7 +357,7 @@
       }
     },
     {
-      "id": "d73692e7-87ce-4709-b4e2-123f894ab6c2",
+      "id": "c050ee52-e569-4922-abda-7d5937a60bb4",
       "name": "Compose System Prompt",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -370,7 +370,7 @@
       }
     },
     {
-      "id": "2eeb022b-acb0-41ec-8d8b-ad34e0c07cc0",
+      "id": "c5746c48-90c2-4ac4-aa7e-e23bc837bd01",
       "name": "Munjiz Agent",
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 2.2,
@@ -393,7 +393,7 @@
       "waitBetweenTries": 8000
     },
     {
-      "id": "449e76e5-1f5f-4234-b4e5-80bab5a70e6c",
+      "id": "1b3be0b5-af5a-4e02-abf5-8db9cbc12c8f",
       "name": "Gemini Chat Model",
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1,
@@ -415,7 +415,7 @@
       }
     },
     {
-      "id": "04b9d3d2-4b25-47e1-a48f-25023e2cca28",
+      "id": "480eebc1-d71e-4e8f-9595-bad46ab1e740",
       "name": "Session Memory",
       "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
       "typeVersion": 1.3,
@@ -430,7 +430,7 @@
       }
     },
     {
-      "id": "54290f31-69a8-41d1-a408-f4de9a27bef7",
+      "id": "24517e0d-1b95-4e04-b414-674cf71ba1ea",
       "name": "Structured Output",
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "typeVersion": 1.2,
@@ -444,7 +444,7 @@
       }
     },
     {
-      "id": "8d2684ff-8753-4a5a-a4d8-0b40c9a22b69",
+      "id": "47e03f78-953a-4d9f-a5ca-8d2c86f9bff2",
       "name": "think",
       "type": "@n8n/n8n-nodes-langchain.toolThink",
       "typeVersion": 1,
@@ -455,7 +455,7 @@
       "parameters": {}
     },
     {
-      "id": "5e9e46ee-5a38-4685-98a6-471a458f5805",
+      "id": "ea0eb4c8-bea9-437f-a5a4-a5359795d59a",
       "name": "call_service",
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
@@ -490,7 +490,7 @@
       }
     },
     {
-      "id": "4cf4ace0-8b38-4039-a6e9-c6c66ad3b5ec",
+      "id": "234721b6-28ab-4f60-aec5-f512b74846a6",
       "name": "Deterministic Cross-Check",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -503,7 +503,7 @@
       }
     },
     {
-      "id": "4eb58c6c-a83b-4c91-82e9-eeadb2fbfd3e",
+      "id": "00ca615f-7c61-4eef-ba3a-8de8c7cf8333",
       "name": "Needs Re-reason?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
@@ -536,7 +536,7 @@
       }
     },
     {
-      "id": "8e85f514-b8a8-4f36-b662-d0dde19716ee",
+      "id": "bcb3b1f2-e1f9-4fda-bb51-71ee5d1f4dab",
       "name": "Build Re-reason",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -549,7 +549,7 @@
       }
     },
     {
-      "id": "48c8dd76-edd1-4e55-a95b-c7c65a93fd28",
+      "id": "5e0ec853-d418-4444-b60c-289d5d1b6374",
       "name": "Gemini: Re-reason",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -580,7 +580,7 @@
       "waitBetweenTries": 6000
     },
     {
-      "id": "c32a8c83-56a0-48f4-ac67-8d762ff68055",
+      "id": "1fe0d622-f633-4d15-8f15-1358f234722f",
       "name": "Parse Re-reason",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -593,7 +593,7 @@
       }
     },
     {
-      "id": "412a7851-060f-4de7-b8a6-b9104d886fe3",
+      "id": "d7b7f968-9b41-488f-aa38-07a5a6181f64",
       "name": "Merge Re-reason",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -606,7 +606,7 @@
       }
     },
     {
-      "id": "d66a1c04-52bf-4c2c-97c3-934b6c776eae",
+      "id": "819db76d-c6d7-4f88-a450-c45a389f9b08",
       "name": "Respond Chat",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.2,
@@ -634,8 +634,8 @@
       }
     },
     {
-      "id": "812f7a79-fa54-4477-9ca6-5a15a130def2",
-      "name": "Note 99fa9048",
+      "id": "39d6ee2c-43f3-4620-a4ee-9cc79398633a",
+      "name": "Note bc9715b0",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
@@ -650,8 +650,8 @@
       }
     },
     {
-      "id": "c192c712-f636-413b-ad2f-89549c9ef8e7",
-      "name": "Note 8cd845d0",
+      "id": "7a2d9c02-dc89-4eef-a10e-b42c7d41962c",
+      "name": "Note 4ceafb0d",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
@@ -666,7 +666,7 @@
       }
     },
     {
-      "id": "02cdcdd2-26e3-4094-8ee8-1dbab861f9db",
+      "id": "c86245c0-03ae-4f34-a927-bce311c6746b",
       "name": "Decide Webhook",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
@@ -680,10 +680,10 @@
         "responseMode": "responseNode",
         "options": {}
       },
-      "webhookId": "95b4bc8c-b11c-4a16-a7ab-4c7a5ad298b6"
+      "webhookId": "ef03abff-1e00-4aac-9987-817e12d66a30"
     },
     {
-      "id": "2108a382-4e2e-488d-8194-24e8930cb0c5",
+      "id": "33a12eff-2786-4a80-b4a4-f9bc9308b8d8",
       "name": "Read Transactions (decide)",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -712,7 +712,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "ff47d8f3-877f-424c-ac4a-d0e834e32556",
+      "id": "f32ffc00-cb62-41de-9d74-df306888ef40",
       "name": "Read Employees (decide)",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -741,7 +741,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "7956151a-0cbe-495d-89d2-5df4f0628bc9",
+      "id": "7f79718d-d79e-49c5-98eb-87d3b1c9814c",
       "name": "Decide",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -754,7 +754,7 @@
       }
     },
     {
-      "id": "13c222d1-5ee6-4420-8e35-4872a80eba25",
+      "id": "735e3c20-1c40-44c7-8aef-0188c8c9b416",
       "name": "OK?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
@@ -787,7 +787,7 @@
       }
     },
     {
-      "id": "92951970-09f1-4417-9051-f03d66e9ab5a",
+      "id": "6c190067-63be-496d-ae64-6d5242a8ada7",
       "name": "Respond Error",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.2,
@@ -815,7 +815,7 @@
       }
     },
     {
-      "id": "b7c3f0a0-2241-4e8f-874f-3d73f2740cab",
+      "id": "dcd78e29-378d-42a8-a1f1-c5debeeff736",
       "name": "Emit Txn Update",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -828,7 +828,7 @@
       }
     },
     {
-      "id": "d5074bc4-9454-45ff-8f34-69cc9d44a1a6",
+      "id": "d847b2b0-3423-44ed-9f45-c28472f32506",
       "name": "Update Transaction",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -868,7 +868,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "eceaefaf-1a3b-4c2e-9fc1-f74da1c8f2ec",
+      "id": "4248c048-3c22-4407-a4c5-f805d99d9432",
       "name": "Read LeaveBalances (side)",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -897,7 +897,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "7ab31337-6405-43b3-ac7f-4d1e466b5713",
+      "id": "7b8616ef-66b8-454f-af93-7a960fe25841",
       "name": "Read Employees (side)",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -926,7 +926,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "7564d6a7-82a6-4ab8-b515-ef7969c09fd8",
+      "id": "14525250-ec74-43d2-8988-4f1a4bbf421b",
       "name": "Apply Side Effect",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -940,7 +940,7 @@
       "alwaysOutputData": true
     },
     {
-      "id": "55a2e5c0-1fc8-4fd8-8146-5d311aeeda3b",
+      "id": "d1d76d72-a807-4e83-b1fb-bafc4bd9e9e4",
       "name": "Leave Side?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
@@ -973,7 +973,7 @@
       }
     },
     {
-      "id": "7265249f-2f92-4777-8d72-aa1e1d591b72",
+      "id": "91321e03-401e-4770-b28d-4eda43485b45",
       "name": "Update LeaveBalances",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -1013,7 +1013,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "5642c66b-5960-4bf0-8138-2cdfa8414944",
+      "id": "246f607b-bf5d-4f5f-bbc6-592d1ff34c81",
       "name": "IT Side?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
@@ -1046,7 +1046,7 @@
       }
     },
     {
-      "id": "71037dbc-a6f7-4ce8-a541-60bbd0eb98df",
+      "id": "9ad8e0ed-3ad6-408c-8618-4ac59dddfd2c",
       "name": "Update Employee Roles",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -1086,7 +1086,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "3401f5fb-b53c-4360-8a92-b065550356c9",
+      "id": "31776b44-3f95-4522-88f2-65db5d1a64d1",
       "name": "Converge",
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
@@ -1097,7 +1097,7 @@
       "parameters": {}
     },
     {
-      "id": "858b4f65-5103-4282-a149-4a48a648859b",
+      "id": "5b4e4635-8f38-4a4e-9b7e-306236bf4edb",
       "name": "Build Notification",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1110,7 +1110,7 @@
       }
     },
     {
-      "id": "465ed10b-43d6-4630-a750-101b10ff2f96",
+      "id": "da455dda-da31-40e1-af07-fdae08c437e8",
       "name": "Notify Employee",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -1140,7 +1140,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "201a7d6b-bff3-4475-adba-db2960ad7c57",
+      "id": "d11f1708-edd9-4952-9d4d-312c4b6d98c0",
       "name": "Respond Decide",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.2,
@@ -1168,8 +1168,8 @@
       }
     },
     {
-      "id": "01ac01dd-8ffd-4c4b-b50e-18443d4d1be7",
-      "name": "Note f6ad5e0a",
+      "id": "5c5f35f2-bee1-4d29-8897-bc75a02d50d3",
+      "name": "Note f1ae1f42",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
@@ -1184,8 +1184,8 @@
       }
     },
     {
-      "id": "012c201a-09af-48af-a130-6a8f4c7d2147",
-      "name": "Note c980584a",
+      "id": "52a94447-ddae-4661-bded-5b0731bcf799",
+      "name": "Note cb8c8bde",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
@@ -1200,7 +1200,7 @@
       }
     },
     {
-      "id": "7644534f-6fec-4dd7-bbca-b5905d77d88e",
+      "id": "c1430a84-5a99-4808-8762-a45257a8f4da",
       "name": "Every 5 Minutes",
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
@@ -1220,7 +1220,7 @@
       }
     },
     {
-      "id": "4c638dca-0b01-4175-8ebd-2f43cbd3259c",
+      "id": "8e2219ca-a0f3-4e4d-b900-da53f6a5d38b",
       "name": "Manual Test",
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
@@ -1231,7 +1231,7 @@
       "parameters": {}
     },
     {
-      "id": "68fcb0fe-f672-4b3d-98b3-58fcdad3a564",
+      "id": "3fdc4acc-1506-48b5-abd4-1014e653683e",
       "name": "Chase Webhook",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
@@ -1245,10 +1245,10 @@
         "responseMode": "responseNode",
         "options": {}
       },
-      "webhookId": "ebd6661e-5c08-4b45-a8b7-d1d20ea983c9"
+      "webhookId": "a1dd538b-4ef4-4406-b485-b8e3a4a14bb4"
     },
     {
-      "id": "b2783cfd-c64b-4036-99a2-dbd190aef4d0",
+      "id": "6269f6f1-9507-4ed5-bd9d-0b9d3e87833c",
       "name": "Respond Chase",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.2,
@@ -1276,7 +1276,7 @@
       }
     },
     {
-      "id": "0f889072-cc79-4f0c-99cb-753930912b03",
+      "id": "299996ab-e78e-4d69-a01e-dbca8c771250",
       "name": "Read All",
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
@@ -1309,7 +1309,7 @@
       }
     },
     {
-      "id": "488e4dbc-9ef0-49fc-8641-1aa31346bce8",
+      "id": "fd3f333b-3bc0-4c6e-af3d-7cc716cf81f7",
       "name": "Find Stale",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1322,7 +1322,7 @@
       }
     },
     {
-      "id": "be67e64b-7f4d-4869-a6bd-8b316ba651aa",
+      "id": "20afcc53-b2ad-41af-949f-0a941dff85ca",
       "name": "Any Stale?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
@@ -1354,7 +1354,7 @@
       }
     },
     {
-      "id": "2f33aab3-e3eb-47b2-9d02-ae4fb0096a4c",
+      "id": "d85d0797-5298-4c2b-bd47-f9d2274fc725",
       "name": "Nothing ✓",
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
@@ -1365,7 +1365,7 @@
       "parameters": {}
     },
     {
-      "id": "15175cad-3ee8-4074-930f-d9bc93f58823",
+      "id": "54193a0d-ee53-48a6-8f49-e319b91ea482",
       "name": "Chaser Agent",
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 2.2,
@@ -1388,7 +1388,7 @@
       "waitBetweenTries": 8000
     },
     {
-      "id": "17dcbe0c-38e5-47d5-a627-97b72206cafe",
+      "id": "b3847c8d-29b2-473a-a81a-8905e0534ffb",
       "name": "Gemini Chat Model (chaser)",
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1,
@@ -1410,7 +1410,7 @@
       }
     },
     {
-      "id": "482bccd6-90b8-4f1a-9e07-4cb1b9a67978",
+      "id": "0fd8c2a8-49be-407c-a30d-298d66ad51ad",
       "name": "Chaser Output",
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "typeVersion": 1.2,
@@ -1424,7 +1424,7 @@
       }
     },
     {
-      "id": "0da7983d-fb1e-4e27-99ed-f50bd722a6d4",
+      "id": "b7990daf-3eae-428b-9538-55cdcfa643e3",
       "name": "Flatten",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1437,7 +1437,7 @@
       }
     },
     {
-      "id": "aeb462bb-c1e1-45ba-8531-0e3a8b62eaa8",
+      "id": "bc7267a7-f663-42de-906c-3b1922394a26",
       "name": "Audit Rows",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1450,7 +1450,7 @@
       }
     },
     {
-      "id": "24c7d00a-22b2-4e24-b24e-34082c9b1f8d",
+      "id": "767c3f89-3b44-4d2f-9bfd-0ad6e0a12105",
       "name": "Append AuditLog (chaser)",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -1480,7 +1480,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "65364905-1c6a-4998-9fe5-75cdc1be5e0a",
+      "id": "9ec3cde3-301e-4419-a9c7-bb1502f86fd8",
       "name": "Carry Decisions",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1493,7 +1493,7 @@
       }
     },
     {
-      "id": "2a660cac-622f-432a-82ea-b11b7ce16fd0",
+      "id": "9c1bd35e-d738-4287-8381-7fe3eacafa22",
       "name": "Chaser Switch",
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
@@ -1556,7 +1556,7 @@
       }
     },
     {
-      "id": "1cdb3f5c-3b7b-4497-bce4-02719366e5b4",
+      "id": "3d1d48d4-a076-48df-9b3d-ddb0f0e4fdfe",
       "name": "Remind Approver",
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
@@ -1567,7 +1567,7 @@
       "parameters": {}
     },
     {
-      "id": "86b406a6-6318-458f-85ec-2df3eef96105",
+      "id": "d1cd6f65-5edf-40fd-a8fd-37110f0abd80",
       "name": "Escalate",
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
@@ -1578,8 +1578,8 @@
       "parameters": {}
     },
     {
-      "id": "14916416-0d2d-4def-bd37-ab1bf77a831e",
-      "name": "Note 5e873daf",
+      "id": "87728e1b-6e59-4a2c-aa68-a9799a75e0a9",
+      "name": "Note 7873d9be",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
@@ -1594,8 +1594,8 @@
       }
     },
     {
-      "id": "dffb58f5-8d0c-46f7-bfdc-6c6c9351686a",
-      "name": "Note 1ab03899",
+      "id": "d0d77cd9-cb28-419e-8c32-7b095e61a037",
+      "name": "Note 71fb596d",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
@@ -1610,7 +1610,7 @@
       }
     },
     {
-      "id": "fe7b4603-0933-4284-aac7-02f014422ea3",
+      "id": "ed784d61-c050-4d11-a0ab-795e86e0d080",
       "name": "GET State",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
@@ -1624,10 +1624,10 @@
         "responseMode": "responseNode",
         "options": {}
       },
-      "webhookId": "fadb72c3-ba99-4517-8660-f269e324c571"
+      "webhookId": "64a14814-7046-4399-aa29-7a926114f216"
     },
     {
-      "id": "605def75-ccc4-4475-9e90-5308fa27a1f8",
+      "id": "2d96a4bf-ce41-48df-ac7d-02b85a318e69",
       "name": "Fetch Skills Index (dash)",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -1652,7 +1652,7 @@
       "waitBetweenTries": 3000
     },
     {
-      "id": "f7007865-67e5-4d33-b8d3-61fddc66f099",
+      "id": "1ccac767-c451-4958-b22a-d3bfcb7a2cae",
       "name": "Read All (dash)",
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
@@ -1685,7 +1685,7 @@
       }
     },
     {
-      "id": "b65c9b2e-8088-49a4-a46b-5f258918d979",
+      "id": "331bce15-2376-4e19-b8cf-1ce3476142eb",
       "name": "Assemble Dashboard",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1698,7 +1698,7 @@
       }
     },
     {
-      "id": "85e60701-3c37-409d-a7a9-560c9c4b28d4",
+      "id": "a59e02b3-7abc-49ec-be62-f9ad390caf7c",
       "name": "Respond State",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.2,
@@ -1726,8 +1726,8 @@
       }
     },
     {
-      "id": "249bdf6a-8452-432c-9e13-39addafefd9c",
-      "name": "Note 4cc3109c",
+      "id": "d136ea2f-7057-46fb-a287-239247942dcd",
+      "name": "Note 324a0aa2",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
@@ -1742,8 +1742,8 @@
       }
     },
     {
-      "id": "460d18f1-c6d2-4d2a-b154-ac1000eb1d46",
-      "name": "Note 86804ec2",
+      "id": "639f12a7-a026-4157-a7c5-8faa8e424650",
+      "name": "Note 6bc2547e",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
@@ -1758,7 +1758,7 @@
       }
     },
     {
-      "id": "0ccdc872-de1e-41e0-92b0-0dde95baec49",
+      "id": "70c86a8b-f594-4cd4-bdb1-c03e9d77996b",
       "name": "POST Reset",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
@@ -1772,10 +1772,10 @@
         "responseMode": "responseNode",
         "options": {}
       },
-      "webhookId": "02460e90-bd99-468c-8031-0d90c482ab26"
+      "webhookId": "490cefdf-9ec5-4c50-bb28-bd0482baf052"
     },
     {
-      "id": "838b9369-a3ae-466c-84cc-9d8e96ae2319",
+      "id": "cdd3d930-1d76-4c82-b57d-8a36adb75fbf",
       "name": "Seed Manually",
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
@@ -1786,7 +1786,7 @@
       "parameters": {}
     },
     {
-      "id": "2984fa1c-500b-41eb-bcae-201e9d18e26f",
+      "id": "42442753-3a18-4cd6-8d1f-d388fb2684ac",
       "name": "Respond Reset",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.2,
@@ -1814,7 +1814,7 @@
       }
     },
     {
-      "id": "a41355ab-300b-4795-b5e2-4814a8427480",
+      "id": "a6fc8349-6637-4b40-840b-aba958fb5241",
       "name": "Create Employees",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -1888,7 +1888,7 @@
       "executeOnce": true
     },
     {
-      "id": "3dda8fdd-1547-468b-ab7d-2d52686fc704",
+      "id": "382c364c-7a6f-4213-b1a6-be36a7d3352a",
       "name": "Clear Employees",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -1909,7 +1909,7 @@
       "executeOnce": true
     },
     {
-      "id": "0f925c7d-dbaf-455e-aaee-b4b6c8ff6958",
+      "id": "10b48ee8-eabe-47a3-ade3-539a434a60b6",
       "name": "Seed Employees",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1922,7 +1922,7 @@
       }
     },
     {
-      "id": "b365b416-667e-4d53-9164-5339f465d380",
+      "id": "68b81378-4144-4acb-97a0-b3993a58dddb",
       "name": "Insert Employees",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -1952,7 +1952,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "414813be-0b1d-4c6a-a6ec-f7b842b57a17",
+      "id": "b21245c7-abdb-47a1-8ea1-1198c976d705",
       "name": "Create LeaveBalances",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -1994,7 +1994,7 @@
       "executeOnce": true
     },
     {
-      "id": "48de4490-cf81-492d-ad61-11da93172251",
+      "id": "30d1394a-6cae-4d26-a017-35968b7cc171",
       "name": "Clear LeaveBalances",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -2015,7 +2015,7 @@
       "executeOnce": true
     },
     {
-      "id": "854786eb-524f-481f-908e-50dedc8ad8a2",
+      "id": "284c6ef8-8cc0-4115-a2bd-a75c2131b929",
       "name": "Seed LeaveBalances",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -2028,7 +2028,7 @@
       }
     },
     {
-      "id": "3aeb6750-4cae-4092-8181-34937a8ca6f5",
+      "id": "a2aee905-bc8e-4813-8313-6a9098e0d6fb",
       "name": "Insert LeaveBalances",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -2058,7 +2058,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "fd650dd3-3a92-45a3-bd3d-d96f15dae45e",
+      "id": "673d8f21-3aae-461f-9320-f51c28a6cdbe",
       "name": "Create ExpensePolicy",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -2096,7 +2096,7 @@
       "executeOnce": true
     },
     {
-      "id": "832dc00c-cb71-4598-b182-ddee737dfcc6",
+      "id": "326c8163-13eb-4dbe-bb34-221729ab7018",
       "name": "Clear ExpensePolicy",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -2117,7 +2117,7 @@
       "executeOnce": true
     },
     {
-      "id": "efc44ddb-211d-43e7-b345-11eb0fb50162",
+      "id": "fa2a6433-8a19-4369-8e45-d30f949b4945",
       "name": "Seed ExpensePolicy",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -2130,7 +2130,7 @@
       }
     },
     {
-      "id": "c1064d59-e75a-4cf7-a57e-c56f47f92136",
+      "id": "47ab5ddb-2bbb-4a4b-80b2-c26ea6c28186",
       "name": "Insert ExpensePolicy",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -2160,7 +2160,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "ec43262b-030b-48ef-84f0-5b8a3e0cd3c5",
+      "id": "c5aa4a45-5d59-48be-b0ab-a73a41449681",
       "name": "Create SystemCatalog",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -2202,7 +2202,7 @@
       "executeOnce": true
     },
     {
-      "id": "af57dc07-a65b-4228-aa19-59c43a72bacf",
+      "id": "1586a86e-010a-42c9-a73f-c5836dc312ce",
       "name": "Clear SystemCatalog",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -2223,7 +2223,7 @@
       "executeOnce": true
     },
     {
-      "id": "f4da6127-b72a-44cb-96e2-3ec2e1b4f75f",
+      "id": "06a9806c-42d1-48f7-b27e-9af298cece5e",
       "name": "Seed SystemCatalog",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -2236,7 +2236,7 @@
       }
     },
     {
-      "id": "30125946-4fa2-4e43-9f85-c8b07368af37",
+      "id": "d6bf839e-7a56-46e0-b2c0-4f18a5735777",
       "name": "Insert SystemCatalog",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -2266,7 +2266,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "24db1409-6816-4dd4-aefe-8689a631a462",
+      "id": "a7509fa8-a1b8-44f2-a180-2a42131e8709",
       "name": "Create Transactions",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -2348,7 +2348,7 @@
       "executeOnce": true
     },
     {
-      "id": "fe44e5e0-0437-4d99-8d03-9186e48d68e3",
+      "id": "c5d7bd61-2c8a-401d-95bc-2293c7f3577d",
       "name": "Clear Transactions",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -2369,7 +2369,7 @@
       "executeOnce": true
     },
     {
-      "id": "53008b30-aa18-4644-aa22-8f3df00f9440",
+      "id": "742b5dfc-8738-420c-b005-47a9ae68bfa0",
       "name": "Seed Transactions",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -2378,11 +2378,11 @@
         6340
       ],
       "parameters": {
-        "jsCode": "const rows = JSON.parse(\"[{\\\"txn_id\\\": \\\"TXN-SEED-OVERLAP\\\", \\\"ts\\\": \\\"2026-08-10T22:54:13\\\", \\\"employee_id\\\": \\\"EMP-1003\\\", \\\"employee_name\\\": \\\"\\u0633\\u0627\\u0644\\u0645 \\u0627\\u0644\\u0646\\u0642\\u0628\\u064a (\\u062a\\u062c\\u0631\\u064a\\u0628\\u064a)\\\", \\\"skill_id\\\": \\\"leave-request\\\", \\\"type_ar\\\": \\\"\\u0637\\u0644\\u0628 \\u0625\\u062c\\u0627\\u0632\\u0629\\\", \\\"payload_json\\\": \\\"{\\\\\\\"leave_type\\\\\\\": \\\\\\\"annual\\\\\\\", \\\\\\\"start_date\\\\\\\": \\\\\\\"2026-08-19\\\\\\\", \\\\\\\"end_date\\\\\\\": \\\\\\\"2026-08-23\\\\\\\", \\\\\\\"working_days\\\\\\\": 3, \\\\\\\"reason\\\\\\\": \\\\\\\"\\u0625\\u062c\\u0627\\u0632\\u0629 \\u0639\\u0627\\u0626\\u0644\\u064a\\u0629\\\\\\\"}\\\", \\\"status\\\": \\\"executed\\\", \\\"approval_chain\\\": \\\"manager\\\", \\\"chain_pos\\\": 1, \\\"current_approver\\\": \\\"\\\", \\\"decision_note\\\": \\\"\\u0627\\u0639\\u062a\\u0645\\u062f\\u062a\\\", \\\"output_ref\\\": \\\"\\\", \\\"sla_hours\\\": 48, \\\"updated_at\\\": \\\"2026-08-11T22:54:13\\\"}, {\\\"txn_id\\\": \\\"TXN-SEED-CHASE\\\", \\\"ts\\\": \\\"2026-08-11T16:54:13\\\", \\\"employee_id\\\": \\\"EMP-1004\\\", \\\"employee_name\\\": \\\"\\u0631\\u0627\\u0634\\u062f \\u0627\\u0644\\u0643\\u062a\\u0628\\u064a (\\u062a\\u062c\\u0631\\u064a\\u0628\\u064a)\\\", \\\"skill_id\\\": \\\"expense-claim\\\", \\\"type_ar\\\": \\\"\\u0645\\u0637\\u0627\\u0644\\u0628\\u0629 \\u0646\\u0641\\u0642\\u0627\\u062a / \\u0628\\u062f\\u0644\\u0627\\u062a\\\", \\\"payload_json\\\": \\\"{\\\\\\\"category\\\\\\\": \\\\\\\"training\\\\\\\", \\\\\\\"amount_aed\\\\\\\": 850, \\\\\\\"expense_date\\\\\\\": \\\\\\\"2026-08-06\\\\\\\", \\\\\\\"description\\\\\\\": \\\\\\\"\\u0631\\u0633\\u0648\\u0645 \\u0648\\u0631\\u0634\\u0629 \\u062a\\u062f\\u0631\\u064a\\u0628\\u064a\\u0629 \\u0645\\u0639\\u062a\\u0645\\u062f\\u0629\\\\\\\", \\\\\\\"receipt_ref\\\\\\\": \\\\\\\"RCPT-7741\\\\\\\"}\\\", \\\"status\\\": \\\"awaiting_manager\\\", \\\"approval_chain\\\": \\\"manager;finance\\\", \\\"chain_pos\\\": 0, \\\"current_approver\\\": \\\"manager\\\", \\\"decision_note\\\": \\\"\\\", \\\"output_ref\\\": \\\"\\\", \\\"sla_hours\\\": 24, \\\"updated_at\\\": \\\"2026-08-11T16:54:13\\\"}, {\\\"txn_id\\\": \\\"TXN-SEED-CERT\\\", \\\"ts\\\": \\\"2026-08-03T22:54:13\\\", \\\"employee_id\\\": \\\"EMP-1006\\\", \\\"employee_name\\\": \\\"\\u062e\\u0627\\u0644\\u062f \\u0627\\u0644\\u0647\\u0627\\u0645\\u0644\\u064a (\\u062a\\u062c\\u0631\\u064a\\u0628\\u064a)\\\", \\\"skill_id\\\": \\\"salary-certificate\\\", \\\"type_ar\\\": \\\"\\u0634\\u0647\\u0627\\u062f\\u0629 \\u0631\\u0627\\u062a\\u0628 / \\u0644\\u0645\\u0646 \\u064a\\u0647\\u0645\\u0647 \\u0627\\u0644\\u0623\\u0645\\u0631\\\", \\\"payload_json\\\": \\\"{\\\\\\\"certificate_type\\\\\\\": \\\\\\\"employment\\\\\\\", \\\\\\\"addressed_to\\\\\\\": \\\\\\\"\\u0644\\u0645\\u0646 \\u064a\\u0647\\u0645\\u0647 \\u0627\\u0644\\u0623\\u0645\\u0631\\\\\\\", \\\\\\\"language\\\\\\\": \\\\\\\"ar\\\\\\\"}\\\", \\\"status\\\": \\\"executed\\\", \\\"approval_chain\\\": \\\"\\\", \\\"chain_pos\\\": 0, \\\"current_approver\\\": \\\"\\\", \\\"decision_note\\\": \\\"\\\", \\\"output_ref\\\": \\\"CERT-118204\\\", \\\"sla_hours\\\": 1, \\\"updated_at\\\": \\\"2026-08-03T22:54:13\\\"}]\");\nconst stale = new Date(Date.now() - 30 * 3600 * 1000).toISOString();\n// re-arm the SLA anchor relative to now so the chaser always has a live case\nfor (const r of rows) if (r.txn_id === 'TXN-SEED-CHASE') { r.ts = stale; r.updated_at = stale; }\nreturn rows.map(r => ({ json: r }));"
+        "jsCode": "const rows = JSON.parse(\"[{\\\"txn_id\\\": \\\"TXN-SEED-OVERLAP\\\", \\\"ts\\\": \\\"2026-08-10T23:06:04\\\", \\\"employee_id\\\": \\\"EMP-1003\\\", \\\"employee_name\\\": \\\"\\u0633\\u0627\\u0644\\u0645 \\u0627\\u0644\\u0646\\u0642\\u0628\\u064a (\\u062a\\u062c\\u0631\\u064a\\u0628\\u064a)\\\", \\\"skill_id\\\": \\\"leave-request\\\", \\\"type_ar\\\": \\\"\\u0637\\u0644\\u0628 \\u0625\\u062c\\u0627\\u0632\\u0629\\\", \\\"payload_json\\\": \\\"{\\\\\\\"leave_type\\\\\\\": \\\\\\\"annual\\\\\\\", \\\\\\\"start_date\\\\\\\": \\\\\\\"2026-08-19\\\\\\\", \\\\\\\"end_date\\\\\\\": \\\\\\\"2026-08-23\\\\\\\", \\\\\\\"working_days\\\\\\\": 3, \\\\\\\"reason\\\\\\\": \\\\\\\"\\u0625\\u062c\\u0627\\u0632\\u0629 \\u0639\\u0627\\u0626\\u0644\\u064a\\u0629\\\\\\\"}\\\", \\\"status\\\": \\\"executed\\\", \\\"approval_chain\\\": \\\"manager\\\", \\\"chain_pos\\\": 1, \\\"current_approver\\\": \\\"\\\", \\\"decision_note\\\": \\\"\\u0627\\u0639\\u062a\\u0645\\u062f\\u062a\\\", \\\"output_ref\\\": \\\"\\\", \\\"sla_hours\\\": 48, \\\"updated_at\\\": \\\"2026-08-11T23:06:04\\\"}, {\\\"txn_id\\\": \\\"TXN-SEED-CHASE\\\", \\\"ts\\\": \\\"2026-08-11T17:06:04\\\", \\\"employee_id\\\": \\\"EMP-1004\\\", \\\"employee_name\\\": \\\"\\u0631\\u0627\\u0634\\u062f \\u0627\\u0644\\u0643\\u062a\\u0628\\u064a (\\u062a\\u062c\\u0631\\u064a\\u0628\\u064a)\\\", \\\"skill_id\\\": \\\"expense-claim\\\", \\\"type_ar\\\": \\\"\\u0645\\u0637\\u0627\\u0644\\u0628\\u0629 \\u0646\\u0641\\u0642\\u0627\\u062a / \\u0628\\u062f\\u0644\\u0627\\u062a\\\", \\\"payload_json\\\": \\\"{\\\\\\\"category\\\\\\\": \\\\\\\"training\\\\\\\", \\\\\\\"amount_aed\\\\\\\": 850, \\\\\\\"expense_date\\\\\\\": \\\\\\\"2026-08-06\\\\\\\", \\\\\\\"description\\\\\\\": \\\\\\\"\\u0631\\u0633\\u0648\\u0645 \\u0648\\u0631\\u0634\\u0629 \\u062a\\u062f\\u0631\\u064a\\u0628\\u064a\\u0629 \\u0645\\u0639\\u062a\\u0645\\u062f\\u0629\\\\\\\", \\\\\\\"receipt_ref\\\\\\\": \\\\\\\"RCPT-7741\\\\\\\"}\\\", \\\"status\\\": \\\"awaiting_manager\\\", \\\"approval_chain\\\": \\\"manager;finance\\\", \\\"chain_pos\\\": 0, \\\"current_approver\\\": \\\"manager\\\", \\\"decision_note\\\": \\\"\\\", \\\"output_ref\\\": \\\"\\\", \\\"sla_hours\\\": 24, \\\"updated_at\\\": \\\"2026-08-11T17:06:04\\\"}, {\\\"txn_id\\\": \\\"TXN-SEED-CERT\\\", \\\"ts\\\": \\\"2026-08-03T23:06:04\\\", \\\"employee_id\\\": \\\"EMP-1006\\\", \\\"employee_name\\\": \\\"\\u062e\\u0627\\u0644\\u062f \\u0627\\u0644\\u0647\\u0627\\u0645\\u0644\\u064a (\\u062a\\u062c\\u0631\\u064a\\u0628\\u064a)\\\", \\\"skill_id\\\": \\\"salary-certificate\\\", \\\"type_ar\\\": \\\"\\u0634\\u0647\\u0627\\u062f\\u0629 \\u0631\\u0627\\u062a\\u0628 / \\u0644\\u0645\\u0646 \\u064a\\u0647\\u0645\\u0647 \\u0627\\u0644\\u0623\\u0645\\u0631\\\", \\\"payload_json\\\": \\\"{\\\\\\\"certificate_type\\\\\\\": \\\\\\\"employment\\\\\\\", \\\\\\\"addressed_to\\\\\\\": \\\\\\\"\\u0644\\u0645\\u0646 \\u064a\\u0647\\u0645\\u0647 \\u0627\\u0644\\u0623\\u0645\\u0631\\\\\\\", \\\\\\\"language\\\\\\\": \\\\\\\"ar\\\\\\\"}\\\", \\\"status\\\": \\\"executed\\\", \\\"approval_chain\\\": \\\"\\\", \\\"chain_pos\\\": 0, \\\"current_approver\\\": \\\"\\\", \\\"decision_note\\\": \\\"\\\", \\\"output_ref\\\": \\\"CERT-118204\\\", \\\"sla_hours\\\": 1, \\\"updated_at\\\": \\\"2026-08-03T23:06:04\\\"}]\");\nconst stale = new Date(Date.now() - 30 * 3600 * 1000).toISOString();\n// re-arm the SLA anchor relative to now so the chaser always has a live case\nfor (const r of rows) if (r.txn_id === 'TXN-SEED-CHASE') { r.ts = stale; r.updated_at = stale; }\nreturn rows.map(r => ({ json: r }));"
       }
     },
     {
-      "id": "a69ce218-e86f-439d-a934-d52d23b23ed0",
+      "id": "f00b952b-25ec-4a7d-b1ea-dc7961c8ad93",
       "name": "Insert Transactions",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -2412,7 +2412,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "ed720c82-be5a-4bec-aa55-82022bc2f124",
+      "id": "58482443-81bf-4320-8072-ca92d90613ed",
       "name": "Create AuditLog",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -2462,7 +2462,7 @@
       "executeOnce": true
     },
     {
-      "id": "632eda28-7833-4bb6-9ff0-063e5182a1c4",
+      "id": "193d5e5c-cea7-452e-b5d7-c7b64dfbed5d",
       "name": "Clear AuditLog",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -2483,7 +2483,7 @@
       "executeOnce": true
     },
     {
-      "id": "30c70d27-c1b5-4ea1-8489-5567867de510",
+      "id": "f970c902-6893-4b7f-bfdc-ab00e1cceccf",
       "name": "Seed AuditLog",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -2492,11 +2492,11 @@
         6340
       ],
       "parameters": {
-        "jsCode": "const rows = JSON.parse(\"[{\\\"ts\\\": \\\"2026-08-10T22:54:13\\\", \\\"session_id\\\": \\\"S-seed-1\\\", \\\"employee_id\\\": \\\"EMP-1003\\\", \\\"skill_id\\\": \\\"leave-request\\\", \\\"service\\\": \\\"get_leave_balance\\\", \\\"request_json\\\": \\\"{}\\\", \\\"result_summary\\\": \\\"OK {\\\\\\\"annual_remaining\\\\\\\":26,...}\\\"}, {\\\"ts\\\": \\\"2026-08-10T22:54:13\\\", \\\"session_id\\\": \\\"S-seed-1\\\", \\\"employee_id\\\": \\\"EMP-1003\\\", \\\"skill_id\\\": \\\"leave-request\\\", \\\"service\\\": \\\"submit_transaction\\\", \\\"request_json\\\": \\\"{\\\\\\\"leave_type\\\\\\\":\\\\\\\"annual\\\\\\\"}\\\", \\\"result_summary\\\": \\\"OK TXN-SEED-OVERLAP awaiting_manager\\\"}]\");\nreturn rows.map(r => ({ json: r }));"
+        "jsCode": "const rows = JSON.parse(\"[{\\\"ts\\\": \\\"2026-08-10T23:06:04\\\", \\\"session_id\\\": \\\"S-seed-1\\\", \\\"employee_id\\\": \\\"EMP-1003\\\", \\\"skill_id\\\": \\\"leave-request\\\", \\\"service\\\": \\\"get_leave_balance\\\", \\\"request_json\\\": \\\"{}\\\", \\\"result_summary\\\": \\\"OK {\\\\\\\"annual_remaining\\\\\\\":26,...}\\\"}, {\\\"ts\\\": \\\"2026-08-10T23:06:04\\\", \\\"session_id\\\": \\\"S-seed-1\\\", \\\"employee_id\\\": \\\"EMP-1003\\\", \\\"skill_id\\\": \\\"leave-request\\\", \\\"service\\\": \\\"submit_transaction\\\", \\\"request_json\\\": \\\"{\\\\\\\"leave_type\\\\\\\":\\\\\\\"annual\\\\\\\"}\\\", \\\"result_summary\\\": \\\"OK TXN-SEED-OVERLAP awaiting_manager\\\"}]\");\nreturn rows.map(r => ({ json: r }));"
       }
     },
     {
-      "id": "3c0e46fc-7cf0-4f35-9159-19cd8346fb7a",
+      "id": "68b42a62-afe7-411b-9ee1-f6953c07fb6d",
       "name": "Insert AuditLog",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -2526,7 +2526,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "9ccb65f3-2d22-4942-94cd-153033ba1053",
+      "id": "c2ba54d3-06f1-4ab8-80b6-770e2c4bffe8",
       "name": "Create Memory",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -2584,7 +2584,7 @@
       "executeOnce": true
     },
     {
-      "id": "9c9cb0e4-9255-4a0b-a867-2016c0da6e2d",
+      "id": "d08ecaf5-eb81-46f8-a45a-a6251d2738b3",
       "name": "Clear Memory",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -2605,7 +2605,7 @@
       "executeOnce": true
     },
     {
-      "id": "e0632b62-0f76-4c45-844b-1ae8ff8ef9ae",
+      "id": "082f0e3d-4d3a-4545-9d7a-3b1ed6b2392a",
       "name": "Seed Memory",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -2614,11 +2614,11 @@
         6340
       ],
       "parameters": {
-        "jsCode": "const rows = JSON.parse(\"[{\\\"memory_id\\\": \\\"MEM-0001\\\", \\\"scope\\\": \\\"org\\\", \\\"subject_id\\\": \\\"\\\", \\\"content\\\": \\\"\\u062a\\u064f\\u063a\\u0644\\u0642 \\u0625\\u062f\\u0627\\u0631\\u0629 \\u0627\\u0644\\u0645\\u0627\\u0644\\u064a\\u0629 \\u062d\\u0633\\u0627\\u0628\\u0627\\u062a\\u0647\\u0627 \\u0627\\u0644\\u0634\\u0647\\u0631\\u064a\\u0629 \\u0641\\u064a \\u0622\\u062e\\u0631 \\u062b\\u0644\\u0627\\u062b\\u0629 \\u0623\\u064a\\u0627\\u0645 \\u0639\\u0645\\u0644 \\u0645\\u0646 \\u0643\\u0644 \\u0634\\u0647\\u0631\\u060c \\u0648\\u062a\\u062a\\u0623\\u062e\\u0631 \\u0627\\u0639\\u062a\\u0645\\u0627\\u062f\\u0627\\u062a \\u0627\\u0644\\u0645\\u0637\\u0627\\u0644\\u0628\\u0627\\u062a \\u0641\\u064a \\u062a\\u0644\\u0643 \\u0627\\u0644\\u0641\\u062a\\u0631\\u0629.\\\", \\\"source\\\": \\\"seed\\\", \\\"status\\\": \\\"active\\\", \\\"use_count\\\": \\\"0\\\", \\\"created_at\\\": \\\"2026-07-23T22:54:13\\\", \\\"updated_at\\\": \\\"2026-07-23T22:54:13\\\"}, {\\\"memory_id\\\": \\\"MEM-0002\\\", \\\"scope\\\": \\\"employee\\\", \\\"subject_id\\\": \\\"EMP-1001\\\", \\\"content\\\": \\\"\\u064a\\u0641\\u0636\\u0651\\u0644 \\u0623\\u062d\\u0645\\u062f \\u0627\\u0644\\u0645\\u0647\\u064a\\u0631\\u064a \\u0627\\u0644\\u0631\\u062f\\u0648\\u062f \\u0627\\u0644\\u0645\\u062e\\u062a\\u0635\\u0631\\u0629 \\u0648\\u0627\\u0644\\u0645\\u0628\\u0627\\u0634\\u0631\\u0629\\u060c \\u0648\\u064a\\u0637\\u0644\\u0628 \\u062f\\u0627\\u0626\\u0645\\u064b\\u0627 \\u062a\\u0623\\u0643\\u064a\\u062f \\u0627\\u0644\\u062a\\u0648\\u0627\\u0631\\u064a\\u062e \\u0628\\u0627\\u0644\\u062a\\u0642\\u0648\\u064a\\u0645 \\u0627\\u0644\\u0645\\u064a\\u0644\\u0627\\u062f\\u064a.\\\", \\\"source\\\": \\\"seed\\\", \\\"status\\\": \\\"active\\\", \\\"use_count\\\": \\\"0\\\", \\\"created_at\\\": \\\"2026-08-06T22:54:13\\\", \\\"updated_at\\\": \\\"2026-08-06T22:54:13\\\"}, {\\\"memory_id\\\": \\\"MEM-0003\\\", \\\"scope\\\": \\\"employee\\\", \\\"subject_id\\\": \\\"EMP-1004\\\", \\\"content\\\": \\\"\\u0631\\u0627\\u0634\\u062f \\u0627\\u0644\\u0643\\u062a\\u0628\\u064a \\u064a\\u0642\\u062f\\u0651\\u0645 \\u0645\\u0637\\u0627\\u0644\\u0628\\u0627\\u062a \\u0646\\u0641\\u0642\\u0627\\u062a \\u062a\\u062f\\u0631\\u064a\\u0628\\u064a\\u0629 \\u0628\\u0634\\u0643\\u0644 \\u0645\\u062a\\u0643\\u0631\\u0631\\u060c \\u0648\\u063a\\u0627\\u0644\\u0628\\u064b\\u0627 \\u0645\\u0627 \\u064a\\u0646\\u0633\\u0649 \\u0625\\u0631\\u0641\\u0627\\u0642 \\u0631\\u0642\\u0645 \\u0627\\u0644\\u0625\\u064a\\u0635\\u0627\\u0644.\\\", \\\"source\\\": \\\"seed\\\", \\\"status\\\": \\\"active\\\", \\\"use_count\\\": \\\"0\\\", \\\"created_at\\\": \\\"2026-08-09T22:54:13\\\", \\\"updated_at\\\": \\\"2026-08-09T22:54:13\\\"}]\");\nreturn rows.map(r => ({ json: r }));"
+        "jsCode": "const rows = JSON.parse(\"[{\\\"memory_id\\\": \\\"MEM-0001\\\", \\\"scope\\\": \\\"org\\\", \\\"subject_id\\\": \\\"\\\", \\\"content\\\": \\\"\\u062a\\u064f\\u063a\\u0644\\u0642 \\u0625\\u062f\\u0627\\u0631\\u0629 \\u0627\\u0644\\u0645\\u0627\\u0644\\u064a\\u0629 \\u062d\\u0633\\u0627\\u0628\\u0627\\u062a\\u0647\\u0627 \\u0627\\u0644\\u0634\\u0647\\u0631\\u064a\\u0629 \\u0641\\u064a \\u0622\\u062e\\u0631 \\u062b\\u0644\\u0627\\u062b\\u0629 \\u0623\\u064a\\u0627\\u0645 \\u0639\\u0645\\u0644 \\u0645\\u0646 \\u0643\\u0644 \\u0634\\u0647\\u0631\\u060c \\u0648\\u062a\\u062a\\u0623\\u062e\\u0631 \\u0627\\u0639\\u062a\\u0645\\u0627\\u062f\\u0627\\u062a \\u0627\\u0644\\u0645\\u0637\\u0627\\u0644\\u0628\\u0627\\u062a \\u0641\\u064a \\u062a\\u0644\\u0643 \\u0627\\u0644\\u0641\\u062a\\u0631\\u0629.\\\", \\\"source\\\": \\\"seed\\\", \\\"status\\\": \\\"active\\\", \\\"use_count\\\": \\\"0\\\", \\\"created_at\\\": \\\"2026-07-23T23:06:04\\\", \\\"updated_at\\\": \\\"2026-07-23T23:06:04\\\"}, {\\\"memory_id\\\": \\\"MEM-0002\\\", \\\"scope\\\": \\\"employee\\\", \\\"subject_id\\\": \\\"EMP-1001\\\", \\\"content\\\": \\\"\\u064a\\u0641\\u0636\\u0651\\u0644 \\u0623\\u062d\\u0645\\u062f \\u0627\\u0644\\u0645\\u0647\\u064a\\u0631\\u064a \\u0627\\u0644\\u0631\\u062f\\u0648\\u062f \\u0627\\u0644\\u0645\\u062e\\u062a\\u0635\\u0631\\u0629 \\u0648\\u0627\\u0644\\u0645\\u0628\\u0627\\u0634\\u0631\\u0629\\u060c \\u0648\\u064a\\u0637\\u0644\\u0628 \\u062f\\u0627\\u0626\\u0645\\u064b\\u0627 \\u062a\\u0623\\u0643\\u064a\\u062f \\u0627\\u0644\\u062a\\u0648\\u0627\\u0631\\u064a\\u062e \\u0628\\u0627\\u0644\\u062a\\u0642\\u0648\\u064a\\u0645 \\u0627\\u0644\\u0645\\u064a\\u0644\\u0627\\u062f\\u064a.\\\", \\\"source\\\": \\\"seed\\\", \\\"status\\\": \\\"active\\\", \\\"use_count\\\": \\\"0\\\", \\\"created_at\\\": \\\"2026-08-06T23:06:04\\\", \\\"updated_at\\\": \\\"2026-08-06T23:06:04\\\"}, {\\\"memory_id\\\": \\\"MEM-0003\\\", \\\"scope\\\": \\\"employee\\\", \\\"subject_id\\\": \\\"EMP-1004\\\", \\\"content\\\": \\\"\\u0631\\u0627\\u0634\\u062f \\u0627\\u0644\\u0643\\u062a\\u0628\\u064a \\u064a\\u0642\\u062f\\u0651\\u0645 \\u0645\\u0637\\u0627\\u0644\\u0628\\u0627\\u062a \\u0646\\u0641\\u0642\\u0627\\u062a \\u062a\\u062f\\u0631\\u064a\\u0628\\u064a\\u0629 \\u0628\\u0634\\u0643\\u0644 \\u0645\\u062a\\u0643\\u0631\\u0631\\u060c \\u0648\\u063a\\u0627\\u0644\\u0628\\u064b\\u0627 \\u0645\\u0627 \\u064a\\u0646\\u0633\\u0649 \\u0625\\u0631\\u0641\\u0627\\u0642 \\u0631\\u0642\\u0645 \\u0627\\u0644\\u0625\\u064a\\u0635\\u0627\\u0644.\\\", \\\"source\\\": \\\"seed\\\", \\\"status\\\": \\\"active\\\", \\\"use_count\\\": \\\"0\\\", \\\"created_at\\\": \\\"2026-08-09T23:06:04\\\", \\\"updated_at\\\": \\\"2026-08-09T23:06:04\\\"}]\");\nreturn rows.map(r => ({ json: r }));"
       }
     },
     {
-      "id": "144ab3cc-b290-498c-8b04-f36b4012924a",
+      "id": "0b17a95e-399b-4e53-8592-3718a1a4f950",
       "name": "Insert Memory",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -2648,7 +2648,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "e0b81628-3d36-44f9-b8fb-e85d904b7baa",
+      "id": "7a857295-bf9c-48a9-834b-b1a7c105ca57",
       "name": "Create SkillPatches",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -2718,7 +2718,7 @@
       "executeOnce": true
     },
     {
-      "id": "e25e5ebf-baba-433f-8e78-7a66d0d1162d",
+      "id": "8c8ce6ae-593d-4ba9-86fa-cb25d85c6ada",
       "name": "Clear SkillPatches",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -2739,7 +2739,7 @@
       "executeOnce": true
     },
     {
-      "id": "781ccf7f-561f-428c-a453-65914e97d9e2",
+      "id": "309817cd-1a85-43c0-977a-a33a87a57b50",
       "name": "Seed SkillPatches",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -2748,11 +2748,11 @@
         6340
       ],
       "parameters": {
-        "jsCode": "const rows = JSON.parse(\"[{\\\"patch_id\\\": \\\"PATCH-0001\\\", \\\"skill_id\\\": \\\"expense-claim\\\", \\\"kind\\\": \\\"add_rule\\\", \\\"proposed_text\\\": \\\"\\u0639\\u0646\\u062f \\u0627\\u062e\\u062a\\u064a\\u0627\\u0631 \\u0627\\u0644\\u0641\\u0626\\u0629 training: \\u0630\\u0643\\u0651\\u0631 \\u0627\\u0644\\u0645\\u0648\\u0638\\u0641 \\u0628\\u0631\\u0642\\u0645 \\u0627\\u0644\\u0625\\u064a\\u0635\\u0627\\u0644 \\u0642\\u0628\\u0644 \\u0639\\u0631\\u0636 \\u0628\\u0637\\u0627\\u0642\\u0629 \\u0627\\u0644\\u0645\\u0639\\u0627\\u064a\\u0646\\u0629\\u060c \\u0641\\u0642\\u062f \\u0644\\u0648\\u062d\\u0638 \\u062a\\u0643\\u0631\\u0627\\u0631 \\u0646\\u0633\\u064a\\u0627\\u0646\\u0647.\\\", \\\"rationale\\\": \\\"\\u062b\\u0644\\u0627\\u062b \\u0645\\u0637\\u0627\\u0644\\u0628\\u0627\\u062a \\u062a\\u062f\\u0631\\u064a\\u0628\\u064a\\u0629 \\u0645\\u062a\\u062a\\u0627\\u0644\\u064a\\u0629 \\u0631\\u064f\\u062f\\u0651\\u062a \\u0644\\u063a\\u064a\\u0627\\u0628 \\u0631\\u0642\\u0645 \\u0627\\u0644\\u0625\\u064a\\u0635\\u0627\\u0644.\\\", \\\"evidence\\\": \\\"TXN-SEED-CHASE\\\", \\\"status\\\": \\\"pending\\\", \\\"created_by\\\": \\\"agent\\\", \\\"reviewed_by\\\": \\\"\\\", \\\"review_note\\\": \\\"\\\", \\\"created_at\\\": \\\"2026-08-12T17:54:13\\\", \\\"updated_at\\\": \\\"2026-08-12T17:54:13\\\"}]\");\nreturn rows.map(r => ({ json: r }));"
+        "jsCode": "const rows = JSON.parse(\"[{\\\"patch_id\\\": \\\"PATCH-0001\\\", \\\"skill_id\\\": \\\"expense-claim\\\", \\\"kind\\\": \\\"add_rule\\\", \\\"proposed_text\\\": \\\"\\u0639\\u0646\\u062f \\u0627\\u062e\\u062a\\u064a\\u0627\\u0631 \\u0627\\u0644\\u0641\\u0626\\u0629 training: \\u0630\\u0643\\u0651\\u0631 \\u0627\\u0644\\u0645\\u0648\\u0638\\u0641 \\u0628\\u0631\\u0642\\u0645 \\u0627\\u0644\\u0625\\u064a\\u0635\\u0627\\u0644 \\u0642\\u0628\\u0644 \\u0639\\u0631\\u0636 \\u0628\\u0637\\u0627\\u0642\\u0629 \\u0627\\u0644\\u0645\\u0639\\u0627\\u064a\\u0646\\u0629\\u060c \\u0641\\u0642\\u062f \\u0644\\u0648\\u062d\\u0638 \\u062a\\u0643\\u0631\\u0627\\u0631 \\u0646\\u0633\\u064a\\u0627\\u0646\\u0647.\\\", \\\"rationale\\\": \\\"\\u062b\\u0644\\u0627\\u062b \\u0645\\u0637\\u0627\\u0644\\u0628\\u0627\\u062a \\u062a\\u062f\\u0631\\u064a\\u0628\\u064a\\u0629 \\u0645\\u062a\\u062a\\u0627\\u0644\\u064a\\u0629 \\u0631\\u064f\\u062f\\u0651\\u062a \\u0644\\u063a\\u064a\\u0627\\u0628 \\u0631\\u0642\\u0645 \\u0627\\u0644\\u0625\\u064a\\u0635\\u0627\\u0644.\\\", \\\"evidence\\\": \\\"TXN-SEED-CHASE\\\", \\\"status\\\": \\\"pending\\\", \\\"created_by\\\": \\\"agent\\\", \\\"reviewed_by\\\": \\\"\\\", \\\"review_note\\\": \\\"\\\", \\\"created_at\\\": \\\"2026-08-12T18:06:04\\\", \\\"updated_at\\\": \\\"2026-08-12T18:06:04\\\"}]\");\nreturn rows.map(r => ({ json: r }));"
       }
     },
     {
-      "id": "3ba9f24a-78d1-4b00-a0f3-90a9e684f658",
+      "id": "93f6752e-409e-4bc8-a138-8d34c23d4a9a",
       "name": "Insert SkillPatches",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -2782,8 +2782,8 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "fafaa622-14a1-419a-b3ea-29919fd42778",
-      "name": "Note ac8cc251",
+      "id": "83f4afbe-0592-4d63-8db9-4a57719df11c",
+      "name": "Note 0359a578",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
@@ -2798,8 +2798,8 @@
       }
     },
     {
-      "id": "f6a74b6c-00a8-4e48-9489-aa7a4dff61f4",
-      "name": "Note 925abbf7",
+      "id": "ced0728f-1563-4f1a-9662-0354e492b6a8",
+      "name": "Note 77a54cb8",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
@@ -2814,7 +2814,7 @@
       }
     },
     {
-      "id": "8ef16b04-0cc3-4719-94b7-f47f7dba7d36",
+      "id": "209c5b3d-74dc-4629-a0f2-5424422d7084",
       "name": "Every 15 Minutes",
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
@@ -2834,7 +2834,7 @@
       }
     },
     {
-      "id": "6ee519df-5c97-4707-adcc-8601b951ae15",
+      "id": "adce92e8-7c1e-42de-887e-508c488e00fb",
       "name": "Reflect Manually",
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
@@ -2845,7 +2845,7 @@
       "parameters": {}
     },
     {
-      "id": "b6d72839-8971-4dc1-93b6-53672cfc04d2",
+      "id": "8e918b65-1345-4285-ac28-75f46384a10e",
       "name": "Reflect Webhook",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
@@ -2859,10 +2859,10 @@
         "responseMode": "responseNode",
         "options": {}
       },
-      "webhookId": "95be5c24-8a52-4699-9086-1e89fcebe2e2"
+      "webhookId": "90f8409d-8732-422f-8ea6-a1e96caf0bca"
     },
     {
-      "id": "b93d222a-0e9a-4cd2-85ad-8cd55053cd8c",
+      "id": "f4410581-a591-40be-8bec-6163005e1975",
       "name": "Respond Reflect",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.2,
@@ -2890,7 +2890,7 @@
       }
     },
     {
-      "id": "d7cd894e-b485-4161-8416-d83bae6bd908",
+      "id": "572901df-5b69-4c6d-9195-96f3676d702a",
       "name": "Read All (reflect)",
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
@@ -2923,7 +2923,7 @@
       }
     },
     {
-      "id": "640c7de6-bccb-47eb-a9e1-224d58cefca0",
+      "id": "c045d7d2-915e-430f-a316-82d1092f88b1",
       "name": "Gather Batch",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -2936,7 +2936,7 @@
       }
     },
     {
-      "id": "680d3992-147e-454f-968f-33e31b61447a",
+      "id": "5aa5a0fc-c9d6-449f-a064-cd367a8a9325",
       "name": "Anything To Learn?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
@@ -2968,7 +2968,7 @@
       }
     },
     {
-      "id": "ad9473b4-6ea2-487a-b8d1-20a2c321e82a",
+      "id": "ef377772-6ee8-4207-aef8-d6a8cde884d4",
       "name": "Nothing New ✓",
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
@@ -2979,7 +2979,7 @@
       "parameters": {}
     },
     {
-      "id": "0f720d6c-2cc5-4d36-a4e8-5831726a3fc2",
+      "id": "6a1b147e-bacb-4bd7-a2c9-5f17a58a716a",
       "name": "Fetch Reflection Charter",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -3004,7 +3004,7 @@
       "waitBetweenTries": 3000
     },
     {
-      "id": "2126f5e6-5759-41d7-b899-2c9920652fa5",
+      "id": "4a1274ad-dacb-47e0-9eed-f99e43325484",
       "name": "Reflection Agent",
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 2.2,
@@ -3027,7 +3027,7 @@
       "waitBetweenTries": 8000
     },
     {
-      "id": "3906293e-f5b0-4615-9707-23ea6bf74602",
+      "id": "b8e307fc-d175-4fde-b6ca-090509da76e9",
       "name": "Gemini Chat Model (reflect)",
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1,
@@ -3049,7 +3049,7 @@
       }
     },
     {
-      "id": "b5e71999-2723-4275-a7d9-c588194890ac",
+      "id": "dec372a4-5ea7-47b0-bdd7-0b7f2fa99fcc",
       "name": "Reflection Output",
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "typeVersion": 1.2,
@@ -3063,7 +3063,7 @@
       }
     },
     {
-      "id": "e464efe0-458d-4fdb-bacd-91c27b3d1890",
+      "id": "d8deed5a-1a4a-4e7e-a4eb-b6332dc5d163",
       "name": "call_service (learning)",
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
@@ -3098,7 +3098,7 @@
       }
     },
     {
-      "id": "60d679db-4705-40e9-82f2-e70083dc9e30",
+      "id": "0d339510-cc82-452c-bbd2-3271de8fe5c8",
       "name": "Log Reflection",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -3111,7 +3111,7 @@
       }
     },
     {
-      "id": "9d32fbd8-bb2a-41b0-85d7-33174156d44e",
+      "id": "db9dda64-36eb-422c-8df7-a6da0200a0ec",
       "name": "Append Reflection Log",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -3141,8 +3141,8 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "ee4b2a19-69cb-4f56-9681-16d91da80d41",
-      "name": "Note 39b5f949",
+      "id": "0d044c10-791e-4abd-8b35-9cbcbd97b346",
+      "name": "Note 0afe3e02",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
@@ -3157,8 +3157,8 @@
       }
     },
     {
-      "id": "9bb5bf31-1514-411d-909c-9b9d71de6dee",
-      "name": "Note 4d83d3a2",
+      "id": "8c1e4901-cc3a-4e43-aa6d-6f2011b79f8d",
+      "name": "Note ec5af03f",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
@@ -3173,7 +3173,7 @@
       }
     },
     {
-      "id": "b56375e8-2b7e-4c15-a77e-abc21f3db40d",
+      "id": "3fb2bd74-6219-410b-b7a5-5d2b08b1ccc5",
       "name": "POST Patch",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
@@ -3187,10 +3187,10 @@
         "responseMode": "responseNode",
         "options": {}
       },
-      "webhookId": "efd96e3d-cf86-4916-85fc-e7027ffb6e49"
+      "webhookId": "c2cef1e2-20ff-47da-919b-b6ca5bc30a9a"
     },
     {
-      "id": "9ce1aeed-e268-4b9a-b5ad-9c0930678ff1",
+      "id": "6e614be9-97ae-4f16-9c6e-67fe6998bc96",
       "name": "Read SkillPatches (review)",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -3219,7 +3219,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "543d041e-0cb3-4925-af43-71a57a7e8342",
+      "id": "aed233e8-0a78-43fa-a545-b924d6bfb59f",
       "name": "Apply Patch Decision",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -3232,7 +3232,7 @@
       }
     },
     {
-      "id": "1b6116f4-09a6-4d95-865f-b842564c58de",
+      "id": "712bf62e-b864-4d90-b9fd-f0df891f7490",
       "name": "Decision OK?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
@@ -3265,7 +3265,7 @@
       }
     },
     {
-      "id": "ea2230de-ed83-485a-8c9c-65aa4551820a",
+      "id": "5a7d5d43-9e70-4ecc-9427-3bd2f52297b9",
       "name": "Respond Patch Error",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.2,
@@ -3293,7 +3293,7 @@
       }
     },
     {
-      "id": "9d925a8c-2921-4602-8ad1-4b57a7c478fd",
+      "id": "fde581d5-97d6-4874-ba35-f5ba2af2339b",
       "name": "Emit Patch Update",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -3306,7 +3306,7 @@
       }
     },
     {
-      "id": "0e8f806a-23d2-409e-8535-cc9f4449da2b",
+      "id": "d86c7452-9d6f-48d1-91ff-3a43e70d6e19",
       "name": "Save Patch Decision",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -3346,7 +3346,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "1a24e61a-aea8-4291-ac0c-86dfe4b41f08",
+      "id": "887c8857-b8f1-4ba8-a36e-fdfc1a31dc6d",
       "name": "Respond Patch",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.2,
@@ -3374,8 +3374,8 @@
       }
     },
     {
-      "id": "0bb489d9-fa3f-43ae-bbdf-85f5c47db94e",
-      "name": "Note 168b1275",
+      "id": "c9304f80-873f-4efe-bc6a-0bcfb4e1a3ae",
+      "name": "Note 475dc976",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
@@ -3390,8 +3390,8 @@
       }
     },
     {
-      "id": "4f460564-251b-40ea-b05f-d5acc1b832c5",
-      "name": "Note fb2b87b6",
+      "id": "22dad556-1df9-44c6-bcc7-97449b320020",
+      "name": "Note 3e03a76e",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
