@@ -1,0 +1,119 @@
+{
+  "name": "مُنجِز — 06 Error Handler",
+  "nodes": [
+    {
+      "id": "5618a572-1448-4941-9c97-38ab82e397bd",
+      "name": "Error Trigger",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        -500,
+        0
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "1f86d08f-c47a-4ad1-83c5-8c4565914fa1",
+      "name": "Extract",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -280,
+        0
+      ],
+      "parameters": {
+        "jsCode": "const j = $json;\nreturn [{ json: { wf: (j.workflow || {}).name || '?', node: (j.execution || {}).lastNodeExecuted || '?',\n  msg: ((j.execution || {}).error || {}).message || '?', at: new Date().toISOString() } }];\n"
+      }
+    },
+    {
+      "id": "1683095f-58ca-4873-9d01-1887c9508a8c",
+      "name": "Notify",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -60,
+        0
+      ],
+      "parameters": {
+        "sendTo": "munjiz.demo.uae@gmail.com",
+        "subject": "=⚙️ مُنجِز — خطأ تشغيلي: {{ $json.wf }}",
+        "message": "={{ 'Node: ' + $json.node + ' — ' + $json.msg + ' @ ' + $json.at }}",
+        "options": {}
+      },
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "GMAIL_CRED_ID",
+          "name": "Gmail (demo)"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "id": "085bd358-71f6-463d-9afe-c9a2c0349a93",
+      "name": "Logged ✓",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        160,
+        0
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "7753219e-f1d3-4120-b96d-d3bacb91228f",
+      "name": "Note 829e587c",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -520,
+        -180
+      ],
+      "parameters": {
+        "content": "## Error Handler (criterion ⑥)\nSet as error workflow for 01/03/04/05.",
+        "width": 440,
+        "height": 120,
+        "color": 4
+      }
+    }
+  ],
+  "connections": {
+    "Error Trigger": {
+      "main": [
+        [
+          {
+            "node": "Extract",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract": {
+      "main": [
+        [
+          {
+            "node": "Notify",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notify": {
+      "main": [
+        [
+          {
+            "node": "Logged ✓",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {},
+  "id": "munjizErrorHnd06"
+}

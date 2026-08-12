@@ -52,7 +52,7 @@ In n8n → **Credentials → Add**. These are the only place any key ever lives 
 python tools/deploy.py --spreadsheet-id YOUR_SHEET_ID
 ```
 
-The script stages the workflows with your sheet ID, imports them into the container, publishes the five that own triggers, restarts n8n, and verifies `GET /webhook/munjiz/state`. It is **idempotent** — the workflows carry stable ids, so re-running updates them in place instead of creating duplicates.
+The script stages the workflows with your sheet ID, binds the credentials you created, imports them, activates all of them (sub-workflows included — n8n 2.x needs those active too), restarts n8n, and verifies `GET /webhook/munjiz/state`. Add `--split` to deploy the 8-file granular set instead of the merged 4-file one; it deactivates the other set first so the shared webhook paths never compete. It is **idempotent** — the workflows carry stable ids, so re-running updates them in place instead of creating duplicates.
 
 Then open each workflow once in the n8n UI and pick your credentials on any node showing a ⚠ (n8n remembers per credential type, so it's quick), and set **Settings → Error workflow → `مُنجِز — 06 Error Handler`** on workflows 01, 03, 04, 05. Re-run the deploy script afterwards if you prefer, or just save in the UI.
 
@@ -83,8 +83,8 @@ The n8n data (workflows + encrypted credentials) lives in the `munjiz_n8n_data` 
 1. `npx n8n` (Node 20+), then open <http://localhost:5678> and create the owner account.
 2. Do steps **A3** and **A4** above.
 3. In `workflow/*.json`, replace `REPLACE_WITH_SPREADSHEET_ID` with your sheet ID — it is the **only** placeholder left (sub-workflow links resolve on their own via stable workflow ids). It appears in files 00, 02, 03, 04, 07.
-4. n8n → **Workflows → Import from File** → import all 8 in any order.
-5. Attach credentials, set the error workflow on 01/03/04/05, and activate 01, 03, 04, 05, 07.
+4. n8n → **Workflows → Import from File** → import the 4 files in `workflow/` in any order (or the 8 in `workflow-split/` — one set or the other, never both).
+5. Attach credentials, set **Settings → Error workflow** on `01-main`, and activate **all four** (the two sub-workflows included — on n8n 2.x a called sub-workflow must be active or the caller fails).
 6. Open `ui/index.html`, then **الإعدادات / Settings** → base URL `http://localhost:5678/webhook` → Save.
 
 ---

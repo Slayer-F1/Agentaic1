@@ -2,7 +2,7 @@
   "name": "مُنجِز — 07 Demo Reset",
   "nodes": [
     {
-      "id": "bc2f03a9-29a9-4e14-9159-216eb7e7cf53",
+      "id": "ad6ba712-3afc-41f1-a6df-b297d66871d8",
       "name": "POST Reset",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
@@ -16,10 +16,10 @@
         "responseMode": "responseNode",
         "options": {}
       },
-      "webhookId": "db444757-5710-4aa9-b1e7-df7a60a563fe"
+      "webhookId": "cb72ba2c-1ef4-4a7f-9f0e-546eb5aad00b"
     },
     {
-      "id": "13d46bea-b7df-4b16-8aa7-5bbd5aab56c2",
+      "id": "782b9370-aa07-4e2d-997a-907a933e6896",
       "name": "Compute Anchors",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -32,7 +32,7 @@
       }
     },
     {
-      "id": "24d27b46-696c-453c-83a5-1edfc96fe6d3",
+      "id": "c0c1613a-bb7c-48ad-9bac-069732b28754",
       "name": "Emit Bal 1",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -45,7 +45,7 @@
       }
     },
     {
-      "id": "0da272d1-6126-4b39-93f1-804daa8bf876",
+      "id": "179ec9bb-d8d1-4f8d-a2f1-1b816f789c91",
       "name": "Reset Balance 1",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -88,7 +88,7 @@
       "waitBetweenTries": 4000
     },
     {
-      "id": "cb91bb8a-f66c-461d-841d-e6b3a5971a71",
+      "id": "dcd2623e-e1c2-4055-b911-51f57f449cb0",
       "name": "Emit Bal 2",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -101,7 +101,7 @@
       }
     },
     {
-      "id": "107a642f-4033-4ce0-bea4-71fd8a21f2a4",
+      "id": "5304d2b8-08a9-482e-9893-ff42c07d8dc1",
       "name": "Reset Balance 2",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -144,7 +144,7 @@
       "waitBetweenTries": 4000
     },
     {
-      "id": "d4c00d19-6419-4a26-90e7-b5dc48931b3e",
+      "id": "94ebdb22-14cb-43f7-88dd-5c2560431325",
       "name": "Emit Stale Txn",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -157,7 +157,7 @@
       }
     },
     {
-      "id": "2dc95c4d-0e37-4b87-89e4-8f35766062e2",
+      "id": "42ac495b-fb5a-43aa-99de-dde9d6ea4c17",
       "name": "Seed Stale Txn",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
@@ -200,7 +200,7 @@
       "waitBetweenTries": 4000
     },
     {
-      "id": "c5dada87-0aac-4700-a603-6d53812ee0e0",
+      "id": "44db4156-b580-40ea-b709-a8abc9f89e17",
       "name": "Respond Reset",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.2,
@@ -228,8 +228,8 @@
       }
     },
     {
-      "id": "d4233085-cb68-49a8-9a3b-1a5e5e57088e",
-      "name": "Note 9ef2472a",
+      "id": "aa579e9f-b4a4-463f-b25e-70d2691ba40e",
+      "name": "Note 49adb2d2",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [

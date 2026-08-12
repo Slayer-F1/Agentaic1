@@ -1,0 +1,2797 @@
+{
+  "name": "مُنجِز — Main (chat + approvals + SLA + API + reset)",
+  "nodes": [
+    {
+      "id": "3f2fac09-7d07-4c3b-bc4d-597234ff63db",
+      "name": "Chat Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -1700,
+        0
+      ],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "munjiz/chat",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "webhookId": "3e6bd599-48d2-4f99-b09b-640335168a0a"
+    },
+    {
+      "id": "5a9e3c25-c780-4481-8c13-73c96a6b52c0",
+      "name": "Fetch Skills Index",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1480,
+        0
+      ],
+      "parameters": {
+        "method": "GET",
+        "url": "https://raw.githubusercontent.com/Slayer-F1/Agentaic1/main/registry/skills-index.json",
+        "options": {
+          "timeout": 20000,
+          "response": {
+            "response": {
+              "responseFormat": "text"
+            }
+          }
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 3000
+    },
+    {
+      "id": "ee0b3c98-d51a-4290-8a33-ba9b76002624",
+      "name": "Prepare Router",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1260,
+        0
+      ],
+      "parameters": {
+        "jsCode": "const b = $('Chat Webhook').first().json.body || {};\nlet index = {};\ntry { index = JSON.parse($('Fetch Skills Index').first().json.data); } catch (e) {\n  try { index = $('Fetch Skills Index').first().json; } catch (e2) {}\n}\nconst skills = (index.skills || []).filter(s => s.status === 'approved');\nconst listing = skills.map(s => ({ id: s.id, title_ar: s.title_ar, keywords: s.keywords }));\nconst prompt = ['أنت مصنّف نوايا لبوابة خدمات موظفين. طلب الموظف:', b.message || '',\n  'المهارات المتاحة:', JSON.stringify(listing),\n  'أعد JSON فقط: {\"skill_id\": \"<id أو null>\", \"confidence\": 0..1}. اختر null إذا لم يطابق الطلب أي مهارة بوضوح.'].join('\\n');\nreturn [{ json: {\n  employee_id: b.employee_id || '', session_id: b.session_id || ('S-' + Date.now()),\n  message: b.message || '', active_skill_id: b.active_skill_id || '',\n  skills, listing,\n  geminiBody: { contents: [{ role: 'user', parts: [{ text: prompt }] }],\n    generationConfig: { temperature: 0, response_mime_type: 'application/json' } },\n} }];\n"
+      }
+    },
+    {
+      "id": "61cf5da4-2ecf-4889-8293-8cf1426c3e7a",
+      "name": "Has Active Skill?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -1040,
+        0
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.active_skill_id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "b6aaac71-b504-4cdf-a1f9-d3869bd4d4ba",
+      "name": "Gemini: Route Intent",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1040,
+        220
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googlePalmApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.geminiBody) }}",
+        "options": {
+          "timeout": 90000
+        }
+      },
+      "credentials": {
+        "googlePalmApi": {
+          "id": "GEMINI_CRED_ID",
+          "name": "Google Gemini (AI Studio)"
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 6000
+    },
+    {
+      "id": "68172b74-c53a-4f07-a9d5-8c607c4d5660",
+      "name": "Parse Route",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -820,
+        220
+      ],
+      "parameters": {
+        "jsCode": "const out = [];\nfor (const item of $input.all()) {\n  let text = '';\n  try { text = item.json.candidates[0].content.parts.map(p => p.text || '').join(''); } catch (e) {}\n  const cleaned = text.replace(/^```(json)?/m, '').replace(/```\\s*$/m, '').trim();\n  let parsed = null;\n  try { parsed = JSON.parse(cleaned); } catch (e) {\n    const m = cleaned.match(/\\{[\\s\\S]*\\}/);\n    if (m) { try { parsed = JSON.parse(m[0]); } catch (e2) {} }\n  }\n  out.push({ json: { gemini_text: cleaned, gemini_json: parsed, gemini_ok: !!parsed } });\n}\nreturn out;\n"
+      }
+    },
+    {
+      "id": "b1d271b5-439a-4770-a34c-0861da3b912b",
+      "name": "Pick Skill",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -600,
+        110
+      ],
+      "parameters": {
+        "jsCode": "const prep = $('Prepare Router').first().json;\nlet skill_id = prep.active_skill_id || '';\nlet confidence = 1;\nif (!skill_id) {\n  const r = $json.gemini_json || {};\n  skill_id = r.skill_id && r.skill_id !== 'null' ? r.skill_id : '';\n  confidence = typeof r.confidence === 'number' ? r.confidence : 0;\n}\nconst skill = prep.skills.find(s => s.id === skill_id);\nreturn [{ json: { ...prep, geminiBody: undefined, skill_id: skill ? skill.id : '',\n  matched: !!skill && confidence >= 0.5,\n  skill_meta: skill || null,\n  services_list_ar: prep.skills.map(s => '• ' + s.title_ar).join('\\n') } }];\n"
+      }
+    },
+    {
+      "id": "580c157f-f10b-4d20-a0fe-20714a1e579d",
+      "name": "Matched?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -380,
+        110
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.matched }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "2dd0b8e6-6dae-499b-8ed9-e8696637e1fa",
+      "name": "Respond: Services List",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.2,
+      "position": [
+        -160,
+        320
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"reply\": \"أهلًا بك في مُنجِز 👋 لم أتبيّن الخدمة المطلوبة. الخدمات المتاحة حاليًا:\\n\" + $json.services_list_ar + \"\\nأخبرني أيّها تريد.\", \"state\": \"info\", \"skill_id\": \"\", \"session_id\": $json.session_id } }}",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              },
+              {
+                "name": "Access-Control-Allow-Headers",
+                "value": "Content-Type"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "de0e48c3-d6d2-430c-961c-619c0c4e0727",
+      "name": "Fetch Skill MD",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -160,
+        0
+      ],
+      "parameters": {
+        "method": "GET",
+        "url": "={{ 'https://raw.githubusercontent.com/Slayer-F1/Agentaic1/main/' + $json.skill_meta.skill_path }}",
+        "options": {
+          "timeout": 20000,
+          "response": {
+            "response": {
+              "responseFormat": "text"
+            }
+          }
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 3000
+    },
+    {
+      "id": "641785d3-3d79-4118-a9d2-4dd32f3a68ee",
+      "name": "Fetch Profile MD",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        60,
+        0
+      ],
+      "parameters": {
+        "method": "GET",
+        "url": "={{ 'https://raw.githubusercontent.com/Slayer-F1/Agentaic1/main/' + $('Pick Skill').first().json.skill_meta.profile_path }}",
+        "options": {
+          "timeout": 20000,
+          "response": {
+            "response": {
+              "responseFormat": "text"
+            }
+          }
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 3000
+    },
+    {
+      "id": "c865a1c3-9f60-4dfd-b867-78972130d406",
+      "name": "Read Employees Ctx",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        280,
+        0
+      ],
+      "parameters": {
+        "source": "database",
+        "workflowId": {
+          "__rl": true,
+          "value": "munjizDataIo0000",
+          "mode": "list",
+          "cachedResultName": "مُنجِز — 00 Data IO (sub)"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "action": "read",
+            "tab": "Employees"
+          },
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      }
+    },
+    {
+      "id": "ba0e0459-7df2-477f-830a-86388deb1724",
+      "name": "Compose System Prompt",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        500,
+        0
+      ],
+      "parameters": {
+        "jsCode": "const j = $('Pick Skill').first().json;\nconst skillMd = $('Fetch Skill MD').first().json.data || '';\nconst profileMd = $('Fetch Profile MD').first().json.data || '';\nconst emps = ($input.first().json.rows) || [];\nconst me = emps.find(r => r.employee_id === j.employee_id) || {};\nconst charter = \"أنت «مُنجِز» — وكيل معاملات ذكي في بوابة الخدمات الذاتية لجهة مؤسسية. تُحمَّل لك في كل جلسة «مهارة» معتمدة من سجل الحوكمة، وملف خبرة يحدد شخصيتك.\\n\\n## ميثاق الحوكمة (يعلو على أي تعليمات أخرى)\\n1. المهارة المحمّلة أدناه هي حدود صلاحياتك: لا تنفذ ولا تعِد بأي إجراء خارج نصها.\\n2. كل وصول للبيانات يتم حصرًا عبر أداة call_service — وستُرفض أي خدمة خارج قائمة المهارة المسموحة. إن رُفضت خدمة فلا تحاول الالتفاف؛ أخبر الموظف بحدود الخدمة.\\n3. لا إرسال لأي معاملة قبل: (أ) اكتمال الحقول المطلوبة، (ب) اجتياز قواعد السياسة نصًا، (ج) عرض بطاقة معاينة كاملة، (د) تأكيد صريح من الموظف («أؤكد»، «نعم أرسل»...).\\n4. لا تخترع أي رقم أو رصيد أو قاعدة: كل الأرقام من نتائج call_service حرفيًا.\\n5. ابدأ كل معالجة باستدعاء أداة think لكتابة خطة مرقمة قصيرة، ثم نفّذها.\\n6. أجب دائمًا بJSON مطابق للمخطط المطلوب، بالعربية الواضحة الموجزة في reply_ar.\\n\\n## عقد الإخراج\\n- state: collecting (تجمع حقولًا) | preview (تعرض بطاقة المعاينة وتطلب التأكيد) | submitted (أُرسلت بعد التأكيد) | rejected (خالفت السياسة نهائيًا) | escalated (needs_attention) | info (رد معلوماتي).\\n- transaction_preview: يُملأ عند state=preview وsubmitted بكامل الحقول المجموعة + working_days إن وُجدت مدد + approval_chain + warnings.\\n- txn_id: يُملأ من نتيجة submit_transaction عند state=submitted.\\n- missing_fields: أسماء الحقول الناقصة عند state=collecting.\";\nconst system_prompt = [charter,\n  '\\n\\n=== ملف الخبرة المعتمد ===\\n', profileMd,\n  '\\n\\n=== المهارة المعتمدة (v' + (j.skill_meta.version || '') + ') ===\\n', skillMd,\n  '\\n\\n=== سياق الموظف الحالي ===\\n', JSON.stringify({ employee_id: j.employee_id,\n    name_ar: me.name_ar || '', department: me.department || '', role: me.role || '' }),\n  '\\nتاريخ اليوم: ' + new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Dubai' }),\n].join('');\nreturn [{ json: { ...j, system_prompt } }];\n"
+      }
+    },
+    {
+      "id": "de3102c3-c8eb-422e-858e-7cffaf08b35c",
+      "name": "Munjiz Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        760,
+        0
+      ],
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.message }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "={{ $json.system_prompt }}",
+          "maxIterations": 10,
+          "returnIntermediateSteps": true
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 2,
+      "waitBetweenTries": 8000
+    },
+    {
+      "id": "5f6641ff-9c5b-4a19-85e5-e4960bf20dc9",
+      "name": "Gemini Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        620,
+        260
+      ],
+      "parameters": {
+        "modelName": "models/gemini-2.5-flash",
+        "options": {
+          "temperature": 0.2
+        }
+      },
+      "credentials": {
+        "googlePalmApi": {
+          "id": "GEMINI_CRED_ID",
+          "name": "Google Gemini (AI Studio)"
+        }
+      }
+    },
+    {
+      "id": "707a280f-37a2-475a-9563-c96a18645ede",
+      "name": "Session Memory",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        780,
+        260
+      ],
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Pick Skill').first().json.session_id }}",
+        "contextWindowLength": 12
+      }
+    },
+    {
+      "id": "86ef6827-77c8-4c25-aa65-5ca2ca740e9c",
+      "name": "Structured Output",
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        940,
+        260
+      ],
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"reply_ar\": {\n      \"type\": \"string\"\n    },\n    \"state\": {\n      \"type\": \"string\",\n      \"enum\": [\n        \"collecting\",\n        \"preview\",\n        \"submitted\",\n        \"rejected\",\n        \"escalated\",\n        \"info\"\n      ]\n    },\n    \"transaction_preview\": {\n      \"type\": [\n        \"object\",\n        \"null\"\n      ],\n      \"properties\": {\n        \"fields\": {\n          \"type\": \"object\"\n        },\n        \"working_days\": {\n          \"type\": [\n            \"number\",\n            \"null\"\n          ]\n        },\n        \"amount_aed\": {\n          \"type\": [\n            \"number\",\n            \"null\"\n          ]\n        },\n        \"approval_chain\": {\n          \"type\": \"array\",\n          \"items\": {\n            \"type\": \"string\"\n          }\n        },\n        \"warnings\": {\n          \"type\": \"array\",\n          \"items\": {\n            \"type\": \"string\"\n          }\n        }\n      }\n    },\n    \"txn_id\": {\n      \"type\": [\n        \"string\",\n        \"null\"\n      ]\n    },\n    \"missing_fields\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"string\"\n      }\n    }\n  },\n  \"required\": [\n    \"reply_ar\",\n    \"state\"\n  ]\n}"
+      }
+    },
+    {
+      "id": "129e41a3-ce96-45b0-9f4f-ece67aeb2b3f",
+      "name": "think",
+      "type": "@n8n/n8n-nodes-langchain.toolThink",
+      "typeVersion": 1,
+      "position": [
+        1100,
+        260
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "e832d780-b63f-48be-a73d-10e554c8aea7",
+      "name": "call_service",
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        1260,
+        260
+      ],
+      "parameters": {
+        "name": "call_service",
+        "description": "بوابة الخدمات الموحدة والوحيدة للبيانات والمعاملات. أرسل service (اسم الخدمة كما في المهارة) وpayload (JSON string). الخدمات خارج قائمة المهارة سترفضها الحوكمة. أمثلة: get_employee_profile بلا payload؛ get_leave_balance بلا payload؛ check_leave_overlap بـ {\"start_date\",\"end_date\"}؛ submit_transaction بكامل حقول المعاملة.",
+        "source": "database",
+        "workflowId": {
+          "__rl": true,
+          "value": "munjizGateway002",
+          "mode": "list",
+          "cachedResultName": "مُنجِز — 02 Service Gateway (sub)"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "service": "={{ $fromAI('service', 'service name from the skill allowed_services', 'string') }}",
+            "payload": "={{ $fromAI('payload', 'JSON string of the service payload, or empty', 'string') }}",
+            "skill_id": "={{ $('Pick Skill').first().json.skill_id }}",
+            "employee_id": "={{ $('Pick Skill').first().json.employee_id }}",
+            "session_id": "={{ $('Pick Skill').first().json.session_id }}"
+          },
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      }
+    },
+    {
+      "id": "9cd403b3-3179-4cb9-811a-417b4ecbe825",
+      "name": "Deterministic Cross-Check",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1020,
+        0
+      ],
+      "parameters": {
+        "jsCode": "function workingDays(startISO, endISO) {\n  const s = new Date(startISO + 'T12:00:00Z'), e = new Date(endISO + 'T12:00:00Z');\n  if (isNaN(s) || isNaN(e) || e < s) return null;\n  let n = 0; const d = new Date(s);\n  while (d <= e) { const w = d.getUTCDay(); if (w !== 6 && w !== 0) n++; d.setUTCDate(d.getUTCDate() + 1); }\n  return n;\n}\nconst j = $json.output || {};\nconst ctx = $('Compose System Prompt').first().json;\nconst prior = $('Compose System Prompt').first().json._rechecked === true || $json._rechecked === true;\nlet needs_recheck = false; const notes = [];\nconst p = j.transaction_preview;\nif (p && ['preview', 'submitted'].includes(j.state) && ctx.skill_id === 'leave-request' && p.fields) {\n  const det = workingDays(p.fields.start_date, p.fields.end_date);\n  if (det !== null && p.working_days != null && +p.working_days !== det && !prior) {\n    needs_recheck = true; notes.push('working_days يجب أن تكون ' + det);\n  }\n  if (prior && det !== null) p.working_days = det;\n}\nif (p && p.amount_aed != null) p.amount_aed = Math.round(+p.amount_aed * 100) / 100;\nreturn [{ json: {\n  reply_ar: j.reply_ar || '', state: j.state || 'info',\n  transaction_preview: p || null, txn_id: j.txn_id || null,\n  missing_fields: j.missing_fields || [],\n  skill_id: ctx.skill_id, session_id: ctx.session_id,\n  needs_recheck, recheck_notes: notes, _rechecked: prior,\n} }];\n"
+      }
+    },
+    {
+      "id": "d757222f-e371-4320-a6b8-24638e2b9d38",
+      "name": "Needs Re-reason?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1240,
+        0
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.needs_recheck }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "f03cb73e-9fcc-42cb-a5ca-ddec7a94828e",
+      "name": "Build Re-reason",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1240,
+        -220
+      ],
+      "parameters": {
+        "jsCode": "const j = $json;\nconst prompt = ['راجع ردك: المدقق الحتمي وجد خطأً حسابيًا.', j.recheck_notes.join('؛ '),\n  'ردك السابق:', JSON.stringify({ reply_ar: j.reply_ar, state: j.state,\n    transaction_preview: j.transaction_preview, missing_fields: j.missing_fields }),\n  'صحّح الأرقام وأعد JSON بنفس المخطط تمامًا دون أي نص آخر.'].join('\\n');\nreturn [{ json: { ...j, geminiBody: { contents: [{ role: 'user', parts: [{ text: prompt }] }],\n  generationConfig: { temperature: 0, response_mime_type: 'application/json' } } } }];\n"
+      }
+    },
+    {
+      "id": "11bebdaf-e29c-43b2-ba5a-7b60c472d3ad",
+      "name": "Gemini: Re-reason",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1460,
+        -220
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googlePalmApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.geminiBody) }}",
+        "options": {
+          "timeout": 90000
+        }
+      },
+      "credentials": {
+        "googlePalmApi": {
+          "id": "GEMINI_CRED_ID",
+          "name": "Google Gemini (AI Studio)"
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 6000
+    },
+    {
+      "id": "5e54ad0a-ca65-41f2-9349-36b39db767ad",
+      "name": "Parse Re-reason",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1680,
+        -220
+      ],
+      "parameters": {
+        "jsCode": "const out = [];\nfor (const item of $input.all()) {\n  let text = '';\n  try { text = item.json.candidates[0].content.parts.map(p => p.text || '').join(''); } catch (e) {}\n  const cleaned = text.replace(/^```(json)?/m, '').replace(/```\\s*$/m, '').trim();\n  let parsed = null;\n  try { parsed = JSON.parse(cleaned); } catch (e) {\n    const m = cleaned.match(/\\{[\\s\\S]*\\}/);\n    if (m) { try { parsed = JSON.parse(m[0]); } catch (e2) {} }\n  }\n  out.push({ json: { gemini_text: cleaned, gemini_json: parsed, gemini_ok: !!parsed } });\n}\nreturn out;\n"
+      }
+    },
+    {
+      "id": "7ffb8dc8-743d-4bb2-af22-f71ccbf8899b",
+      "name": "Merge Re-reason",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1900,
+        -220
+      ],
+      "parameters": {
+        "jsCode": "const prev = $('Deterministic Cross-Check').first().json;\nconst fixed = $json.gemini_ok ? $json.gemini_json : {\n  reply_ar: prev.reply_ar, state: prev.state, transaction_preview: prev.transaction_preview,\n  txn_id: prev.txn_id, missing_fields: prev.missing_fields };\nreturn [{ json: { output: fixed, _rechecked: true } }];\n"
+      }
+    },
+    {
+      "id": "b2fb057a-09fe-4b33-aba2-58a6cab31f29",
+      "name": "Respond Chat",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.2,
+      "position": [
+        1460,
+        60
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"reply\": $json.reply_ar, \"state\": $json.state, \"preview\": $json.transaction_preview, \"txn_id\": $json.txn_id, \"missing_fields\": $json.missing_fields, \"skill_id\": $json.skill_id, \"session_id\": $json.session_id } }}",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              },
+              {
+                "name": "Access-Control-Allow-Headers",
+                "value": "Content-Type"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "16e0e511-51bd-49c9-b673-b3f05bf5a644",
+      "name": "Note 298a4936",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1720,
+        -380
+      ],
+      "parameters": {
+        "content": "## مُنجِز — Chat Agent (criteria ①②③④⑤⑥)\n④ webhook trigger from the portal. ⑤ router picks the SKILL at runtime; the whole system prompt is composed dynamically from GitHub (governed SKILL.md + PROFILE.md). ① one governed tool (call_service) — the model chooses WHICH service per step. ② think-tool plan first. ③ session memory + registry sheets. ⑥ deterministic working-day cross-check forces a re-reason pass on mismatch.",
+        "width": 700,
+        "height": 240,
+        "color": 4
+      }
+    },
+    {
+      "id": "71f8d8a7-7934-426d-abf3-54440f500e9a",
+      "name": "Note 488801e8",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -2150,
+        -80
+      ],
+      "parameters": {
+        "content": "# 01 Chat Agent",
+        "width": 300,
+        "height": 130,
+        "color": 3
+      }
+    },
+    {
+      "id": "12d353df-52e6-4a23-9651-01bcd7b3b82b",
+      "name": "Decide Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -1100,
+        1500
+      ],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "munjiz/decide",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "webhookId": "329e1b7b-1b18-4523-888a-e5bd1030a1d4"
+    },
+    {
+      "id": "ec9b3527-e4d3-4a07-a574-8fab17a7aeea",
+      "name": "Read Transactions (decide)",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -880,
+        1500
+      ],
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "value": "REPLACE_WITH_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Transactions",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "SHEETS_CRED_ID",
+          "name": "Google Sheets (demo)"
+        }
+      },
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 4000
+    },
+    {
+      "id": "90278209-50ed-42bd-8110-a225ca36ddeb",
+      "name": "Read Employees (decide)",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -660,
+        1500
+      ],
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "value": "REPLACE_WITH_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Employees",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "SHEETS_CRED_ID",
+          "name": "Google Sheets (demo)"
+        }
+      },
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 4000
+    },
+    {
+      "id": "b004c4e6-7bee-4ed2-a9ba-634a148a6908",
+      "name": "Decide",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -440,
+        1500
+      ],
+      "parameters": {
+        "jsCode": "function workingDays(startISO, endISO) {\n  const s = new Date(startISO + 'T12:00:00Z'), e = new Date(endISO + 'T12:00:00Z');\n  if (isNaN(s) || isNaN(e) || e < s) return null;\n  let n = 0; const d = new Date(s);\n  while (d <= e) { const w = d.getUTCDay(); if (w !== 6 && w !== 0) n++; d.setUTCDate(d.getUTCDate() + 1); }\n  return n;\n}\nconst b = $('Decide Webhook').first().json.body || {};\nconst txns = $('Read Transactions (decide)').all().map(i => i.json);\nconst emps = $('Read Employees (decide)').all().map(i => i.json);\nconst t = txns.find(r => r.txn_id === b.txn_id);\nif (!t) return [{ json: { ok: false, error: 'TXN_NOT_FOUND' } }];\nif (!String(t.status || '').startsWith('awaiting_'))\n  return [{ json: { ok: false, error: 'NOT_PENDING', status: t.status } }];\nconst stage = t.current_approver;\nconst approver = emps.find(r => r.employee_id === b.approver_id) || {};\nconst owner = emps.find(r => r.employee_id === t.employee_id) || {};\n// manager stage authorizes ONLY the employee's own manager; other stages match by role\nconst authorized = stage === 'manager' ? (owner.manager_id === b.approver_id)\n  : (approver.role === stage);\nif (!authorized) return [{ json: { ok: false, error: 'NOT_AUTHORIZED', stage } }];\nconst dec = String(b.decision || '').toLowerCase();\nif (dec !== 'approve' && dec !== 'reject') return [{ json: { ok: false, error: 'INVALID_DECISION' } }];\nconst chain = String(t.approval_chain || '').split(';').filter(Boolean);\nconst pos = +t.chain_pos || 0;\nlet update = { txn_id: t.txn_id, decision_note: b.note || '', updated_at: new Date().toISOString() };\nlet side = null;\nif (dec === 'reject') {\n  update.status = 'rejected'; update.current_approver = '';\n} else if (pos + 1 < chain.length) {\n  update.status = 'awaiting_' + chain[pos + 1];\n  update.current_approver = chain[pos + 1]; update.chain_pos = pos + 1;\n} else {\n  update.status = 'executed'; update.current_approver = ''; update.chain_pos = pos + 1;\n  let pl = {}; try { pl = JSON.parse(t.payload_json || '{}'); } catch (e) {}\n  if (t.skill_id === 'leave-request' && pl.start_date && pl.end_date) {\n    const days = pl.working_days || workingDays(pl.start_date, pl.end_date) || 0;\n    side = { kind: 'leave', employee_id: t.employee_id, leave_type: pl.leave_type || 'annual', days };\n  }\n  if (t.skill_id === 'it-access-request' && pl.system_id) {\n    side = { kind: 'it', employee_id: t.employee_id, grant: pl.system_id + ':' + (pl.access_level || 'read') };\n  }\n}\nreturn [{ json: { ok: true, update, side, txn: t, owner_email: owner.email || '',\n  decision: b.decision, stage } }];\n"
+      }
+    },
+    {
+      "id": "53543b30-81aa-4775-b0b2-228cca2abb3d",
+      "name": "OK?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -220,
+        1500
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.ok }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "ee49ef62-865e-4a7b-bd1e-fddc5e5de02c",
+      "name": "Respond Error",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        1700
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"ok\": false, \"error\": $json.error } }}",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              },
+              {
+                "name": "Access-Control-Allow-Headers",
+                "value": "Content-Type"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "f75ac035-088b-4c97-b186-9cf099ca53ae",
+      "name": "Emit Txn Update",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        0,
+        1420
+      ],
+      "parameters": {
+        "jsCode": "return [{ json: $json.update }];"
+      }
+    },
+    {
+      "id": "8a42cb95-4037-41d3-8098-4bf64d5a5360",
+      "name": "Update Transaction",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        220,
+        1420
+      ],
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "REPLACE_WITH_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Transactions",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [
+            "txn_id"
+          ],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "SHEETS_CRED_ID",
+          "name": "Google Sheets (demo)"
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 4000
+    },
+    {
+      "id": "fc2d2e7c-da10-42e1-bb26-0c3afcac9300",
+      "name": "Read LeaveBalances (side)",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        440,
+        1420
+      ],
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "value": "REPLACE_WITH_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "LeaveBalances",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "SHEETS_CRED_ID",
+          "name": "Google Sheets (demo)"
+        }
+      },
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 4000
+    },
+    {
+      "id": "20d7c499-3dbb-4686-9855-046efa52e944",
+      "name": "Read Employees (side)",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        660,
+        1420
+      ],
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "value": "REPLACE_WITH_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Employees",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "SHEETS_CRED_ID",
+          "name": "Google Sheets (demo)"
+        }
+      },
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 4000
+    },
+    {
+      "id": "e30941e0-1cae-40ed-9dee-f4936a35f636",
+      "name": "Apply Side Effect",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        880,
+        1420
+      ],
+      "parameters": {
+        "jsCode": "const j = $('Decide').first().json;\nif (!j.side) return [];\nif (j.side.kind === 'leave') {\n  const bals = $('Read LeaveBalances (side)').all().map(i => i.json);\n  const b = bals.find(r => r.employee_id === j.side.employee_id);\n  if (!b) return [];\n  const field = j.side.leave_type === 'sick' ? 'sick_used' : 'annual_used';\n  return [{ json: { employee_id: b.employee_id, [field]: +b[field] + j.side.days } }];\n}\nif (j.side.kind === 'it') {\n  const emps = $('Read Employees (side)').all().map(i => i.json);\n  const e = emps.find(r => r.employee_id === j.side.employee_id);\n  if (!e) return [];\n  const roles = String(e.it_roles || '').split(';').filter(Boolean);\n  if (!roles.includes(j.side.grant)) roles.push(j.side.grant);\n  return [{ json: { employee_id: e.employee_id, it_roles: roles.join(';') } }];\n}\nreturn [];\n"
+      },
+      "alwaysOutputData": true
+    },
+    {
+      "id": "3d0dd89f-2cda-4cbd-ae93-021af82c6e47",
+      "name": "Leave Side?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1100,
+        1420
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.annual_used !== undefined || $json.sick_used !== undefined }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "4cd0c910-6940-49de-9961-e06228ce7fc7",
+      "name": "Update LeaveBalances",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1320,
+        1320
+      ],
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "REPLACE_WITH_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "LeaveBalances",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [
+            "employee_id"
+          ],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "SHEETS_CRED_ID",
+          "name": "Google Sheets (demo)"
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 4000
+    },
+    {
+      "id": "8cefae17-84ed-4948-b063-f68438ff875e",
+      "name": "IT Side?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1320,
+        1500
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.it_roles !== undefined }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "04e835b2-6316-42c8-80b7-e14a33e248ec",
+      "name": "Update Employee Roles",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1540,
+        1440
+      ],
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "REPLACE_WITH_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Employees",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [
+            "employee_id"
+          ],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "SHEETS_CRED_ID",
+          "name": "Google Sheets (demo)"
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 4000
+    },
+    {
+      "id": "6b68a8c3-e2bb-48e0-8f1e-8ad481f02251",
+      "name": "Converge",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1540,
+        1620
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "93276723-e793-44f5-a9f9-366ff7bb5a39",
+      "name": "Notify Employee",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1760,
+        1620
+      ],
+      "parameters": {
+        "sendTo": "={{ $('Decide').first().json.owner_email }}",
+        "subject": "=مُنجِز: تحديث معاملتك {{ $('Decide').first().json.txn.txn_id }}",
+        "message": "={{ 'حالة معاملتك (' + $('Decide').first().json.txn.type_ar + ') أصبحت: ' + $('Decide').first().json.update.status + ($('Decide').first().json.update.decision_note ? ' — ملاحظة: ' + $('Decide').first().json.update.decision_note : '') }}",
+        "options": {}
+      },
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "GMAIL_CRED_ID",
+          "name": "Gmail (demo)"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "id": "2651c185-e540-4f5a-9e65-84a849b99a5a",
+      "name": "Respond Decide",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.2,
+      "position": [
+        1980,
+        1620
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"ok\": true, \"status\": $('Decide').first().json.update.status } }}",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              },
+              {
+                "name": "Access-Control-Allow-Headers",
+                "value": "Content-Type"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "2531b0b4-9ee5-4123-8dc8-aee1f91ab06a",
+      "name": "Note e13f2eca",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1120,
+        1200
+      ],
+      "parameters": {
+        "content": "## Approvals — سلسلة الاعتماد\nHuman decisions only: validates the approver (manager relation or role = stage), advances the chain, applies side effects on final approval (leave balance deduction / IT role grant), notifies the employee.",
+        "width": 620,
+        "height": 200,
+        "color": 4
+      }
+    },
+    {
+      "id": "2f139109-99c3-420c-a184-495536d536b3",
+      "name": "Note ce92ce70",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -2150,
+        1420
+      ],
+      "parameters": {
+        "content": "# 03 Approvals",
+        "width": 300,
+        "height": 130,
+        "color": 3
+      }
+    },
+    {
+      "id": "8f8c16e7-6637-4004-9a9a-d7120d3ea7e5",
+      "name": "Every 5 Minutes",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -1100,
+        2880
+      ],
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 5
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "e8d61ac6-badc-4a4e-a8da-87df85bc4325",
+      "name": "Manual Test",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1100,
+        3040
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "aaca1cba-2edf-4d33-b9c6-15d543efe3df",
+      "name": "Chase Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -1100,
+        3200
+      ],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "munjiz/chase",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "webhookId": "2d5335ec-c515-4334-ade9-3c6f5df5eefa"
+    },
+    {
+      "id": "fe3cf710-5078-425e-80bc-480d14e3ac75",
+      "name": "Respond Chase",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.2,
+      "position": [
+        -1100,
+        3360
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"ok\": true, \"fired\": true } }}",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              },
+              {
+                "name": "Access-Control-Allow-Headers",
+                "value": "Content-Type"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "3419977a-395a-4e56-883d-a9683a9bbc42",
+      "name": "Read All",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        -860,
+        3040
+      ],
+      "parameters": {
+        "source": "database",
+        "workflowId": {
+          "__rl": true,
+          "value": "munjizDataIo0000",
+          "mode": "list",
+          "cachedResultName": "مُنجِز — 00 Data IO (sub)"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "action": "read_all",
+            "tab": ""
+          },
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      }
+    },
+    {
+      "id": "b8967c46-3f15-4345-8640-aada3f1b8c2f",
+      "name": "Find Stale",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -640,
+        3040
+      ],
+      "parameters": {
+        "jsCode": "const d = $json;\nconst now = Date.now();\nconst emps = d.employees || [];\nconst byId = {}; for (const e of emps) byId[e.employee_id] = e;\nconst cases = [];\nfor (const t of (d.transactions || [])) {\n  if (!String(t.status || '').startsWith('awaiting_')) continue;\n  const ageH = (now - new Date(t.updated_at || t.ts).getTime()) / 36e5;\n  const sla = +t.sla_hours || 48;\n  if (ageH < sla * 0.5) continue;\n  const owner = byId[t.employee_id] || {};\n  const mgr = byId[owner.manager_id] || {};\n  cases.push({ txn_id: t.txn_id, type_ar: t.type_ar, employee: t.employee_name,\n    stage: t.current_approver, age_hours: Math.round(ageH * 10) / 10, sla_hours: sla,\n    breached: ageH > sla, approver_email: t.current_approver === 'manager' ? (mgr.email || '') : '',\n  });\n}\nreturn [{ json: { cases, case_count: cases.length, now: new Date().toISOString() } }];\n"
+      }
+    },
+    {
+      "id": "7a0552c0-7749-45c5-9eb7-5faf9fb1c16d",
+      "name": "Any Stale?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -420,
+        3040
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.case_count }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "20bf382b-cc71-48db-b5f9-d03dd01b7aab",
+      "name": "Nothing ✓",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -200,
+        3200
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "9b909043-f6eb-40f5-a276-a54990011e97",
+      "name": "Chaser Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        -180,
+        2960
+      ],
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ 'المعاملات المتأخرة عن سلسلة الاعتماد (' + $json.now + '):\\n' + JSON.stringify($json.cases) }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "أنت «حارس الإنجاز» في بوابة مُنجِز. لكل معاملة متأخرة قرر: remind_approver (اقتربت من sla ولم تُذكَّر)، escalate (تجاوزت sla — تصعيد للإدارة العليا)، أو wait (قريبة العهد). اكتب مسوّغًا عربيًا رسميًا موجزًا لكل قرار — يُحفظ في سجل التدقيق. أعد JSON فقط.",
+          "maxIterations": 6,
+          "returnIntermediateSteps": true
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 2,
+      "waitBetweenTries": 8000
+    },
+    {
+      "id": "f8601774-b0ed-460e-b45a-1bb7edd9f8b8",
+      "name": "Gemini Chat Model (chaser)",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -300,
+        3180
+      ],
+      "parameters": {
+        "modelName": "models/gemini-2.5-flash",
+        "options": {
+          "temperature": 0.2
+        }
+      },
+      "credentials": {
+        "googlePalmApi": {
+          "id": "GEMINI_CRED_ID",
+          "name": "Google Gemini (AI Studio)"
+        }
+      }
+    },
+    {
+      "id": "5165d0cc-1124-45fc-bd13-e0fa8861c303",
+      "name": "Chaser Output",
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        -140,
+        3180
+      ],
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"decisions\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"txn_id\": {\n            \"type\": \"string\"\n          },\n          \"action\": {\n            \"type\": \"string\",\n            \"enum\": [\n              \"remind_approver\",\n              \"escalate\",\n              \"wait\"\n            ]\n          },\n          \"justification_ar\": {\n            \"type\": \"string\"\n          }\n        },\n        \"required\": [\n          \"txn_id\",\n          \"action\",\n          \"justification_ar\"\n        ]\n      }\n    }\n  },\n  \"required\": [\n    \"decisions\"\n  ]\n}"
+      }
+    },
+    {
+      "id": "0e59e468-befb-4306-b287-6d75670e13c9",
+      "name": "Flatten",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        80,
+        2960
+      ],
+      "parameters": {
+        "jsCode": "const cases = $('Find Stale').first().json.cases;\nconst by = {}; for (const c of cases) by[c.txn_id] = c;\nconst out = [];\nfor (const dd of (($json.output || {}).decisions || [])) {\n  if (dd.action === 'wait') continue;\n  out.push({ json: { ...(by[dd.txn_id] || {}), ...dd, ts: new Date().toISOString() } });\n}\nreturn out; // empty = nothing to act on, chain ends here\n"
+      }
+    },
+    {
+      "id": "606947e9-edf3-407c-b012-9e0a60bf9bfa",
+      "name": "Audit Rows",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        300,
+        2960
+      ],
+      "parameters": {
+        "jsCode": "return $input.all().map(i => ({ json: {\n  ts: i.json.ts, session_id: 'sla-chaser', employee_id: '',\n  skill_id: '', service: 'sla_' + i.json.action,\n  request_json: JSON.stringify({ txn_id: i.json.txn_id, hours_late: i.json.age_hours }),\n  result_summary: i.json.justification_ar || '' } }));\n"
+      }
+    },
+    {
+      "id": "69d2839c-8a57-4e0a-b9f1-50c016fa73df",
+      "name": "Append AuditLog (chaser)",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        520,
+        2960
+      ],
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "REPLACE_WITH_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "AuditLog",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "SHEETS_CRED_ID",
+          "name": "Google Sheets (demo)"
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 4000
+    },
+    {
+      "id": "1e2ec29a-730a-42f9-ab42-46f359676f22",
+      "name": "Carry Decisions",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        740,
+        2960
+      ],
+      "parameters": {
+        "jsCode": "return $('Flatten').all();"
+      }
+    },
+    {
+      "id": "4d651b3d-f4f8-45b2-9543-56e397b4a335",
+      "name": "Chaser Switch",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        960,
+        2960
+      ],
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.action }}",
+                    "rightValue": "remind_approver",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "remind_approver"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.action }}",
+                    "rightValue": "escalate",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "escalate"
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "1202ab2b-6439-45b8-9573-bfa5cbad6710",
+      "name": "Remind Approver",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        540,
+        2860
+      ],
+      "parameters": {
+        "sendTo": "={{ $json.approver_email || 'munjiz.demo.uae@gmail.com' }}",
+        "subject": "=⏰ مُنجِز: معاملة بانتظار اعتمادك — {{ $json.txn_id }}",
+        "message": "={{ $json.type_ar + ' للموظف ' + $json.employee + ' منذ ' + $json.age_hours + ' ساعة. ' + $json.justification_ar }}",
+        "options": {}
+      },
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "GMAIL_CRED_ID",
+          "name": "Gmail (demo)"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "id": "77ea85ee-f9a5-4542-b6d5-3fda46b9258f",
+      "name": "Escalate",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        540,
+        3060
+      ],
+      "parameters": {
+        "sendTo": "munjiz.demo.uae@gmail.com",
+        "subject": "=🔺 مُنجِز: معاملة تجاوزت SLA — {{ $json.txn_id }}",
+        "message": "={{ $json.type_ar + ' للموظف ' + $json.employee + ' متأخرة ' + $json.age_hours + ' ساعة (sla ' + $json.sla_hours + '). ' + $json.justification_ar }}",
+        "options": {}
+      },
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "GMAIL_CRED_ID",
+          "name": "Gmail (demo)"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "id": "647021e3-91b0-469e-afe7-e8704b7c9a42",
+      "name": "Note 966ebf4c",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1120,
+        2680
+      ],
+      "parameters": {
+        "content": "## SLA Chaser — حارس الإنجاز (criteria ④⑤⑥)\nEvery 5 minutes it reads pending transactions, and the MODEL decides per case: remind / escalate / wait — each decision logged with its written justification.",
+        "width": 620,
+        "height": 190,
+        "color": 4
+      }
+    },
+    {
+      "id": "10b04a42-cf7c-4513-9f5c-25e64c146964",
+      "name": "Note 1f03177f",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -2150,
+        2920
+      ],
+      "parameters": {
+        "content": "# 04 SLA Chaser",
+        "width": 300,
+        "height": 130,
+        "color": 3
+      }
+    },
+    {
+      "id": "2bdf2ac7-7b25-407b-81c8-8a70cde2fa49",
+      "name": "GET State",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -700,
+        4500
+      ],
+      "parameters": {
+        "httpMethod": "GET",
+        "path": "munjiz/state",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "webhookId": "f640c22d-98a1-46e2-904b-28e3e5f2d0c3"
+    },
+    {
+      "id": "357504dd-71ab-44b7-ac1b-423774484959",
+      "name": "Fetch Skills Index (dash)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -480,
+        4500
+      ],
+      "parameters": {
+        "method": "GET",
+        "url": "https://raw.githubusercontent.com/Slayer-F1/Agentaic1/main/registry/skills-index.json",
+        "options": {
+          "timeout": 20000,
+          "response": {
+            "response": {
+              "responseFormat": "text"
+            }
+          }
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 3000
+    },
+    {
+      "id": "1d5efd55-0559-410e-bc99-e1296a6d9f0c",
+      "name": "Read All (dash)",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        -260,
+        4500
+      ],
+      "parameters": {
+        "source": "database",
+        "workflowId": {
+          "__rl": true,
+          "value": "munjizDataIo0000",
+          "mode": "list",
+          "cachedResultName": "مُنجِز — 00 Data IO (sub)"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "action": "read_all",
+            "tab": ""
+          },
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      }
+    },
+    {
+      "id": "48a2cc11-d142-497c-9a5e-513b006caad6",
+      "name": "Assemble Dashboard",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -40,
+        4500
+      ],
+      "parameters": {
+        "jsCode": "const d = $json;\nlet index = {};\ntry { index = JSON.parse($('Fetch Skills Index (dash)').first().json.data); } catch (e) {}\nconst txns = (d.transactions || []).filter(t => t.txn_id)\n  .sort((a, b) => String(b.ts).localeCompare(String(a.ts)));\nconst today = new Date().toISOString().slice(0, 10);\nreturn [{ json: {\n  generated_at: new Date().toISOString(),\n  kpis: {\n    total: txns.length,\n    today: txns.filter(t => String(t.ts).startsWith(today)).length,\n    pending: txns.filter(t => String(t.status).startsWith('awaiting_')).length,\n    executed: txns.filter(t => t.status === 'executed').length,\n    rejected: txns.filter(t => t.status === 'rejected').length,\n    minutes_saved: txns.filter(t => t.status === 'executed').length * 25,\n  },\n  transactions: txns.slice(0, 100),\n  audit: (d.audit || []).slice(-60).reverse(),\n  skills: (index.skills || []),\n  employees: (d.employees || []).map(e => ({ employee_id: e.employee_id, name_ar: e.name_ar,\n    name_en: e.name_en || '', role: e.role, department: e.department, manager_id: e.manager_id })),\n  balances: d.balances || [],\n} }];\n"
+      }
+    },
+    {
+      "id": "3193de1f-4e1f-4613-9749-c0c746b78663",
+      "name": "Respond State",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.2,
+      "position": [
+        180,
+        4500
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              },
+              {
+                "name": "Access-Control-Allow-Headers",
+                "value": "Content-Type"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "2c47c399-7810-4cdf-8720-bd7a60515062",
+      "name": "Note ab7d39ed",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -720,
+        4280
+      ],
+      "parameters": {
+        "content": "## Dashboard API\n`GET /munjiz/state` — polled by the portal every 3s. Skills come LIVE from the GitHub registry (the live-add demo beat needs no n8n change).",
+        "width": 560,
+        "height": 160,
+        "color": 4
+      }
+    },
+    {
+      "id": "bceafa00-f893-4728-8421-087ad53121e1",
+      "name": "Note a9b92ac9",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -2150,
+        4420
+      ],
+      "parameters": {
+        "content": "# 05 Dashboard API",
+        "width": 300,
+        "height": 130,
+        "color": 3
+      }
+    },
+    {
+      "id": "b9d9a6fb-c1c7-41f3-ab1c-2f99395327a6",
+      "name": "POST Reset",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -640,
+        6000
+      ],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "munjiz/reset",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "webhookId": "f0dd07a0-f16a-44a3-b13d-902c08387f7d"
+    },
+    {
+      "id": "77b744dc-1a67-4acc-a033-8b6972b26991",
+      "name": "Compute Anchors",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -420,
+        6000
+      ],
+      "parameters": {
+        "jsCode": "// Re-arm demo anchors: canonical leave balances for the two demo employees\n// and one stale pending transaction for the chaser beat.\nconst now = new Date();\nconst stale = new Date(now.getTime() - 30 * 3600 * 1000).toISOString();\nreturn [{ json: {\n  bal1: { employee_id: 'EMP-1001', annual_total: 30, annual_used: 22, sick_total: 15, sick_used: 2 },\n  bal2: { employee_id: 'EMP-1003', annual_total: 30, annual_used: 4, sick_total: 15, sick_used: 0 },\n  staleTxn: { txn_id: 'TXN-SEED-CHASE', ts: stale, employee_id: 'EMP-1004',\n    employee_name: 'راشد الكتبي (تجريبي)', skill_id: 'expense-claim', type_ar: 'مطالبة نفقات / بدلات',\n    payload_json: JSON.stringify({ category: 'training', amount_aed: 850, expense_date: stale.slice(0, 10),\n      description: 'رسوم ورشة تدريبية معتمدة', receipt_ref: 'RCPT-7741' }),\n    status: 'awaiting_manager', approval_chain: 'manager;finance', chain_pos: 0,\n    current_approver: 'manager', decision_note: '', output_ref: '', sla_hours: 24, updated_at: stale },\n} }];\n"
+      }
+    },
+    {
+      "id": "873ca4a6-2722-445d-aabd-2f8ab50c517f",
+      "name": "Emit Bal 1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -200,
+        5880
+      ],
+      "parameters": {
+        "jsCode": "return [{ json: $json.bal1 }];"
+      }
+    },
+    {
+      "id": "f8ddcf5c-3576-446b-b8f5-30d12d725e70",
+      "name": "Reset Balance 1",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        20,
+        5880
+      ],
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "REPLACE_WITH_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "LeaveBalances",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [
+            "employee_id"
+          ],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "SHEETS_CRED_ID",
+          "name": "Google Sheets (demo)"
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 4000
+    },
+    {
+      "id": "6e2af309-9619-4412-90b1-ddac3adbf257",
+      "name": "Emit Bal 2",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
+        5880
+      ],
+      "parameters": {
+        "jsCode": "return [{ json: $('Compute Anchors').first().json.bal2 }];"
+      }
+    },
+    {
+      "id": "52809b37-1d39-484d-aa5a-0fdb450571d1",
+      "name": "Reset Balance 2",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        460,
+        5880
+      ],
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "REPLACE_WITH_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "LeaveBalances",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [
+            "employee_id"
+          ],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "SHEETS_CRED_ID",
+          "name": "Google Sheets (demo)"
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 4000
+    },
+    {
+      "id": "781858be-e0d1-4a81-93d6-173d746de2bd",
+      "name": "Emit Stale Txn",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        680,
+        5880
+      ],
+      "parameters": {
+        "jsCode": "return [{ json: $('Compute Anchors').first().json.staleTxn }];"
+      }
+    },
+    {
+      "id": "d744b7d0-7354-459c-bdc2-a47092af1469",
+      "name": "Seed Stale Txn",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        900,
+        5880
+      ],
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "REPLACE_WITH_SPREADSHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Transactions",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [
+            "txn_id"
+          ],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "SHEETS_CRED_ID",
+          "name": "Google Sheets (demo)"
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 4000
+    },
+    {
+      "id": "685cfb92-123f-4892-b14e-6ef8050963f4",
+      "name": "Respond Reset",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.2,
+      "position": [
+        1120,
+        6000
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"ok\": true } }}",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              },
+              {
+                "name": "Access-Control-Allow-Headers",
+                "value": "Content-Type"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "8a8134aa-fe80-4039-813d-a8b982d86e36",
+      "name": "Note f7765187",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -660,
+        5740
+      ],
+      "parameters": {
+        "content": "## Demo Reset\n`POST /munjiz/reset` — canonical balances + a 30-hour-old pending claim so the SLA chaser has something to rescue on stage.",
+        "width": 560,
+        "height": 150,
+        "color": 4
+      }
+    },
+    {
+      "id": "c6e98272-6cdb-4775-b530-49e25ebc9933",
+      "name": "Note 86d16d61",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -2150,
+        5920
+      ],
+      "parameters": {
+        "content": "# 07 Demo Reset",
+        "width": 300,
+        "height": 130,
+        "color": 3
+      }
+    }
+  ],
+  "connections": {
+    "Chat Webhook": {
+      "main": [
+        [
+          {
+            "node": "Fetch Skills Index",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Skills Index": {
+      "main": [
+        [
+          {
+            "node": "Prepare Router",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Router": {
+      "main": [
+        [
+          {
+            "node": "Has Active Skill?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has Active Skill?": {
+      "main": [
+        [
+          {
+            "node": "Pick Skill",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Gemini: Route Intent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini: Route Intent": {
+      "main": [
+        [
+          {
+            "node": "Parse Route",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Route": {
+      "main": [
+        [
+          {
+            "node": "Pick Skill",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pick Skill": {
+      "main": [
+        [
+          {
+            "node": "Matched?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Matched?": {
+      "main": [
+        [
+          {
+            "node": "Fetch Skill MD",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond: Services List",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Skill MD": {
+      "main": [
+        [
+          {
+            "node": "Fetch Profile MD",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Profile MD": {
+      "main": [
+        [
+          {
+            "node": "Read Employees Ctx",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Employees Ctx": {
+      "main": [
+        [
+          {
+            "node": "Compose System Prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Munjiz Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Session Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Munjiz Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Munjiz Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "think": {
+      "ai_tool": [
+        [
+          {
+            "node": "Munjiz Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "call_service": {
+      "ai_tool": [
+        [
+          {
+            "node": "Munjiz Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Compose System Prompt": {
+      "main": [
+        [
+          {
+            "node": "Munjiz Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Munjiz Agent": {
+      "main": [
+        [
+          {
+            "node": "Deterministic Cross-Check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Deterministic Cross-Check": {
+      "main": [
+        [
+          {
+            "node": "Needs Re-reason?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Needs Re-reason?": {
+      "main": [
+        [
+          {
+            "node": "Build Re-reason",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond Chat",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Re-reason": {
+      "main": [
+        [
+          {
+            "node": "Gemini: Re-reason",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini: Re-reason": {
+      "main": [
+        [
+          {
+            "node": "Parse Re-reason",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Re-reason": {
+      "main": [
+        [
+          {
+            "node": "Merge Re-reason",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge Re-reason": {
+      "main": [
+        [
+          {
+            "node": "Deterministic Cross-Check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Decide Webhook": {
+      "main": [
+        [
+          {
+            "node": "Read Transactions (decide)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Transactions (decide)": {
+      "main": [
+        [
+          {
+            "node": "Read Employees (decide)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Employees (decide)": {
+      "main": [
+        [
+          {
+            "node": "Decide",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Decide": {
+      "main": [
+        [
+          {
+            "node": "OK?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OK?": {
+      "main": [
+        [
+          {
+            "node": "Emit Txn Update",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Emit Txn Update": {
+      "main": [
+        [
+          {
+            "node": "Update Transaction",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Transaction": {
+      "main": [
+        [
+          {
+            "node": "Read LeaveBalances (side)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read LeaveBalances (side)": {
+      "main": [
+        [
+          {
+            "node": "Read Employees (side)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Employees (side)": {
+      "main": [
+        [
+          {
+            "node": "Apply Side Effect",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Apply Side Effect": {
+      "main": [
+        [
+          {
+            "node": "Leave Side?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Leave Side?": {
+      "main": [
+        [
+          {
+            "node": "Update LeaveBalances",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "IT Side?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IT Side?": {
+      "main": [
+        [
+          {
+            "node": "Update Employee Roles",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Converge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update LeaveBalances": {
+      "main": [
+        [
+          {
+            "node": "Converge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Employee Roles": {
+      "main": [
+        [
+          {
+            "node": "Converge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Converge": {
+      "main": [
+        [
+          {
+            "node": "Notify Employee",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notify Employee": {
+      "main": [
+        [
+          {
+            "node": "Respond Decide",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chase Webhook": {
+      "main": [
+        [
+          {
+            "node": "Respond Chase",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Every 5 Minutes": {
+      "main": [
+        [
+          {
+            "node": "Read All",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Manual Test": {
+      "main": [
+        [
+          {
+            "node": "Read All",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Respond Chase": {
+      "main": [
+        [
+          {
+            "node": "Read All",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read All": {
+      "main": [
+        [
+          {
+            "node": "Find Stale",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find Stale": {
+      "main": [
+        [
+          {
+            "node": "Any Stale?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Any Stale?": {
+      "main": [
+        [
+          {
+            "node": "Chaser Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Nothing ✓",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini Chat Model (chaser)": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Chaser Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chaser Output": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Chaser Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chaser Agent": {
+      "main": [
+        [
+          {
+            "node": "Flatten",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Flatten": {
+      "main": [
+        [
+          {
+            "node": "Audit Rows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Audit Rows": {
+      "main": [
+        [
+          {
+            "node": "Append AuditLog (chaser)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append AuditLog (chaser)": {
+      "main": [
+        [
+          {
+            "node": "Carry Decisions",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Carry Decisions": {
+      "main": [
+        [
+          {
+            "node": "Chaser Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chaser Switch": {
+      "main": [
+        [
+          {
+            "node": "Remind Approver",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Escalate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GET State": {
+      "main": [
+        [
+          {
+            "node": "Fetch Skills Index (dash)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Skills Index (dash)": {
+      "main": [
+        [
+          {
+            "node": "Read All (dash)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read All (dash)": {
+      "main": [
+        [
+          {
+            "node": "Assemble Dashboard",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Assemble Dashboard": {
+      "main": [
+        [
+          {
+            "node": "Respond State",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "POST Reset": {
+      "main": [
+        [
+          {
+            "node": "Compute Anchors",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Compute Anchors": {
+      "main": [
+        [
+          {
+            "node": "Emit Bal 1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Emit Bal 1": {
+      "main": [
+        [
+          {
+            "node": "Reset Balance 1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reset Balance 1": {
+      "main": [
+        [
+          {
+            "node": "Emit Bal 2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Emit Bal 2": {
+      "main": [
+        [
+          {
+            "node": "Reset Balance 2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reset Balance 2": {
+      "main": [
+        [
+          {
+            "node": "Emit Stale Txn",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Emit Stale Txn": {
+      "main": [
+        [
+          {
+            "node": "Seed Stale Txn",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Seed Stale Txn": {
+      "main": [
+        [
+          {
+            "node": "Respond Reset",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {},
+  "id": "munjizMain000001"
+}

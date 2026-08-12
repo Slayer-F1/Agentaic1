@@ -11,7 +11,9 @@ import json
 import os
 import uuid
 
-OUT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "workflow")
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+OUT = os.path.join(ROOT, "workflow")
+OUT_SPLIT = os.path.join(ROOT, "workflow-split")
 SHEET = {"__rl": True, "value": "REPLACE_WITH_SPREADSHEET_ID", "mode": "id"}
 GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent"
 RAW_BASE = "https://raw.githubusercontent.com/Slayer-F1/Agentaic1/main/"
@@ -55,6 +57,10 @@ WF_IDS = {
     "06-error-handler.json": "munjizErrorHnd06",
     "07-demo-reset.json": "munjizDemoReset7",
 }
+WF_IDS["01-main.json"] = "munjizMain000001"
+WF_IDS["03-error-handler.json"] = WF_IDS["06-error-handler.json"]
+WF_MAIN_ID = WF_IDS["01-main.json"]
+MAIN_NAME = "مُنجِز — Main (chat + approvals + SLA + API + reset)"
 DATA_IO_ID = WF_IDS["00-data-io.json"]
 GATEWAY_ID = WF_IDS["02-service-gateway.json"]
 
@@ -1138,6 +1144,39 @@ def build_reset():
 
 # ---------------------------------------------------------------------------
 
+def merge(name, wf_id, parts, gap=1500):
+    """Combine several built workflows onto one canvas.
+
+    Safe because node names are globally unique across the parts: connections
+    and $('Node') lookups are name-based, so nothing needs rewriting. Each part
+    is pushed down the canvas by `gap` and labelled with a sticky note, so the
+    merged workflow is still walkable during the judges' inspection.
+    """
+    out = Wf(name, wf_id)
+    seen = {}
+    y = 0
+    for label, wf in parts:
+        for n in wf.nodes:
+            if n["type"] != "n8n-nodes-base.stickyNote":
+                if n["name"] in seen:
+                    raise SystemExit("merge collision: %r in %s and %s"
+                                     % (n["name"], seen[n["name"]], label))
+                seen[n["name"]] = label
+            n["position"] = [n["position"][0], n["position"][1] + y]
+            out.nodes.append(n)
+        out.nodes.append(sticky("# " + label, (-2150, y - 80), width=300, height=130, color=3))
+        for src, types in wf.conns.items():
+            dst = out.conns.setdefault(src, {})
+            for ct, outs in types.items():
+                cur = dst.setdefault(ct, [])
+                while len(cur) < len(outs):
+                    cur.append([])
+                for i, o in enumerate(outs):
+                    cur[i].extend(o)
+        y += gap
+    return out
+
+
 def validate(doc):
     errs = []
     names = [n["name"] for n in doc["nodes"]]
@@ -1159,9 +1198,27 @@ def validate(doc):
     return errs
 
 
+def emit(outdir, builds):
+    os.makedirs(outdir, exist_ok=True)
+    bad = False
+    for fname, wf in builds:
+        wf.wf_id = wf.wf_id or WF_IDS.get(fname)
+        doc = wf.dump()
+        errs = validate(doc)
+        if errs:
+            bad = True
+            print("FAIL", fname)
+            for e in errs:
+                print("  -", e)
+        with open(os.path.join(outdir, fname), "w", encoding="utf-8") as f:
+            json.dump(doc, f, ensure_ascii=False, indent=2)
+        print("  %-26s nodes=%-3d conns=%d" % (fname, len(doc["nodes"]), len(doc["connections"])))
+    return bad
+
+
 def main():
-    os.makedirs(OUT, exist_ok=True)
-    builds = [
+    print("workflow-split/ (8 files, one per concern)")
+    bad = emit(OUT_SPLIT, [
         ("00-data-io.json", build_data_io()),
         ("01-chat-agent.json", build_agent()),
         ("02-service-gateway.json", build_gateway()),
@@ -1170,20 +1227,27 @@ def main():
         ("05-dashboard-api.json", build_dash()),
         ("06-error-handler.json", build_error()),
         ("07-demo-reset.json", build_reset()),
-    ]
-    bad = False
-    for fname, wf in builds:
-        wf.wf_id = WF_IDS.get(fname)
-        doc = wf.dump()
-        errs = validate(doc)
-        if errs:
-            bad = True
-            print("FAIL", fname)
-            for e in errs:
-                print("  -", e)
-        with open(os.path.join(OUT, fname), "w", encoding="utf-8") as f:
-            json.dump(doc, f, ensure_ascii=False, indent=2)
-        print("wrote %-24s nodes=%-3d conns=%d" % (fname, len(doc["nodes"]), len(doc["connections"])))
+    ])
+
+    # Default set: the five trigger workflows merged onto one canvas.
+    # 00 Data IO and 02 Service Gateway MUST stay separate (they are invoked via
+    # executeWorkflow / toolWorkflow, which can only target another workflow),
+    # and the error handler stays separate so it can be assigned as one.
+    main_wf = merge(MAIN_NAME, WF_MAIN_ID, [
+        ("01 Chat Agent", build_agent()),
+        ("03 Approvals", build_approvals()),
+        ("04 SLA Chaser", build_chaser()),
+        ("05 Dashboard API", build_dash()),
+        ("07 Demo Reset", build_reset()),
+    ])
+    print("workflow/ (4 files, merged - the default import set)")
+    bad = emit(OUT, [
+        ("00-data-io.json", build_data_io()),
+        ("01-main.json", main_wf),
+        ("02-service-gateway.json", build_gateway()),
+        ("03-error-handler.json", build_error()),
+    ]) or bad
+
     if bad:
         raise SystemExit(1)
     print("all workflows valid")

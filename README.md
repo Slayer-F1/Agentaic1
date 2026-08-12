@@ -14,7 +14,8 @@ Built on **n8n + Google Gemini 2.5 Flash (free tier)**, Google Sheets as the tra
 | `profiles/` | AI expertise profiles (HR / finance / IT-security / general) |
 | `registry/skills-index.json` | The signed source of truth: ids, versions, status, keywords, **allowed_services**, approval chains |
 | `docker/` | One-command local stack: n8n + the portal (`cd docker && docker compose up -d`) |
-| `workflow/` | 8 importable n8n workflows (00–07) — agent, service gateway, approvals, SLA chaser, dashboard API, error handler, reset. Stable ids, so sub-workflow links resolve themselves on import |
+| `workflow/` | **4 importable n8n workflows** — `01-main` (chat + approvals + SLA chaser + dashboard API + reset on one canvas), plus `00-data-io`, `02-service-gateway` and `03-error-handler`, which must stay separate: the first two are invoked via `executeWorkflow`/`toolWorkflow` (which can only target another workflow) and the third is assigned as the error workflow. Stable ids, so links resolve on import |
+| `workflow-split/` | The same system as 8 single-purpose workflows — easier to walk through node by node during the judges’ inspection. Import **one** set or the other, never both (identical webhook paths). `python tools/deploy.py --split` |
 | `ui/index.html` | Chat-first portal (single file, no build): chat + preview cards, my-requests tracker, approvals inbox, governance/audit view; demo mode built in |
 | `data/seeds/` | Synthetic registry seed (xlsx + CSVs, 6 tabs) — all fictional, labeled «تجريبي» |
 | `docs/` | `submission.md` (AR+EN) · `setup-guide.md` · `demo-script.md` · `demo-extras/parking-permit.skill.md` (the live-add beat) |

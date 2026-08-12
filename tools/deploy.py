@@ -23,6 +23,13 @@ import urllib.request
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 WORKFLOW_DIR = os.path.join(ROOT, "workflow")
+SPLIT_DIR = os.path.join(ROOT, "workflow-split")
+
+# Two interchangeable sets. Import ONE: they publish the same webhook paths, so
+# having both active at once makes n8n serve whichever registered first.
+MERGED_IDS = ["munjizDataIo0000", "munjizMain000001", "munjizGateway002", "munjizErrorHnd06"]
+SPLIT_IDS = ["munjizDataIo0000", "munjizChatAgent1", "munjizGateway002", "munjizApprovals3",
+             "munjizSlaChaser4", "munjizDashApi005", "munjizErrorHnd06", "munjizDemoReset7"]
 PLACEHOLDER = "REPLACE_WITH_SPREADSHEET_ID"
 
 
@@ -124,10 +131,16 @@ def main():
     ap.add_argument("--container", default="munjiz-n8n")
     ap.add_argument("--port", default=None)
     ap.add_argument("--skip-owner-check", action="store_true")
+    ap.add_argument("--split", action="store_true",
+                    help="import the 8-file granular set instead of the merged 4-file set")
     a = ap.parse_args()
     port = a.port or env_port()
+    src_dir = SPLIT_DIR if a.split else WORKFLOW_DIR
+    want_ids = SPLIT_IDS if a.split else MERGED_IDS
+    stale_ids = [w for w in (MERGED_IDS if a.split else SPLIT_IDS) if w not in want_ids]
 
     print("== Munjiz deploy ==")
+    print("set: %s (%s)" % ("split/8" if a.split else "merged/4", os.path.basename(src_dir)))
     print("container: %s | n8n port: %s" % (a.container, port))
 
     if not wait_healthy(port):
@@ -153,10 +166,10 @@ def main():
         print("   (create them in the n8n UI; re-run and every node is bound automatically)")
 
     staged, sheet_hits, cred_hits = 0, 0, 0
-    for fn in sorted(os.listdir(WORKFLOW_DIR)):
+    for fn in sorted(os.listdir(src_dir)):
         if not fn.endswith(".json"):
             continue
-        text = open(os.path.join(WORKFLOW_DIR, fn), encoding="utf-8").read()
+        text = open(os.path.join(src_dir, fn), encoding="utf-8").read()
         if a.spreadsheet_id and PLACEHOLDER in text:
             text = text.replace(PLACEHOLDER, a.spreadsheet_id)
             sheet_hits += 1
@@ -171,19 +184,30 @@ def main():
         print("   note: no --spreadsheet-id given; Sheets nodes keep the placeholder")
 
     # 2. copy into the container and import (stable ids => updates in place, no duplicates)
-    run(["docker", "exec", a.container, "rm", "-rf", "/tmp/munjiz-deploy"], check=False, quiet=True)
-    run(["docker", "cp", tmp, "%s:/tmp/munjiz-deploy" % a.container], quiet=True)
-    print("-> importing")
+    # Unique destination per run: docker cp writes as root while the container
+    # runs as `node`, so cleaning a shared staging dir fails silently and the
+    # import would keep reading whatever was there before.
+    dest = "/tmp/" + os.path.basename(tmp)
+    run(["docker", "cp", tmp, "%s:%s" % (a.container, dest)], quiet=True)
+    listing = run(["docker", "exec", a.container, "sh", "-c", "ls %s/*.json | wc -l" % dest],
+                  check=False, quiet=True)
+    print("-> importing %s file(s) from %s" % (listing.stdout.strip() or "?", dest))
     run(["docker", "exec", a.container, "n8n", "import:workflow",
-         "--separate", "--input=/tmp/munjiz-deploy"])
+         "--separate", "--input=" + dest])
+    run(["docker", "exec", "-u", "root", a.container, "rm", "-rf", dest], check=False, quiet=True)
 
     # 3. activate every workflow.
     #    On n8n 2.x a sub-workflow must ALSO be active or its caller fails with
     #    "Workflow is not active and cannot be executed" — so 00 Data IO and
     #    02 Service Gateway are activated too, not just the trigger workflows.
-    all_ids = ["munjizDataIo0000", "munjizChatAgent1", "munjizGateway002",
-               "munjizApprovals3", "munjizSlaChaser4", "munjizDashApi005",
-               "munjizErrorHnd06", "munjizDemoReset7"]
+    # retire the other set first so its webhook paths stop competing
+    for wid in stale_ids:
+        run(["docker", "exec", a.container, "n8n", "update:workflow",
+             "--id=" + wid, "--active=false"], check=False, quiet=True)
+    if stale_ids:
+        print("-> deactivated %d workflow(s) from the other set" % len(stale_ids))
+
+    all_ids = want_ids
     for wid in all_ids:
         run(["docker", "exec", a.container, "n8n", "publish:workflow", "--id=" + wid],
             check=False, quiet=True)

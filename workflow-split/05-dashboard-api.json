@@ -2,7 +2,7 @@
   "name": "مُنجِز — 05 Dashboard API",
   "nodes": [
     {
-      "id": "c56fea18-ec6a-4aee-890e-3168f2f310b6",
+      "id": "af517d1c-34e2-4a79-9975-cd862c182736",
       "name": "GET State",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
@@ -16,10 +16,10 @@
         "responseMode": "responseNode",
         "options": {}
       },
-      "webhookId": "2bc2355d-4bb6-4a75-8b11-d3acee33e219"
+      "webhookId": "3ba24f99-dafa-4d3c-be5d-0ca07713c2d5"
     },
     {
-      "id": "88ea6d34-0494-4db8-b687-89cc6ea83c21",
+      "id": "9ffdbaba-5c46-47a6-8d12-b8ded5cbd798",
       "name": "Fetch Skills Index (dash)",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -44,7 +44,7 @@
       "waitBetweenTries": 3000
     },
     {
-      "id": "0ae2c33f-6d23-4edc-b644-cc214434b6c3",
+      "id": "ddf7437b-d0ac-4e94-b4ba-7ee064875540",
       "name": "Read All (dash)",
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
@@ -77,7 +77,7 @@
       }
     },
     {
-      "id": "4a00b2f9-6cdd-4958-8746-28e810ad2c9d",
+      "id": "b050d63a-1f84-4b79-b989-db58c4fdbd43",
       "name": "Assemble Dashboard",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -90,7 +90,7 @@
       }
     },
     {
-      "id": "0e3d821a-89e1-44ed-bd48-b6518ac4b065",
+      "id": "e9d24a08-6da3-4d72-b498-728ea3a95657",
       "name": "Respond State",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.2,
@@ -118,8 +118,8 @@
       }
     },
     {
-      "id": "90ae27ac-4671-4dad-a754-18df90e36e22",
-      "name": "Note e12bc7da",
+      "id": "55ae7dc3-1605-470a-ad94-033e78b959f7",
+      "name": "Note a6810e2b",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
