@@ -2,7 +2,7 @@
   "name": "مُنجِز — 05 Dashboard API",
   "nodes": [
     {
-      "id": "046d2942-6063-4cf5-9891-954df52b6778",
+      "id": "ad6a967f-af63-4bf3-9a15-4fda7338160c",
       "name": "GET State",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
@@ -16,10 +16,10 @@
         "responseMode": "responseNode",
         "options": {}
       },
-      "webhookId": "6cb65057-8c99-47e2-bc48-32879461bfe1"
+      "webhookId": "350298e4-fc06-4763-8dc5-e8e060cc787d"
     },
     {
-      "id": "cdd250ce-6eaf-47cf-af79-4423f33110b3",
+      "id": "b63fa401-d720-43e3-81e4-2709aafb798b",
       "name": "Fetch Skills Index (dash)",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -44,7 +44,7 @@
       "waitBetweenTries": 3000
     },
     {
-      "id": "4e52f7c8-034c-4764-ad51-8d800af71174",
+      "id": "38d24466-2997-48f4-bc43-bb0ded790fed",
       "name": "Read All (dash)",
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
@@ -77,7 +77,7 @@
       }
     },
     {
-      "id": "e75d81b7-f8dd-4926-a744-41e56c606be6",
+      "id": "6358f6ba-3b40-426f-b309-ee9b4e519c2f",
       "name": "Assemble Dashboard",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -86,11 +86,11 @@
         0
       ],
       "parameters": {
-        "jsCode": "const d = $json;\nlet index = {};\ntry { index = JSON.parse($('Fetch Skills Index (dash)').first().json.data); } catch (e) {}\nconst txns = (d.transactions || []).filter(t => t.txn_id)\n  .sort((a, b) => String(b.ts).localeCompare(String(a.ts)));\nconst today = new Date().toISOString().slice(0, 10);\nreturn [{ json: {\n  generated_at: new Date().toISOString(),\n  kpis: {\n    total: txns.length,\n    today: txns.filter(t => String(t.ts).startsWith(today)).length,\n    pending: txns.filter(t => String(t.status).startsWith('awaiting_')).length,\n    executed: txns.filter(t => t.status === 'executed').length,\n    rejected: txns.filter(t => t.status === 'rejected').length,\n    minutes_saved: txns.filter(t => t.status === 'executed').length * 25,\n  },\n  transactions: txns.slice(0, 100),\n  audit: (d.audit || []).slice(-60).reverse(),\n  skills: (index.skills || []),\n  employees: (d.employees || []).map(e => ({ employee_id: e.employee_id, name_ar: e.name_ar,\n    name_en: e.name_en || '', role: e.role, department: e.department, manager_id: e.manager_id })),\n  balances: d.balances || [],\n} }];\n"
+        "jsCode": "const d = $json;\nlet index = {};\ntry { index = JSON.parse($('Fetch Skills Index (dash)').first().json.data); } catch (e) {}\nconst txns = (d.transactions || []).filter(t => t.txn_id)\n  .sort((a, b) => String(b.ts).localeCompare(String(a.ts)));\nconst today = new Date().toISOString().slice(0, 10);\nreturn [{ json: {\n  generated_at: new Date().toISOString(),\n  kpis: {\n    total: txns.length,\n    today: txns.filter(t => String(t.ts).startsWith(today)).length,\n    pending: txns.filter(t => String(t.status).startsWith('awaiting_')).length,\n    executed: txns.filter(t => t.status === 'executed').length,\n    rejected: txns.filter(t => t.status === 'rejected').length,\n    minutes_saved: txns.filter(t => t.status === 'executed').length * 25,\n  },\n  transactions: txns.slice(0, 100),\n  audit: (d.audit || []).slice(-60).reverse(),\n  skills: (index.skills || []),\n  memory: (d.memory || []).filter(m => m.status === 'active'),\n  patches: (d.patches || []).sort((a, b) =>\n    String(b.created_at).localeCompare(String(a.created_at))),\n  learning: {\n    memory_entries: (d.memory || []).filter(m => m.status === 'active').length,\n    memory_chars: (d.memory || []).filter(m => m.status === 'active')\n      .reduce((n, m) => n + String(m.content || '').length, 0),\n    memory_budget: 2200,\n    pending_patches: (d.patches || []).filter(x => x.status === 'pending').length,\n    approved_patches: (d.patches || []).filter(x => x.status === 'approved').length,\n  },\n  employees: (d.employees || []).map(e => ({ employee_id: e.employee_id, name_ar: e.name_ar,\n    name_en: e.name_en || '', role: e.role, department: e.department, manager_id: e.manager_id })),\n  balances: d.balances || [],\n} }];\n"
       }
     },
     {
-      "id": "3645f629-e5f9-4799-8651-bb529052087f",
+      "id": "7f7a92bf-509e-4150-860d-c1210042b84f",
       "name": "Respond State",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.2,
@@ -118,8 +118,8 @@
       }
     },
     {
-      "id": "1201e225-d653-4962-89e9-1fcbb3f7e55e",
-      "name": "Note 4b19b2ed",
+      "id": "3df9c1ce-64ef-4fef-8d6c-5cd4f967f2b0",
+      "name": "Note cd3a4c4e",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [

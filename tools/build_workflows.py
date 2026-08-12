@@ -273,7 +273,7 @@ def build_data_io():
     # Only what read_all's consumers need: the dashboard uses employees/balances/
     # transactions/audit and the SLA chaser uses transactions/employees. ExpensePolicy
     # and SystemCatalog are read directly by the gateway, so they stay out of here.
-    tabs = ["Employees", "LeaveBalances", "Transactions", "AuditLog"]
+    tabs = ["Employees", "LeaveBalances", "Transactions", "AuditLog", "Memory", "SkillPatches"]
     prev = None
     x = -200
     for t in tabs:
@@ -289,6 +289,7 @@ def build_data_io():
         "return [{ json: {\n"
         "  employees: grab('Read Employees'), balances: grab('Read LeaveBalances'),\n"
         "  transactions: grab('Read Transactions'), audit: grab('Read AuditLog'),\n"
+        "  memory: grab('Read Memory'), patches: grab('Read SkillPatches'),\n"
         "} }];\n"
     ), (x, 140)))
     wf.link(prev, asm)
@@ -1205,6 +1206,17 @@ ASSEMBLE_JS = (
     "  transactions: txns.slice(0, 100),\n"
     "  audit: (d.audit || []).slice(-60).reverse(),\n"
     "  skills: (index.skills || []),\n"
+    "  memory: (d.memory || []).filter(m => m.status === 'active'),\n"
+    "  patches: (d.patches || []).sort((a, b) =>\n"
+    "    String(b.created_at).localeCompare(String(a.created_at))),\n"
+    "  learning: {\n"
+    "    memory_entries: (d.memory || []).filter(m => m.status === 'active').length,\n"
+    "    memory_chars: (d.memory || []).filter(m => m.status === 'active')\n"
+    "      .reduce((n, m) => n + String(m.content || '').length, 0),\n"
+    "    memory_budget: 2200,\n"
+    "    pending_patches: (d.patches || []).filter(x => x.status === 'pending').length,\n"
+    "    approved_patches: (d.patches || []).filter(x => x.status === 'approved').length,\n"
+    "  },\n"
     "  employees: (d.employees || []).map(e => ({ employee_id: e.employee_id, name_ar: e.name_ar,\n"
     "    name_en: e.name_en || '', role: e.role, department: e.department, manager_id: e.manager_id })),\n"
     "  balances: d.balances || [],\n"

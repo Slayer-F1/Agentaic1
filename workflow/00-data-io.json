@@ -2,7 +2,7 @@
   "name": "مُنجِز — 00 Data IO (sub)",
   "nodes": [
     {
-      "id": "1c2c5548-d263-49bc-ab3c-5f326dd7ddea",
+      "id": "7252d121-40bc-4e50-96d6-75a55239151a",
       "name": "Data Input",
       "type": "n8n-nodes-base.executeWorkflowTrigger",
       "typeVersion": 1.1,
@@ -27,7 +27,7 @@
       }
     },
     {
-      "id": "61f908ac-a1cc-4f25-81c7-129bbf4de42b",
+      "id": "0da69c3e-0194-42f8-8fc3-b951a0707a50",
       "name": "Action?",
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
@@ -90,7 +90,7 @@
       }
     },
     {
-      "id": "2ce56377-8f0c-4aa9-984f-0ba2a6574390",
+      "id": "ab51e2ed-466d-4014-9b47-1ed8883cde9b",
       "name": "Read Tab",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -119,7 +119,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "6f6d4aa7-da8c-4b57-888a-6f52eff48be3",
+      "id": "50203382-5ec7-4aa7-8e08-22bf8140d9a5",
       "name": "Wrap Rows",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -132,7 +132,7 @@
       }
     },
     {
-      "id": "c54b0edf-c050-42af-82e6-90d4abfc382e",
+      "id": "73da2a2c-8f4e-4ba6-9313-4f8b5ed8d7ff",
       "name": "Read Employees",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -161,7 +161,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "7b341876-db31-4311-9ba1-a8b8c1f194ef",
+      "id": "a993d44a-8044-4dd5-b0a3-b2c2f366c77b",
       "name": "Read LeaveBalances",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -190,7 +190,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "2e8bf771-4702-4ce5-ab13-b51c6eee9392",
+      "id": "a7882dd0-18f7-4110-838e-ea3faf62861b",
       "name": "Read Transactions",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -219,7 +219,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "715633ef-14ce-4541-b5b5-c78e23797457",
+      "id": "ebfe3f60-2840-4f4e-9fd8-f6bb3bd94074",
       "name": "Read AuditLog",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -252,21 +252,79 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "460a1573-14db-46e5-b677-21e00d69b2fe",
-      "name": "Assemble All",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
+      "id": "2ed11d46-9555-490a-80f5-3881d7d23bd5",
+      "name": "Read Memory",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
       "position": [
         680,
         140
       ],
       "parameters": {
-        "jsCode": "const grab = (n) => { try { return $(n).all().map(i => i.json).filter(r => r && Object.keys(r).length > 0); } catch (e) { return []; } };\nreturn [{ json: {\n  employees: grab('Read Employees'), balances: grab('Read LeaveBalances'),\n  transactions: grab('Read Transactions'), audit: grab('Read AuditLog'),\n} }];\n"
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Memory"
+        },
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": []
+        },
+        "options": {},
+        "returnAll": true
+      },
+      "executeOnce": true,
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000
+    },
+    {
+      "id": "4f768d6a-386b-48af-9b5c-440bcefe7b73",
+      "name": "Read SkillPatches",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        900,
+        140
+      ],
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "mode": "name",
+          "value": "SkillPatches"
+        },
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": []
+        },
+        "options": {},
+        "returnAll": true
+      },
+      "executeOnce": true,
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000
+    },
+    {
+      "id": "ec3fd793-2295-4d47-9606-6d1f16693034",
+      "name": "Assemble All",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1120,
+        140
+      ],
+      "parameters": {
+        "jsCode": "const grab = (n) => { try { return $(n).all().map(i => i.json).filter(r => r && Object.keys(r).length > 0); } catch (e) { return []; } };\nreturn [{ json: {\n  employees: grab('Read Employees'), balances: grab('Read LeaveBalances'),\n  transactions: grab('Read Transactions'), audit: grab('Read AuditLog'),\n  memory: grab('Read Memory'), patches: grab('Read SkillPatches'),\n} }];\n"
       }
     },
     {
-      "id": "2d424ada-a062-4b83-8bdb-c85fb584e4a3",
-      "name": "Note de6207dd",
+      "id": "67e79b06-3341-4eef-98c8-d4c1e8920b08",
+      "name": "Note a3ee982d",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
@@ -356,6 +414,28 @@
       ]
     },
     "Read AuditLog": {
+      "main": [
+        [
+          {
+            "node": "Read Memory",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Memory": {
+      "main": [
+        [
+          {
+            "node": "Read SkillPatches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read SkillPatches": {
       "main": [
         [
           {
