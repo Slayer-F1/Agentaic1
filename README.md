@@ -39,7 +39,10 @@ python tools/deploy.py
 
 To just look at the interface, open `ui/index.html` directly — it runs in demo mode with no setup at all.
 
-> **Note:** this repo must stay **public** — n8n fetches `registry/` and `skills/` from raw.githubusercontent.com at runtime.
+> **Note:** the runtime skill library lives **inside n8n** (the `Skills` and `Profiles` data
+> tables, seeded from `skills/` and `profiles/`). The repo is the authored source and the
+> submission artifact; nothing is fetched over the network at runtime, and an approved
+> proposal rewrites the stored skill and bumps its version — so procedures actually improve.
 
 ## Compliance
 

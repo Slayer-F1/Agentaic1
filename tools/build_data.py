@@ -152,6 +152,51 @@ SKILL_PATCHES = [
      "created_at": iso(now - timedelta(hours=5)), "updated_at": iso(now - timedelta(hours=5))},
 ]
 
+# ---------------------------------------------------------------------------
+# The runtime skill library. Seeded from the authored markdown in skills/ and
+# profiles/, but from here on it lives inside n8n: an approved patch rewrites
+# body_md and bumps version, so procedures genuinely evolve. `created_by`
+# carries the Hermes provenance rule - 'human' rows are the approved base and
+# only a human approval may change them; the agent can never write here directly.
+# ---------------------------------------------------------------------------
+
+def _read(path):
+    full = os.path.join(ROOT, path)
+    if not os.path.exists(full):
+        return ""
+    return open(full, encoding="utf-8").read()
+
+
+def _load_registry():
+    reg = json.load(open(os.path.join(ROOT, "registry", "skills-index.json"), encoding="utf-8"))
+    skills, profiles, seen = [], [], set()
+    for sk in reg["skills"]:
+        skills.append({
+            "skill_id": sk["id"],
+            "version": sk["version"],
+            "status": sk["status"],
+            "title_ar": sk["title_ar"],
+            "title_en": sk["title_en"],
+            "keywords": ";".join(sk.get("keywords", [])),
+            "profile_id": os.path.basename(sk["profile_path"]).split(".")[0],
+            "allowed_services": ";".join(sk.get("allowed_services", [])),
+            "approval_chain": ";".join(sk.get("approval_chain", [])),
+            "auto_execute": "true" if sk.get("auto_execute") else "false",
+            "sla_hours": str(sk.get("sla_hours", 48)),
+            "internal": "true" if sk.get("internal") else "false",
+            "body_md": _read(sk["skill_path"]),
+            "created_by": "human",
+            "updated_at": iso(now),
+        })
+        pid = os.path.basename(sk["profile_path"]).split(".")[0]
+        if pid not in seen:
+            seen.add(pid)
+            profiles.append({"profile_id": pid, "body_md": _read(sk["profile_path"])})
+    return skills, profiles
+
+
+SKILLS, PROFILES = _load_registry()
+
 TABS = {
     "Employees": (["employee_id", "name_ar", "name_en", "role", "department", "grade", "manager_id",
                    "email", "status", "it_roles", "joined_date", "monthly_salary_aed", "allowances_aed"], EMPLOYEES),
@@ -168,6 +213,10 @@ TABS = {
     "SkillPatches": (["patch_id", "skill_id", "kind", "proposed_text", "rationale", "evidence",
                       "status", "created_by", "reviewed_by", "review_note",
                       "created_at", "updated_at"], SKILL_PATCHES),
+    "Skills": (["skill_id", "version", "status", "title_ar", "title_en", "keywords",
+                "profile_id", "allowed_services", "approval_chain", "auto_execute",
+                "sla_hours", "internal", "body_md", "created_by", "updated_at"], SKILLS),
+    "Profiles": (["profile_id", "body_md"], PROFILES),
 }
 
 

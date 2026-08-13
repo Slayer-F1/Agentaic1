@@ -301,7 +301,8 @@ def build_data_io():
     # Only what read_all's consumers need: the dashboard uses employees/balances/
     # transactions/audit and the SLA chaser uses transactions/employees. ExpensePolicy
     # and SystemCatalog are read directly by the gateway, so they stay out of here.
-    tabs = ["Employees", "LeaveBalances", "Transactions", "AuditLog", "Memory", "SkillPatches"]
+    tabs = ["Employees", "LeaveBalances", "Transactions", "AuditLog", "Memory",
+            "SkillPatches", "Skills"]
     prev = None
     x = -200
     for t in tabs:
@@ -318,6 +319,7 @@ def build_data_io():
         "  employees: grab('Read Employees'), balances: grab('Read LeaveBalances'),\n"
         "  transactions: grab('Read Transactions'), audit: grab('Read AuditLog'),\n"
         "  memory: grab('Read Memory'), patches: grab('Read SkillPatches'),\n"
+        "  skills: grab('Read Skills'),\n"
         "} }];\n"
     ), (x, 140)))
     wf.link(prev, asm)
@@ -333,11 +335,14 @@ def build_data_io():
 
 GATE_CHECK_JS = (
     "const inp = $('Gateway Input').first().json;\n"
-    "let index = null;\n"
-    "try { index = JSON.parse($json.data ?? $json.body ?? $json.gemini_text ?? ''); } catch (e) {}\n"
-    "if (!index) { try { index = typeof $json === 'object' && $json.skills ? $json : null; } catch (e) {} }\n"
-    "const skills = (index && index.skills) || [];\n"
-    "const skill = skills.find(s => s.id === inp.skill_id && s.status === 'approved');\n"
+    "// allowlist comes from the live Skills table, so an approved change takes effect at once\n"
+    "const rows = $input.all().map(i => i.json).filter(r => r && r.skill_id);\n"
+    "const row = rows.find(r => r.skill_id === inp.skill_id && r.status === 'approved');\n"
+    "const skill = row ? { id: row.skill_id, title_ar: row.title_ar,\n"
+    "  allowed_services: String(row.allowed_services || '').split(';').filter(Boolean),\n"
+    "  approval_chain: String(row.approval_chain || '').split(';').filter(Boolean),\n"
+    "  auto_execute: String(row.auto_execute) === 'true',\n"
+    "  sla_hours: Number(row.sla_hours) || 48 } : null;\n"
     "let payload = {};\n"
     "try { payload = inp.payload ? JSON.parse(inp.payload) : {}; } catch (e) { payload = { _raw: inp.payload }; }\n"
     "const allowed = skill ? (skill.allowed_services || []) : [];\n"
@@ -562,7 +567,7 @@ def build_gateway():
                             {"name": "skill_id", "type": "string"},
                             {"name": "employee_id", "type": "string"},
                             {"name": "session_id", "type": "string"}]}}))
-    fetch = wf.add(http_raw("Fetch Skills Index", RAW_BASE + "registry/skills-index.json", (-980, 0)))
+    fetch = wf.add(dt_read("Load Skills (gate)", "Skills", (-980, 0)))
     wf.link(trig, fetch)
     gate = wf.add(code("Gate Check", GATE_CHECK_JS, (-760, 0)))
     wf.link(fetch, gate)
@@ -736,10 +741,15 @@ AGENT_OUT_SCHEMA = {
 
 ROUTER_JS = (
     "const b = $('Chat Webhook').first().json.body || {};\n"
-    "let index = {};\n"
-    "try { index = JSON.parse($('Fetch Skills Index').first().json.data); } catch (e) {\n"
-    "  try { index = $('Fetch Skills Index').first().json; } catch (e2) {}\n"
-    "}\n"
+    "// the skill library is a data table now, so the agent's own improvements are live\n"
+    "const index = { skills: (($('Load Skills').first().json.rows) || []).map(r => ({\n"
+    "  id: r.skill_id, version: r.version, status: r.status, title_ar: r.title_ar,\n"
+    "  title_en: r.title_en, keywords: String(r.keywords || '').split(';').filter(Boolean),\n"
+    "  profile_id: r.profile_id, internal: String(r.internal) === 'true',\n"
+    "  allowed_services: String(r.allowed_services || '').split(';').filter(Boolean),\n"
+    "  approval_chain: String(r.approval_chain || '').split(';').filter(Boolean),\n"
+    "  auto_execute: String(r.auto_execute) === 'true', sla_hours: Number(r.sla_hours) || 48,\n"
+    "  body_md: r.body_md })) };\n"
     "const skills = (index.skills || []).filter(s => s.status === 'approved' && !s.internal);\n"
     "const listing = skills.map(s => ({ id: s.id, title_ar: s.title_ar, keywords: s.keywords }));\n"
     "const prompt = ['أنت مصنّف نوايا لبوابة خدمات موظفين. طلب الموظف:', b.message || '',\n"
@@ -772,8 +782,9 @@ PICK_SKILL_JS = (
 
 COMPOSE_JS = (
     "const j = $('Pick Skill').first().json;\n"
-    "const skillMd = $('Fetch Skill MD').first().json.data || '';\n"
-    "const profileMd = $('Fetch Profile MD').first().json.data || '';\n"
+    "const skillMd = j.skill_meta.body_md || '';\n"
+    "const profs = ($('Load Profiles').first().json.rows) || [];\n"
+    "const profileMd = (profs.find(x => x.profile_id === j.skill_meta.profile_id) || {}).body_md || '';\n"
     "const emps = ($('Read Employees Ctx').first().json.rows) || [];\n"
     "const mems = ($('Read Memory Ctx').first().json.rows) || [];\n"
     "const patches = (($('Read Patches Ctx').first().json.rows) || [])\n"
@@ -836,7 +847,8 @@ def build_agent():
     hook = wf.add(node("Chat Webhook", "n8n-nodes-base.webhook", 2, (-1700, 0),
                        {"httpMethod": "POST", "path": "munjiz/chat",
                         "responseMode": "responseNode", "options": {}}, webhook=True))
-    fetch_idx = wf.add(http_raw("Fetch Skills Index", RAW_BASE + "registry/skills-index.json", (-1480, 0)))
+    fetch_idx = wf.add(exec_wf("Load Skills", DATA_IO_ID, "مُنجِز — 00 Data IO (sub)",
+                               {"action": "read", "tab": "Skills"}, (-1480, 0)))
     wf.link(hook, fetch_idx)
     prep = wf.add(code("Prepare Router", ROUTER_JS, (-1260, 0)))
     wf.link(fetch_idx, prep)
@@ -859,11 +871,10 @@ def build_agent():
         (-160, 320)))
     wf.link(matched, no_match, output=1)
 
-    f_skill = wf.add(http_raw("Fetch Skill MD",
-                              "={{ '" + RAW_BASE + "' + $json.skill_meta.skill_path }}", (-160, 0)))
+    f_skill = wf.add(node("Skill Body", "n8n-nodes-base.noOp", 1, (-160, 0), {}))
     wf.link(matched, f_skill, output=0)
-    f_prof = wf.add(http_raw("Fetch Profile MD",
-                             "={{ '" + RAW_BASE + "' + $('Pick Skill').first().json.skill_meta.profile_path }}", (60, 0)))
+    f_prof = wf.add(exec_wf("Load Profiles", DATA_IO_ID, "مُنجِز — 00 Data IO (sub)",
+                            {"action": "read", "tab": "Profiles"}, (60, 0)))
     wf.link(f_skill, f_prof)
     emp_read = wf.add(exec_wf("Read Employees Ctx", DATA_IO_ID, "مُنجِز — 00 Data IO (sub)",
                               {"action": "read", "tab": "Employees"}, (280, 0)))
@@ -1219,8 +1230,12 @@ def build_chaser():
 
 ASSEMBLE_JS = (
     "const d = $json;\n"
-    "let index = {};\n"
-    "try { index = JSON.parse($('Fetch Skills Index (dash)').first().json.data); } catch (e) {}\n"
+    "const index = { skills: (d.skills || []).map(r => ({ id: r.skill_id, version: r.version,\n"
+    "  status: r.status, title_ar: r.title_ar, title_en: r.title_en,\n"
+    "  internal: String(r.internal) === 'true', created_by: r.created_by, updated_at: r.updated_at,\n"
+    "  allowed_services: String(r.allowed_services || '').split(';').filter(Boolean),\n"
+    "  approval_chain: String(r.approval_chain || '').split(';').filter(Boolean),\n"
+    "  sla_hours: Number(r.sla_hours) || 48 })) };\n"
     "const txns = (d.transactions || []).filter(t => t.txn_id)\n"
     "  .sort((a, b) => String(b.ts).localeCompare(String(a.ts)));\n"
     "const today = new Date().toISOString().slice(0, 10);\n"
@@ -1260,7 +1275,7 @@ def build_dash():
     hook = wf.add(node("GET State", "n8n-nodes-base.webhook", 2, (-700, 0),
                        {"httpMethod": "GET", "path": "munjiz/state",
                         "responseMode": "responseNode", "options": {}}, webhook=True))
-    idx = wf.add(http_raw("Fetch Skills Index (dash)", RAW_BASE + "registry/skills-index.json", (-480, 0)))
+    idx = wf.add(node("Dashboard Start", "n8n-nodes-base.noOp", 1, (-480, 0), {}))
     wf.link(hook, idx)
     rd = wf.add(exec_wf("Read All (dash)", DATA_IO_ID, "مُنجِز — 00 Data IO (sub)",
                         {"action": "read_all", "tab": ""}, (-260, 0)))
@@ -1387,13 +1402,18 @@ def build_reflection():
     idle = wf.add(node("Nothing New ✓", "n8n-nodes-base.noOp", 1, (-300, 200), {}))
     wf.link(gate, idle, output=1)
 
-    charter = wf.add(http_raw("Fetch Reflection Charter", RAW_BASE + "skills/reflection.skill.md",
-                              (-300, -80)))
+    charter = wf.add(dt_read("Load Reflection Charter", "Skills", (-300, -80)))
     wf.link(gate, charter, output=0)
 
+    pick_charter = wf.add(code("Pick Charter", (
+        "const rows = $input.all().map(i => i.json);\n"
+        "const r = rows.find(x => x && x.skill_id === 'reflection') || {};\n"
+        "return [{ json: { body_md: r.body_md || '' } }];\n"
+    ), (-180, -80)))
+    wf.link(charter, pick_charter)
     agent = wf.add(node("Reflection Agent", "@n8n/n8n-nodes-langchain.agent", 2.2, (-60, -80), {
         "promptType": "define",
-        "text": "={{ 'ميثاق المراجعة:\\n' + $json.data + '\\n\\nدفعة المعاملات الأخيرة:\\n'"
+        "text": "={{ 'ميثاق المراجعة:\\n' + ($json.body_md || '') + '\\n\\nدفعة المعاملات الأخيرة:\\n'"
                 " + JSON.stringify($('Gather Batch').first().json.batch)"
                 " + '\\n\\nحالات رفض الحوكمة:\\n'"
                 " + JSON.stringify($('Gather Batch').first().json.denials) }}",
@@ -1401,6 +1421,7 @@ def build_reflection():
         "options": {"systemMessage": REFLECT_SYS_MSG, "maxIterations": 12,
                     "returnIntermediateSteps": True},
     }, retryOnFail=True, maxTries=3, waitBetweenTries=15000))
+    wf.link(pick_charter, agent)
     lm = wf.add(node("Gemini Chat Model (reflect)", "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
                      1, (-180, 180), {"modelName": "models/" + MODEL_CHEAP,
                                       "options": {"temperature": 0.3}}, credentials=CRED_GEMINI))
@@ -1488,9 +1509,40 @@ def build_patch_review():
     wf.link(ok, emit, output=0)
     save = wf.add(dt_upsert("Save Patch Decision", "SkillPatches", "patch_id", (400, -80)))
     wf.link(emit, save)
+
+    # An approval is the ONLY path that may change a skill. It appends the rule to
+    # the body and bumps the patch version, so the procedure itself improves and the
+    # version number is visible evidence of it.
+    read_sk = wf.add(dt_read("Read Skills (apply)", "Skills", (620, -80)))
+    wf.link(save, read_sk)
+    apply_patch = wf.add(code("Apply To Skill", (
+        "const dec = $('Apply Patch Decision').first().json.row;\n"
+        "if (!dec || dec.status !== 'approved') return [];\n"
+        "const rows = $input.all().map(i => i.json).filter(r => r && r.skill_id);\n"
+        "const sk = rows.find(r => r.skill_id === dec.skill_id);\n"
+        "if (!sk) return [];\n"
+        "const parts = String(sk.version || '1.0.0').split('.');\n"
+        "parts[2] = String((Number(parts[2]) || 0) + 1);  // patch-level bump\n"
+        "const stamp = new Date().toISOString().slice(0, 10);\n"
+        "const marker = '## تحسينات معتمدة (طبقة متعلَّمة)';\n"
+        "let body = String(sk.body_md || '');\n"
+        "if (body.indexOf(marker) === -1) body += '\\n\\n' + marker + '\\n';\n"
+        "body += '\\n- ' + dec.proposed_text + '  \\n  _(' + dec.patch_id + ' — اعتمدها '\n"
+        "  + (dec.reviewed_by || 'مالك الإجراء') + ' في ' + stamp + ')_\\n';\n"
+        "return [{ json: { skill_id: sk.skill_id, version: parts.join('.'), status: sk.status,\n"
+        "  title_ar: sk.title_ar, title_en: sk.title_en, keywords: sk.keywords,\n"
+        "  profile_id: sk.profile_id, allowed_services: sk.allowed_services,\n"
+        "  approval_chain: sk.approval_chain, auto_execute: sk.auto_execute,\n"
+        "  sla_hours: sk.sla_hours, internal: sk.internal, body_md: body,\n"
+        "  created_by: sk.created_by, updated_at: new Date().toISOString() } }];\n"
+    ), (840, -80), alwaysOutputData=True))
+    wf.link(read_sk, apply_patch)
+    save_sk = wf.add(dt_upsert("Save Improved Skill", "Skills", "skill_id", (1060, -80)))
+    wf.link(apply_patch, save_sk)
     resp = wf.add(respond("Respond Patch",
-                          '={{ { "ok": true, "status": $json.status } }}', (620, -80)))
-    wf.link(save, resp)
+                          '={{ { "ok": true, "status": $(\'Apply Patch Decision\').first().json.row.status } }}',
+                          (1280, -80)))
+    wf.link(save_sk, resp)
     wf.nodes.append(sticky(chr(10).join([
         "## 09 Patch Review",
         "`POST /munjiz/patch {patch_id, decision, note, reviewer}`.",

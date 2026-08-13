@@ -2,7 +2,7 @@
   "name": "مُنجِز — 08 Reflection (learning pass)",
   "nodes": [
     {
-      "id": "d1908acf-86f7-414f-a9df-5f345e273cb0",
+      "id": "fb17ef7b-4171-4b89-9ca5-387f0f7f225d",
       "name": "Daily",
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
@@ -22,7 +22,7 @@
       }
     },
     {
-      "id": "09291c0e-ea5d-4087-8269-05377b8db41b",
+      "id": "3f6f110f-68bc-4f32-a1fb-9f7dbf1f766a",
       "name": "Reflect Manually",
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
@@ -33,7 +33,7 @@
       "parameters": {}
     },
     {
-      "id": "8b75bcbc-b1a0-4c09-90ad-0822c251eea1",
+      "id": "46845dbf-6bab-41af-b457-c7d8f6e027bc",
       "name": "Reflect Webhook",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
@@ -47,10 +47,10 @@
         "responseMode": "responseNode",
         "options": {}
       },
-      "webhookId": "d179e607-12fa-473d-9c75-cd5566188c59"
+      "webhookId": "1cd68499-8f07-411d-919d-4f022211b579"
     },
     {
-      "id": "f18fb893-5596-47fb-97af-bb4372ab0db0",
+      "id": "61f5ece1-9349-4ce9-9d55-ff7938ed746c",
       "name": "Respond Reflect",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.2,
@@ -78,7 +78,7 @@
       }
     },
     {
-      "id": "cdd5214a-1c5c-4802-bb03-b28865bf77fc",
+      "id": "961e1246-1771-4b06-9828-15ad744643aa",
       "name": "Read All (reflect)",
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
@@ -111,7 +111,7 @@
       }
     },
     {
-      "id": "b2a33db4-1613-47f2-bed8-11cacb3dd931",
+      "id": "ee3eb0ad-586e-46bf-8ce9-545774bf8b18",
       "name": "Gather Batch",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -124,7 +124,7 @@
       }
     },
     {
-      "id": "7ac655e1-7074-433a-9b4d-1dfc44a82d70",
+      "id": "2238522f-8450-4667-bb28-ec8e1a74d87c",
       "name": "Anything To Learn?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
@@ -156,7 +156,7 @@
       }
     },
     {
-      "id": "9cf3f484-1b60-4107-a107-7892f7d3dd44",
+      "id": "4ef6d405-2635-4ed8-8d48-e96e34e15999",
       "name": "Nothing New ✓",
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
@@ -167,32 +167,49 @@
       "parameters": {}
     },
     {
-      "id": "23a4fe3e-5867-45c5-98e4-d348bc59396b",
-      "name": "Fetch Reflection Charter",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
+      "id": "736e73eb-fe5b-471f-b89b-17a6018a5c14",
+      "name": "Load Reflection Charter",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
       "position": [
         -300,
         -80
       ],
       "parameters": {
-        "method": "GET",
-        "url": "https://raw.githubusercontent.com/Slayer-F1/Agentaic1/main/skills/reflection.skill.md",
-        "options": {
-          "timeout": 20000,
-          "response": {
-            "response": {
-              "responseFormat": "text"
-            }
-          }
-        }
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Skills"
+        },
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": []
+        },
+        "options": {},
+        "returnAll": true
       },
+      "executeOnce": true,
+      "alwaysOutputData": true,
       "retryOnFail": true,
       "maxTries": 3,
-      "waitBetweenTries": 3000
+      "waitBetweenTries": 2000
     },
     {
-      "id": "3e233696-cc43-42d5-af3a-6d635c6416e6",
+      "id": "76e1f3f7-9c01-4b84-9cdb-4bb63e5f6e78",
+      "name": "Pick Charter",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -180,
+        -80
+      ],
+      "parameters": {
+        "jsCode": "const rows = $input.all().map(i => i.json);\nconst r = rows.find(x => x && x.skill_id === 'reflection') || {};\nreturn [{ json: { body_md: r.body_md || '' } }];\n"
+      }
+    },
+    {
+      "id": "c8cb51a7-34d8-4b3f-b05a-a6e15df849e4",
       "name": "Reflection Agent",
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 2.2,
@@ -202,7 +219,7 @@
       ],
       "parameters": {
         "promptType": "define",
-        "text": "={{ 'ميثاق المراجعة:\\n' + $json.data + '\\n\\nدفعة المعاملات الأخيرة:\\n' + JSON.stringify($('Gather Batch').first().json.batch) + '\\n\\nحالات رفض الحوكمة:\\n' + JSON.stringify($('Gather Batch').first().json.denials) }}",
+        "text": "={{ 'ميثاق المراجعة:\\n' + ($json.body_md || '') + '\\n\\nدفعة المعاملات الأخيرة:\\n' + JSON.stringify($('Gather Batch').first().json.batch) + '\\n\\nحالات رفض الحوكمة:\\n' + JSON.stringify($('Gather Batch').first().json.denials) }}",
         "hasOutputParser": true,
         "options": {
           "systemMessage": "أنت «مراجع ما بعد الدور» في منظومة مُنجِز. تعمل بعد أن حصل الموظفون على إجاباتهم، ومهمتك الوحيدة تحسين ذاكرة المنظومة ومهاراتها. التزم حرفيًا بميثاق المراجعة المحمّل أدناه، وخصوصًا القائمة السلبية والفصل بين الذاكرة والمهارة. ابدأ دائمًا بـ read_memory قبل أي كتابة. مرور بلا تحديث = فرصة ضائعة، لكن لا تكتب ما تمنعه القائمة السلبية. أعد JSON فقط.",
@@ -215,7 +232,7 @@
       "waitBetweenTries": 15000
     },
     {
-      "id": "3aafc66d-a862-434f-966b-a36a6dbe07b1",
+      "id": "fa1b74af-0a10-4378-8696-95802753b9fe",
       "name": "Gemini Chat Model (reflect)",
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1,
@@ -237,7 +254,7 @@
       }
     },
     {
-      "id": "f4559e52-9028-4693-893b-0f248a4b44a9",
+      "id": "0ada5695-7a33-44b2-87e4-0612c285f2ef",
       "name": "Reflection Output",
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "typeVersion": 1.2,
@@ -251,7 +268,7 @@
       }
     },
     {
-      "id": "328466d7-c8af-45d0-bd9c-fb5eddab2a23",
+      "id": "129cec31-a76a-4cea-8903-e6e543b761f7",
       "name": "call_service (learning)",
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
@@ -332,7 +349,7 @@
       }
     },
     {
-      "id": "b02832ea-eef0-4fca-a677-3470a7b34816",
+      "id": "3c5d7e87-8be5-493b-9824-63606f49432e",
       "name": "Log Reflection",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -345,7 +362,7 @@
       }
     },
     {
-      "id": "25f6727b-c73b-4644-94dc-2ae3ca360feb",
+      "id": "8772e785-cdbb-434a-89ab-d9b155696eb2",
       "name": "Append Reflection Log",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -375,8 +392,8 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "92129e4c-d16c-4233-b96d-95db57a14823",
-      "name": "Note dacad210",
+      "id": "60249722-057f-48e2-bebb-bd8ca91672b8",
+      "name": "Note 45416b7e",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
@@ -462,7 +479,7 @@
       "main": [
         [
           {
-            "node": "Fetch Reflection Charter",
+            "node": "Load Reflection Charter",
             "type": "main",
             "index": 0
           }
@@ -470,6 +487,28 @@
         [
           {
             "node": "Nothing New ✓",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Load Reflection Charter": {
+      "main": [
+        [
+          {
+            "node": "Pick Charter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pick Charter": {
+      "main": [
+        [
+          {
+            "node": "Reflection Agent",
             "type": "main",
             "index": 0
           }

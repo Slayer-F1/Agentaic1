@@ -2,7 +2,7 @@
   "name": "مُنجِز — 05 Dashboard API",
   "nodes": [
     {
-      "id": "99b85360-d269-46a3-b0d8-ad9911b75179",
+      "id": "ab3fbe27-dad8-4da0-9e15-ec4cd3377bad",
       "name": "GET State",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
@@ -16,35 +16,21 @@
         "responseMode": "responseNode",
         "options": {}
       },
-      "webhookId": "898f87b1-f8fd-4ddd-9252-1236e985b7fb"
+      "webhookId": "1f8c1d3a-7378-4ea4-ba79-dc0872b1c5fc"
     },
     {
-      "id": "2a2b8111-6ec4-4fa2-94ae-6887527e1791",
-      "name": "Fetch Skills Index (dash)",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
+      "id": "eaae7105-c60e-4267-939b-6092d403e89e",
+      "name": "Dashboard Start",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
       "position": [
         -480,
         0
       ],
-      "parameters": {
-        "method": "GET",
-        "url": "https://raw.githubusercontent.com/Slayer-F1/Agentaic1/main/registry/skills-index.json",
-        "options": {
-          "timeout": 20000,
-          "response": {
-            "response": {
-              "responseFormat": "text"
-            }
-          }
-        }
-      },
-      "retryOnFail": true,
-      "maxTries": 3,
-      "waitBetweenTries": 3000
+      "parameters": {}
     },
     {
-      "id": "0a08f65a-d392-4f04-9def-505636308034",
+      "id": "5a623c07-1e0b-4683-aa7a-2d4cf627c90e",
       "name": "Read All (dash)",
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
@@ -77,7 +63,7 @@
       }
     },
     {
-      "id": "0103f17d-0183-4230-b088-29d53609ccc3",
+      "id": "98eab915-097d-4a8f-8b26-fbe4344eaf1e",
       "name": "Assemble Dashboard",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -86,11 +72,11 @@
         0
       ],
       "parameters": {
-        "jsCode": "const d = $json;\nlet index = {};\ntry { index = JSON.parse($('Fetch Skills Index (dash)').first().json.data); } catch (e) {}\nconst txns = (d.transactions || []).filter(t => t.txn_id)\n  .sort((a, b) => String(b.ts).localeCompare(String(a.ts)));\nconst today = new Date().toISOString().slice(0, 10);\nreturn [{ json: {\n  generated_at: new Date().toISOString(),\n  kpis: {\n    total: txns.length,\n    today: txns.filter(t => String(t.ts).startsWith(today)).length,\n    pending: txns.filter(t => String(t.status).startsWith('awaiting_')).length,\n    executed: txns.filter(t => t.status === 'executed').length,\n    rejected: txns.filter(t => t.status === 'rejected').length,\n    minutes_saved: txns.filter(t => t.status === 'executed').length * 25,\n  },\n  transactions: txns.slice(0, 100),\n  audit: (d.audit || []).slice(-60).reverse(),\n  skills: (index.skills || []),\n  memory: (d.memory || []).filter(m => m.status === 'active'),\n  patches: (d.patches || []).sort((a, b) =>\n    String(b.created_at).localeCompare(String(a.created_at))),\n  learning: {\n    memory_entries: (d.memory || []).filter(m => m.status === 'active').length,\n    memory_chars: (d.memory || []).filter(m => m.status === 'active')\n      .reduce((n, m) => n + String(m.content || '').length, 0),\n    memory_budget: 2200,\n    pending_patches: (d.patches || []).filter(x => x.status === 'pending').length,\n    approved_patches: (d.patches || []).filter(x => x.status === 'approved').length,\n  },\n  employees: (d.employees || []).map(e => ({ employee_id: e.employee_id, name_ar: e.name_ar,\n    name_en: e.name_en || '', role: e.role, department: e.department, manager_id: e.manager_id })),\n  balances: d.balances || [],\n} }];\n"
+        "jsCode": "const d = $json;\nconst index = { skills: (d.skills || []).map(r => ({ id: r.skill_id, version: r.version,\n  status: r.status, title_ar: r.title_ar, title_en: r.title_en,\n  internal: String(r.internal) === 'true', created_by: r.created_by, updated_at: r.updated_at,\n  allowed_services: String(r.allowed_services || '').split(';').filter(Boolean),\n  approval_chain: String(r.approval_chain || '').split(';').filter(Boolean),\n  sla_hours: Number(r.sla_hours) || 48 })) };\nconst txns = (d.transactions || []).filter(t => t.txn_id)\n  .sort((a, b) => String(b.ts).localeCompare(String(a.ts)));\nconst today = new Date().toISOString().slice(0, 10);\nreturn [{ json: {\n  generated_at: new Date().toISOString(),\n  kpis: {\n    total: txns.length,\n    today: txns.filter(t => String(t.ts).startsWith(today)).length,\n    pending: txns.filter(t => String(t.status).startsWith('awaiting_')).length,\n    executed: txns.filter(t => t.status === 'executed').length,\n    rejected: txns.filter(t => t.status === 'rejected').length,\n    minutes_saved: txns.filter(t => t.status === 'executed').length * 25,\n  },\n  transactions: txns.slice(0, 100),\n  audit: (d.audit || []).slice(-60).reverse(),\n  skills: (index.skills || []),\n  memory: (d.memory || []).filter(m => m.status === 'active'),\n  patches: (d.patches || []).sort((a, b) =>\n    String(b.created_at).localeCompare(String(a.created_at))),\n  learning: {\n    memory_entries: (d.memory || []).filter(m => m.status === 'active').length,\n    memory_chars: (d.memory || []).filter(m => m.status === 'active')\n      .reduce((n, m) => n + String(m.content || '').length, 0),\n    memory_budget: 2200,\n    pending_patches: (d.patches || []).filter(x => x.status === 'pending').length,\n    approved_patches: (d.patches || []).filter(x => x.status === 'approved').length,\n  },\n  employees: (d.employees || []).map(e => ({ employee_id: e.employee_id, name_ar: e.name_ar,\n    name_en: e.name_en || '', role: e.role, department: e.department, manager_id: e.manager_id })),\n  balances: d.balances || [],\n} }];\n"
       }
     },
     {
-      "id": "568b25cc-ed8f-4957-b555-72303d515c72",
+      "id": "94b8f8bb-cfa2-4b6b-b54c-f5642e5eb781",
       "name": "Respond State",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.2,
@@ -118,8 +104,8 @@
       }
     },
     {
-      "id": "0677353a-7941-4582-8046-b48e654778ed",
-      "name": "Note 7d854fb2",
+      "id": "3bc31b4b-bfd2-4bad-8e48-f636182dcc0c",
+      "name": "Note dadacd0c",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
@@ -139,14 +125,14 @@
       "main": [
         [
           {
-            "node": "Fetch Skills Index (dash)",
+            "node": "Dashboard Start",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Fetch Skills Index (dash)": {
+    "Dashboard Start": {
       "main": [
         [
           {

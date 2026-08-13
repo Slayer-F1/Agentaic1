@@ -1,2 +1,2 @@
 ﻿patch_id,skill_id,kind,proposed_text,rationale,evidence,status,created_by,reviewed_by,review_note,created_at,updated_at
-PATCH-0001,expense-claim,add_rule,عند اختيار الفئة training: ذكّر الموظف برقم الإيصال قبل عرض بطاقة المعاينة، فقد لوحظ تكرار نسيانه.,ثلاث مطالبات تدريبية متتالية رُدّت لغياب رقم الإيصال.,TXN-SEED-CHASE,pending,agent,,,2026-08-12T17:41:27,2026-08-12T17:41:27
+PATCH-0001,expense-claim,add_rule,عند اختيار الفئة training: ذكّر الموظف برقم الإيصال قبل عرض بطاقة المعاينة، فقد لوحظ تكرار نسيانه.,ثلاث مطالبات تدريبية متتالية رُدّت لغياب رقم الإيصال.,TXN-SEED-CHASE,pending,agent,,,2026-08-13T09:36:56,2026-08-13T09:36:56

@@ -2,7 +2,7 @@
   "name": "مُنجِز — 06 Error Handler",
   "nodes": [
     {
-      "id": "be3806b1-9517-4206-826f-f28528e5e8de",
+      "id": "a8b1eba7-4b15-4551-958f-f62bac33e445",
       "name": "Error Trigger",
       "type": "n8n-nodes-base.errorTrigger",
       "typeVersion": 1,
@@ -13,7 +13,7 @@
       "parameters": {}
     },
     {
-      "id": "ca97580b-6fe8-4c3e-ba71-7e2ffd1c42bb",
+      "id": "d4ba2de2-7607-4082-8d82-db6282a0ec11",
       "name": "Extract",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -26,7 +26,7 @@
       }
     },
     {
-      "id": "1b1b6fc4-9dfd-4ff4-870b-6d79d0cd8e21",
+      "id": "ead073d8-5d58-46ea-a830-4ec8c388006f",
       "name": "Notify",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -56,7 +56,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "cfcf9d33-2b77-47fd-9e83-25627d4f25c4",
+      "id": "267aa941-e672-493c-acc4-18ebe00547ef",
       "name": "Logged ✓",
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
@@ -67,8 +67,8 @@
       "parameters": {}
     },
     {
-      "id": "7a225c60-9e0c-4ca8-bf20-e2bb2448a261",
-      "name": "Note 1c046a69",
+      "id": "8415b2e8-4640-4128-b272-6fcc09cdce2b",
+      "name": "Note 780826f8",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [

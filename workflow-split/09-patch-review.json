@@ -2,7 +2,7 @@
   "name": "مُنجِز — 09 Patch Review",
   "nodes": [
     {
-      "id": "169fb399-853e-4255-aa44-2fd354bc0cf0",
+      "id": "a1915210-75c5-4d8c-9bf8-1d05b967d859",
       "name": "POST Patch",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
@@ -16,10 +16,10 @@
         "responseMode": "responseNode",
         "options": {}
       },
-      "webhookId": "c1c31d4f-943f-4261-9128-9917e2c06ee2"
+      "webhookId": "610e5b83-a73a-46b1-9a31-afdcd5d231a0"
     },
     {
-      "id": "28fef915-3572-4f46-b724-e0a7eb87c42a",
+      "id": "45df9a72-f12b-4f3f-8977-e336039236dc",
       "name": "Read SkillPatches (review)",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -48,7 +48,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "ac224966-69b7-4a44-8178-3b977268c772",
+      "id": "66ae6451-e28e-43cb-b08a-0b6c48b04e62",
       "name": "Apply Patch Decision",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -61,7 +61,7 @@
       }
     },
     {
-      "id": "9cf172c5-9bdd-4572-a874-e07a27049226",
+      "id": "bde25e7e-0c26-4b14-9d78-43fedb3d14c4",
       "name": "Decision OK?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
@@ -94,7 +94,7 @@
       }
     },
     {
-      "id": "531024ba-2dfa-4db7-8739-7143edbfab05",
+      "id": "bda810ac-c371-4823-ac22-442d9e4b5e2e",
       "name": "Respond Patch Error",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.2,
@@ -122,7 +122,7 @@
       }
     },
     {
-      "id": "565a0a2b-1b15-490d-9b9e-8669dfa8099c",
+      "id": "f2e93d80-2e6e-45e1-9450-acbe252c7455",
       "name": "Emit Patch Update",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -135,7 +135,7 @@
       }
     },
     {
-      "id": "4ac9b77b-7f3e-4044-b396-8e0a18d935f6",
+      "id": "72a3f395-2a99-4e9a-9f1e-8942811c615e",
       "name": "Save Patch Decision",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -175,17 +175,100 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "c59b86d2-9b5f-4870-878c-4509be2a052d",
-      "name": "Respond Patch",
-      "type": "n8n-nodes-base.respondToWebhook",
-      "typeVersion": 1.2,
+      "id": "88ce66d6-3b25-45b3-83ba-6d4293cc18f2",
+      "name": "Read Skills (apply)",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
       "position": [
         620,
         -80
       ],
       "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Skills"
+        },
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": []
+        },
+        "options": {},
+        "returnAll": true
+      },
+      "executeOnce": true,
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000
+    },
+    {
+      "id": "b7fc32d6-a34b-472b-a2b2-64c1f280fa83",
+      "name": "Apply To Skill",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        840,
+        -80
+      ],
+      "parameters": {
+        "jsCode": "const dec = $('Apply Patch Decision').first().json.row;\nif (!dec || dec.status !== 'approved') return [];\nconst rows = $input.all().map(i => i.json).filter(r => r && r.skill_id);\nconst sk = rows.find(r => r.skill_id === dec.skill_id);\nif (!sk) return [];\nconst parts = String(sk.version || '1.0.0').split('.');\nparts[2] = String((Number(parts[2]) || 0) + 1);  // patch-level bump\nconst stamp = new Date().toISOString().slice(0, 10);\nconst marker = '## تحسينات معتمدة (طبقة متعلَّمة)';\nlet body = String(sk.body_md || '');\nif (body.indexOf(marker) === -1) body += '\\n\\n' + marker + '\\n';\nbody += '\\n- ' + dec.proposed_text + '  \\n  _(' + dec.patch_id + ' — اعتمدها '\n  + (dec.reviewed_by || 'مالك الإجراء') + ' في ' + stamp + ')_\\n';\nreturn [{ json: { skill_id: sk.skill_id, version: parts.join('.'), status: sk.status,\n  title_ar: sk.title_ar, title_en: sk.title_en, keywords: sk.keywords,\n  profile_id: sk.profile_id, allowed_services: sk.allowed_services,\n  approval_chain: sk.approval_chain, auto_execute: sk.auto_execute,\n  sla_hours: sk.sla_hours, internal: sk.internal, body_md: body,\n  created_by: sk.created_by, updated_at: new Date().toISOString() } }];\n"
+      },
+      "alwaysOutputData": true
+    },
+    {
+      "id": "3ffa6010-e3c4-4222-bebc-0efbfb432ae4",
+      "name": "Save Improved Skill",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        1060,
+        -80
+      ],
+      "parameters": {
+        "operation": "upsert",
+        "dataTableId": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Skills"
+        },
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "skill_id",
+              "condition": "eq",
+              "keyValue": "={{ $json.skill_id }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": null,
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000
+    },
+    {
+      "id": "cf4ff62b-d32b-4601-ba59-5084782dab76",
+      "name": "Respond Patch",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.2,
+      "position": [
+        1280,
+        -80
+      ],
+      "parameters": {
         "respondWith": "json",
-        "responseBody": "={{ { \"ok\": true, \"status\": $json.status } }}",
+        "responseBody": "={{ { \"ok\": true, \"status\": $('Apply Patch Decision').first().json.row.status } }}",
         "options": {
           "responseHeaders": {
             "entries": [
@@ -203,8 +286,8 @@
       }
     },
     {
-      "id": "42da4a26-60f7-49bc-bc0f-06c78af392b0",
-      "name": "Note ec8f4547",
+      "id": "55bdf900-aff8-4d10-81a8-7ac8164dc94c",
+      "name": "Note 5da23285",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
@@ -283,6 +366,39 @@
       ]
     },
     "Save Patch Decision": {
+      "main": [
+        [
+          {
+            "node": "Read Skills (apply)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Skills (apply)": {
+      "main": [
+        [
+          {
+            "node": "Apply To Skill",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Apply To Skill": {
+      "main": [
+        [
+          {
+            "node": "Save Improved Skill",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save Improved Skill": {
       "main": [
         [
           {
