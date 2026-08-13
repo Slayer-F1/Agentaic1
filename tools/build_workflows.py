@@ -13,7 +13,13 @@ import uuid
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, "workflow")
 OUT_SPLIT = os.path.join(ROOT, "workflow-split")
-GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent"
+GEMINI_BASE = "https://generativelanguage.googleapis.com/v1beta/models/"
+MODEL_MAIN = "gemini-2.5-flash"        # employee-facing reasoning
+# NOTE: gemini-2.5-flash-lite would have a larger free allowance, but it 404s for
+# newly created API projects ("no longer available to new users"), so every call
+# runs on flash. Quota is therefore managed by cadence, not by model tier.
+MODEL_CHEAP = MODEL_MAIN
+GEMINI_URL = GEMINI_BASE + MODEL_MAIN + ":generateContent"
 RAW_BASE = "https://raw.githubusercontent.com/Slayer-F1/Agentaic1/main/"
 DEMO_INBOX = "munjiz.demo.uae@gmail.com"
 
@@ -160,14 +166,17 @@ def code(name, js, pos, **extra):
     return node(name, "n8n-nodes-base.code", 2, pos, {"jsCode": js}, **extra)
 
 
-def gemini(name, pos, field="geminiBody"):
+def gemini(name, pos, field="geminiBody", model="gemini-2.5-flash"):
+    """model is overridable, but note gemini-2.5-flash-lite is NOT available to
+    newly created API projects (404 "no longer available to new users")."""
     return node(name, "n8n-nodes-base.httpRequest", 4.2, pos,
-                {"method": "POST", "url": GEMINI_URL,
+                {"method": "POST",
+                 "url": GEMINI_BASE + model + ":generateContent",
                  "authentication": "predefinedCredentialType", "nodeCredentialType": "googlePalmApi",
                  "sendBody": True, "specifyBody": "json",
                  "jsonBody": "={{ JSON.stringify($json." + field + ") }}",
                  "options": {"timeout": 90000}},
-                credentials=CRED_GEMINI, retryOnFail=True, maxTries=3, waitBetweenTries=6000)
+                credentials=CRED_GEMINI, retryOnFail=True, maxTries=2, waitBetweenTries=15000)
 
 
 def http_raw(name, url_expr, pos):
@@ -183,6 +192,17 @@ def respond(name, body_expr, pos):
                  "options": {"responseHeaders": {"entries": [
                      {"name": "Access-Control-Allow-Origin", "value": "*"},
                      {"name": "Access-Control-Allow-Headers", "value": "Content-Type"}]}}})
+
+
+def rm_schema(fields):
+    """ResourceMapper field descriptors for a sub-workflow's declared inputs.
+
+    Required: n8n only evaluates the mapped values when this array is non-empty
+    (see WorkflowToolService.useSchema), otherwise the tool degrades to passing a
+    single opaque `query` string.
+    """
+    return [{"id": f, "displayName": f, "required": False, "defaultMatch": False,
+             "display": True, "canBeUsedToMatch": True, "type": "string"} for f in fields]
 
 
 def wfref(placeholder, cached):
@@ -686,18 +706,21 @@ CHARTER = """أنت «مُنجِز» — وكيل معاملات ذكي في ب�
 - txn_id: يُملأ من نتيجة submit_transaction عند state=submitted.
 - missing_fields: أسماء الحقول الناقصة عند state=collecting."""
 
+# NOTE: no JSON-Schema type unions ("type": ["x","null"]) anywhere in these
+# schemas - Gemini function-calling rejects them with a 400. Optional fields are
+# expressed by omission from `required`.
 AGENT_OUT_SCHEMA = {
     "type": "object",
     "properties": {
         "reply_ar": {"type": "string"},
         "state": {"type": "string", "enum": ["collecting", "preview", "submitted", "rejected", "escalated", "info"]},
-        "transaction_preview": {"type": ["object", "null"],
+        "transaction_preview": {"type": "object",
                                 "properties": {"fields": {"type": "object"},
-                                               "working_days": {"type": ["number", "null"]},
-                                               "amount_aed": {"type": ["number", "null"]},
+                                               "working_days": {"type": "number"},
+                                               "amount_aed": {"type": "number"},
                                                "approval_chain": {"type": "array", "items": {"type": "string"}},
                                                "warnings": {"type": "array", "items": {"type": "string"}}}},
-        "txn_id": {"type": ["string", "null"]},
+        "txn_id": {"type": "string"},
         "missing_fields": {"type": "array", "items": {"type": "string"}},
     },
     "required": ["reply_ar", "state"],
@@ -852,9 +875,9 @@ def build_agent():
                          "hasOutputParser": True,
                          "options": {"systemMessage": "={{ $json.system_prompt }}",
                                      "maxIterations": 10, "returnIntermediateSteps": True}},
-                        retryOnFail=True, maxTries=2, waitBetweenTries=8000))
+                        retryOnFail=True, maxTries=3, waitBetweenTries=15000))
     lm = wf.add(node("Gemini Chat Model", "@n8n/n8n-nodes-langchain.lmChatGoogleGemini", 1, (620, 260),
-                     {"modelName": "models/gemini-2.5-flash", "options": {"temperature": 0.2}},
+                     {"modelName": "models/" + MODEL_MAIN, "options": {"temperature": 0.2}},
                      credentials=CRED_GEMINI))
     wf.link(lm, agent, ctype="ai_languageModel")
     mem = wf.add(node("Session Memory", "@n8n/n8n-nodes-langchain.memoryBufferWindow", 1.3, (780, 260),
@@ -1105,8 +1128,8 @@ CHASER_SCHEMA = {
 
 def build_chaser():
     wf = Wf("مُنجِز — 04 SLA Chaser")
-    sched = wf.add(node("Every 5 Minutes", "n8n-nodes-base.scheduleTrigger", 1.2, (-1100, -120),
-                        {"rule": {"interval": [{"field": "minutes", "minutesInterval": 5}]}}))
+    sched = wf.add(node("Every 30 Minutes", "n8n-nodes-base.scheduleTrigger", 1.2, (-1100, -120),
+                        {"rule": {"interval": [{"field": "minutes", "minutesInterval": 30}]}}))
     manual = wf.add(node("Manual Test", "n8n-nodes-base.manualTrigger", 1, (-1100, 40), {}))
     hook = wf.add(node("Chase Webhook", "n8n-nodes-base.webhook", 2, (-1100, 200),
                        {"httpMethod": "POST", "path": "munjiz/chase",
@@ -1134,10 +1157,10 @@ def build_chaser():
                              "أو wait (قريبة العهد). اكتب مسوّغًا عربيًا رسميًا موجزًا لكل قرار — يُحفظ في سجل التدقيق. "
                              "أعد JSON فقط."),
                              "maxIterations": 6, "returnIntermediateSteps": True}},
-                        retryOnFail=True, maxTries=2, waitBetweenTries=8000))
+                        retryOnFail=True, maxTries=3, waitBetweenTries=15000))
     wf.link(any_, agent, output=0)
     lm = wf.add(node("Gemini Chat Model (chaser)", "@n8n/n8n-nodes-langchain.lmChatGoogleGemini", 1, (-300, 180),
-                     {"modelName": "models/gemini-2.5-flash", "options": {"temperature": 0.2}},
+                     {"modelName": "models/" + MODEL_CHEAP, "options": {"temperature": 0.2}},
                      credentials=CRED_GEMINI))
     wf.link(lm, agent, ctype="ai_languageModel")
     parser = wf.add(node("Chaser Output", "@n8n/n8n-nodes-langchain.outputParserStructured", 1.2, (-140, 180),
@@ -1335,8 +1358,8 @@ def build_reflection():
     same governance gateway that constrains the service agent, and it can only ever
     FILE a skill proposal - never edit an approved skill."""
     wf = Wf("مُنجِز — 08 Reflection (learning pass)")
-    sched = wf.add(node("Every 15 Minutes", "n8n-nodes-base.scheduleTrigger", 1.2, (-1200, -140),
-                        {"rule": {"interval": [{"field": "minutes", "minutesInterval": 15}]}}))
+    sched = wf.add(node("Every 60 Minutes", "n8n-nodes-base.scheduleTrigger", 1.2, (-1200, -140),
+                        {"rule": {"interval": [{"field": "hours", "hoursInterval": 1}]}}))
     manual = wf.add(node("Reflect Manually", "n8n-nodes-base.manualTrigger", 1, (-1200, 30), {}))
     hook = wf.add(node("Reflect Webhook", "n8n-nodes-base.webhook", 2, (-1200, 200),
                        {"httpMethod": "POST", "path": "munjiz/reflect",
@@ -1369,9 +1392,9 @@ def build_reflection():
         "hasOutputParser": True,
         "options": {"systemMessage": REFLECT_SYS_MSG, "maxIterations": 12,
                     "returnIntermediateSteps": True},
-    }, retryOnFail=True, maxTries=2, waitBetweenTries=8000))
+    }, retryOnFail=True, maxTries=3, waitBetweenTries=15000))
     lm = wf.add(node("Gemini Chat Model (reflect)", "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
-                     1, (-180, 180), {"modelName": "models/gemini-2.5-flash",
+                     1, (-180, 180), {"modelName": "models/" + MODEL_CHEAP,
                                       "options": {"temperature": 0.3}}, credentials=CRED_GEMINI))
     wf.link(lm, agent, ctype="ai_languageModel")
     parser = wf.add(node("Reflection Output", "@n8n/n8n-nodes-langchain.outputParserStructured",
@@ -1393,7 +1416,7 @@ def build_reflection():
             "skill_id": "reflection",
             "employee_id": "={{ $fromAI('employee_id', 'the employee this memory is about, or empty for org scope', 'string') }}",
             "session_id": "reflection",
-        }, "matchingColumns": [], "schema": [],
+        }, "matchingColumns": [], "schema": rm_schema(["service", "payload", "skill_id", "employee_id", "session_id"]),
             "attemptToConvertTypes": False, "convertFieldsToString": False}}))
     wf.link(tool, agent, ctype="ai_tool")
 
@@ -1502,6 +1525,23 @@ def merge(name, wf_id, parts, gap=1500):
     return out
 
 
+def fill_tool_input_schemas(doc):
+    """toolWorkflow needs its resourceMapper `schema` populated or n8n passes NULL for
+    every sub-workflow input (plain executeWorkflow tolerates an empty schema, which is
+    why the Data IO calls worked while the agent's call_service silently sent nulls)."""
+    for n in doc.get("nodes", []):
+        if n.get("type") != "@n8n/n8n-nodes-langchain.toolWorkflow":
+            continue
+        wi = (n.get("parameters") or {}).get("workflowInputs") or {}
+        vals = wi.get("value") or {}
+        if vals and not wi.get("schema"):
+            wi["schema"] = [{
+                "id": k, "displayName": k, "required": False, "defaultMatch": False,
+                "display": True, "canBeUsedToMatch": True, "type": "string",
+            } for k in vals]
+    return doc
+
+
 def validate(doc):
     errs = []
     names = [n["name"] for n in doc["nodes"]]
@@ -1528,7 +1568,7 @@ def emit(outdir, builds):
     bad = False
     for fname, wf in builds:
         wf.wf_id = wf.wf_id or WF_IDS.get(fname)
-        doc = wf.dump()
+        doc = fill_tool_input_schemas(wf.dump())
         errs = validate(doc)
         if errs:
             bad = True

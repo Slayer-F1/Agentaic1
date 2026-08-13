@@ -2,8 +2,8 @@
   "name": "مُنجِز — 04 SLA Chaser",
   "nodes": [
     {
-      "id": "dbec2e02-283a-4027-a0b9-6567242a57d8",
-      "name": "Every 5 Minutes",
+      "id": "e3091335-836e-4de9-9a42-32ee72abe1c2",
+      "name": "Every 30 Minutes",
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
       "position": [
@@ -15,14 +15,14 @@
           "interval": [
             {
               "field": "minutes",
-              "minutesInterval": 5
+              "minutesInterval": 30
             }
           ]
         }
       }
     },
     {
-      "id": "72089c04-878a-4f83-ab4f-473874312876",
+      "id": "1d44c858-8463-4a4f-9158-f16379e8351a",
       "name": "Manual Test",
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
@@ -33,7 +33,7 @@
       "parameters": {}
     },
     {
-      "id": "bf9a32e4-5d32-4c79-85f6-e535aedba2da",
+      "id": "e417a6d6-8d9d-4616-bf7c-6f3be21804ae",
       "name": "Chase Webhook",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
@@ -47,10 +47,10 @@
         "responseMode": "responseNode",
         "options": {}
       },
-      "webhookId": "66e380a2-c3a2-4bb4-bb81-7cd5684e746d"
+      "webhookId": "c8e59278-bb56-493c-a1f9-466cdbff92c2"
     },
     {
-      "id": "b0dc7a25-b553-42e4-8de9-875ecdd6fe8f",
+      "id": "3365337e-be41-4037-857f-65d8aee20107",
       "name": "Respond Chase",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.2,
@@ -78,7 +78,7 @@
       }
     },
     {
-      "id": "de3946f3-a867-4aee-84dc-1a49089e264c",
+      "id": "569d5457-d064-453f-affe-0113a79f5238",
       "name": "Read All",
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
@@ -111,7 +111,7 @@
       }
     },
     {
-      "id": "5cec28b0-5baa-44de-ae4e-8d8cf8d7ef60",
+      "id": "aa8d6941-b1a3-4279-8b2a-1d0def49ad88",
       "name": "Find Stale",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -124,7 +124,7 @@
       }
     },
     {
-      "id": "f7546fab-c948-4d1d-8af2-cc7e1dc455f2",
+      "id": "753d0ba0-edac-4b85-9e22-e02f42d5d8f3",
       "name": "Any Stale?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
@@ -156,7 +156,7 @@
       }
     },
     {
-      "id": "396fe224-4b1c-4341-9c10-ac38e251b6e2",
+      "id": "ae6680b0-dd76-40f0-804e-902e0f8e41a8",
       "name": "Nothing ✓",
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
@@ -167,7 +167,7 @@
       "parameters": {}
     },
     {
-      "id": "617db186-5fc8-41d4-be2e-1141ceba6426",
+      "id": "f4f86d52-4fd2-4f7f-b811-d3ae8055235c",
       "name": "Chaser Agent",
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 2.2,
@@ -186,11 +186,11 @@
         }
       },
       "retryOnFail": true,
-      "maxTries": 2,
-      "waitBetweenTries": 8000
+      "maxTries": 3,
+      "waitBetweenTries": 15000
     },
     {
-      "id": "cf27e58b-adf5-4b39-864a-2c14bdbaf674",
+      "id": "4d7ef267-b41d-43ed-8c9c-0a0cb1eeee4c",
       "name": "Gemini Chat Model (chaser)",
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1,
@@ -212,7 +212,7 @@
       }
     },
     {
-      "id": "c27bc00a-34bd-473b-b47f-11a50b6ead45",
+      "id": "2bdc19d6-02f6-4197-b3a0-c4f3f6373218",
       "name": "Chaser Output",
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "typeVersion": 1.2,
@@ -226,7 +226,7 @@
       }
     },
     {
-      "id": "a15724d8-2aae-43ea-a8f0-31191a41ed03",
+      "id": "ec57d02e-876d-4118-882a-02e837eff2fb",
       "name": "Flatten",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -239,7 +239,7 @@
       }
     },
     {
-      "id": "e4087a4b-fe0d-43d8-929e-2f9bfe5d777d",
+      "id": "c7cba64e-e1ea-43a8-80db-3a979f0747bd",
       "name": "Audit Rows",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -252,7 +252,7 @@
       }
     },
     {
-      "id": "4db34c97-8f10-483f-9598-32ba66f18804",
+      "id": "67baf26a-4399-4bac-b125-a90815fe5ab5",
       "name": "Append AuditLog (chaser)",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -282,7 +282,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "5d55f9c1-5e6f-4c71-89bf-eb052b3dc379",
+      "id": "9d37f945-6e3c-4150-8f58-80ec9b7555be",
       "name": "Carry Decisions",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -295,7 +295,7 @@
       }
     },
     {
-      "id": "eefaaa36-35d9-4b78-a0cd-14e72cf6f4fc",
+      "id": "df8164ca-e10c-46be-b31e-77da58f00840",
       "name": "Chaser Switch",
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
@@ -358,7 +358,7 @@
       }
     },
     {
-      "id": "ad7296a6-4947-42e0-9d31-bd846a65df23",
+      "id": "0f61b17d-65af-450d-93da-31da4d1aea7c",
       "name": "Remind Approver",
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
@@ -369,7 +369,7 @@
       "parameters": {}
     },
     {
-      "id": "eeb3b4c7-f3eb-4436-8780-7d5e533a3fc6",
+      "id": "ac753a5e-4de0-4e7b-b82d-746e22d403b1",
       "name": "Escalate",
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
@@ -380,8 +380,8 @@
       "parameters": {}
     },
     {
-      "id": "136d52e6-bcb8-4b71-976a-378d9d6bc96e",
-      "name": "Note 91e4d6fc",
+      "id": "217a990a-fd53-478f-9248-8ca72ac86875",
+      "name": "Note 59209ff7",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
@@ -408,7 +408,7 @@
         ]
       ]
     },
-    "Every 5 Minutes": {
+    "Every 30 Minutes": {
       "main": [
         [
           {
