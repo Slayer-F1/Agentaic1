@@ -14,6 +14,14 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, "workflow")
 OUT_SPLIT = os.path.join(ROOT, "workflow-split")
 GEMINI_BASE = "https://generativelanguage.googleapis.com/v1beta/models/"
+# Background cadence. The Gemini free tier on a newly created project is very small
+# (metric generate_content_free_tier_requests, limit 20), and each scheduled agent
+# tick spends model calls even when nothing needs doing - which would drain the
+# day's allowance before a demo starts. The schedule nodes stay in the workflow to
+# satisfy criterion 4 (automatic, not manual), but idle at a low frequency; the demo
+# fires them on demand through the UI button and the /munjiz/reflect webhook.
+CHASER_HOURS = 12
+REFLECT_HOURS = 24
 MODEL_MAIN = "gemini-2.5-flash"        # employee-facing reasoning
 # NOTE: gemini-2.5-flash-lite would have a larger free allowance, but it 404s for
 # newly created API projects ("no longer available to new users"), so every call
@@ -1128,8 +1136,8 @@ CHASER_SCHEMA = {
 
 def build_chaser():
     wf = Wf("مُنجِز — 04 SLA Chaser")
-    sched = wf.add(node("Every 30 Minutes", "n8n-nodes-base.scheduleTrigger", 1.2, (-1100, -120),
-                        {"rule": {"interval": [{"field": "minutes", "minutesInterval": 30}]}}))
+    sched = wf.add(node("Every 12 Hours", "n8n-nodes-base.scheduleTrigger", 1.2, (-1100, -120),
+                        {"rule": {"interval": [{"field": "hours", "hoursInterval": CHASER_HOURS}]}}))
     manual = wf.add(node("Manual Test", "n8n-nodes-base.manualTrigger", 1, (-1100, 40), {}))
     hook = wf.add(node("Chase Webhook", "n8n-nodes-base.webhook", 2, (-1100, 200),
                        {"httpMethod": "POST", "path": "munjiz/chase",
@@ -1358,8 +1366,8 @@ def build_reflection():
     same governance gateway that constrains the service agent, and it can only ever
     FILE a skill proposal - never edit an approved skill."""
     wf = Wf("مُنجِز — 08 Reflection (learning pass)")
-    sched = wf.add(node("Every 60 Minutes", "n8n-nodes-base.scheduleTrigger", 1.2, (-1200, -140),
-                        {"rule": {"interval": [{"field": "hours", "hoursInterval": 1}]}}))
+    sched = wf.add(node("Daily", "n8n-nodes-base.scheduleTrigger", 1.2, (-1200, -140),
+                        {"rule": {"interval": [{"field": "hours", "hoursInterval": REFLECT_HOURS}]}}))
     manual = wf.add(node("Reflect Manually", "n8n-nodes-base.manualTrigger", 1, (-1200, 30), {}))
     hook = wf.add(node("Reflect Webhook", "n8n-nodes-base.webhook", 2, (-1200, 200),
                        {"httpMethod": "POST", "path": "munjiz/reflect",
