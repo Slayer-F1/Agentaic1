@@ -100,7 +100,7 @@ The n8n data (workflows + encrypted credentials) lives in the `munjiz_n8n_data` 
 | Webhook returns HTTP 200 with an empty body | The workflow ran but stopped before its Respond node — nearly always a missing credential. Open **n8n → Executions** and look at the red node. |
 | `port is already allocated` on compose up | Another container owns 5678/8080 — set `N8N_PORT` / `PORTAL_PORT` in `docker/.env`. |
 | Portal stuck in demo mode | It couldn't reach n8n. Check `docker compose ps`, and that Settings' base URL ends in `/webhook` (not `/webhook-test`). |
-| Skill not found / router says no match | Check the raw registry URL loads and the skill's `status` is `approved`. GitHub's raw cache lags ~1 minute after a push. |
+| Skill not found / router says no match | Check the `Skills` data table: the row exists and `status` is `approved` (re-seed via إعادة تهيئة العرض if in doubt). |
 | `SERVICE_DENIED_BY_GOVERNANCE` | The skill's `allowed_services` doesn't include that service — governance working as designed. Edit the skill file if it was intentional. |
 | Gemini 429 | Free-tier rate limit; the nodes retry with backoff. Wait 60s. |
 | A table looks empty or stale | Re-run the seed: the portal's **إعادة تهيئة العرض** button, or `POST /webhook/munjiz/reset`. |
