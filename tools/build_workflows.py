@@ -667,7 +667,7 @@ def build_gateway():
         "  ts: new Date().toISOString(), session_id: j.session_id || '',\n"
         "  employee_id: j.employee_id || '', skill_id: j.skill_id || '',\n"
         "  service: j.service || '', request_json: JSON.stringify(j.payload || {}),\n"
-        "  result_summary: (j.result && j.result.error) ? ('DENIED/ERROR: ' + j.result.error)\n"
+        "  result_summary: (j.result && j.result.error) ? ((j.result.error === 'SERVICE_DENIED_BY_GOVERNANCE' ? 'DENIED: ' : 'ERROR: ') + j.result.error)\n"
         "    : ('OK ' + JSON.stringify(j.result || {}).slice(0, 160)),\n"
         "} }];\n"
     ), (1400, 60)))

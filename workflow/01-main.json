@@ -2,7 +2,7 @@
   "name": "مُنجِز — Main (chat + approvals + SLA + API + reset)",
   "nodes": [
     {
-      "id": "315f275e-d495-4b23-8f6b-bfab21001865",
+      "id": "b654267f-18da-4638-8628-c7c088183b45",
       "name": "Chat Webhook",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
@@ -16,10 +16,10 @@
         "responseMode": "responseNode",
         "options": {}
       },
-      "webhookId": "88ca3f82-3f0e-489b-a4c2-0861b1a7ca0f"
+      "webhookId": "c70bea15-bea8-4074-ae91-75a5079a9534"
     },
     {
-      "id": "5a04f9a6-6975-43b3-8b13-a5864f4c0adb",
+      "id": "ce5227e3-90bf-4fee-8e30-59a874c52eb5",
       "name": "Load Skills",
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
@@ -52,7 +52,7 @@
       }
     },
     {
-      "id": "cf31b86d-16ca-44af-857d-8435d582f594",
+      "id": "321aae6b-7350-4b3e-9e96-539705400a53",
       "name": "Prepare Router",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -65,7 +65,7 @@
       }
     },
     {
-      "id": "2e6561cf-02a5-4562-8eb7-d2b36227f826",
+      "id": "15857245-c30d-4ec6-8d5b-1bdb4ce50662",
       "name": "Has Active Skill?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
@@ -98,7 +98,7 @@
       }
     },
     {
-      "id": "589aebc2-4c8b-432a-b43a-660d0e816094",
+      "id": "bc61b131-7ea4-43e2-9233-9ae959b0c909",
       "name": "Gemini: Route Intent",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -129,7 +129,7 @@
       "waitBetweenTries": 15000
     },
     {
-      "id": "69fa7147-8414-44fa-a5f6-40acf805e6f3",
+      "id": "1fd24d10-c4f5-4e3f-827c-85b6b1a4d8f1",
       "name": "Parse Route",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -142,7 +142,7 @@
       }
     },
     {
-      "id": "a920be40-2c1e-4134-af8b-8a7e5568217d",
+      "id": "c1c4c7ce-45c5-4931-ac41-225d7f6df07a",
       "name": "Pick Skill",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -155,7 +155,7 @@
       }
     },
     {
-      "id": "d583859c-238c-4480-ad5e-5bdff3480564",
+      "id": "2c6a3948-adc1-4767-9124-5974e1bf24e9",
       "name": "Matched?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
@@ -188,7 +188,7 @@
       }
     },
     {
-      "id": "e7ebc380-52be-41e2-bd14-ee49b9db199a",
+      "id": "66566ffa-3253-45b0-9e4c-c342d5446179",
       "name": "Respond: Services List",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.2,
@@ -216,7 +216,7 @@
       }
     },
     {
-      "id": "af6515ef-a519-4f57-b7a0-ea5ffa87b5f8",
+      "id": "33dab535-218a-48ae-8035-03d2bcc9fae0",
       "name": "Skill Body",
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
@@ -227,7 +227,7 @@
       "parameters": {}
     },
     {
-      "id": "42e2c81f-4dde-48e5-adf0-2c722c7bef20",
+      "id": "46f4d81f-2d83-48ce-8f4b-b2bab3b8955b",
       "name": "Load Profiles",
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
@@ -260,7 +260,7 @@
       }
     },
     {
-      "id": "ab948736-88a4-479e-8aee-74cab7b8639a",
+      "id": "de1d2c71-77af-430e-9768-56afd7bc9378",
       "name": "Read Employees Ctx",
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
@@ -293,7 +293,7 @@
       }
     },
     {
-      "id": "cdbe435a-db4b-40ad-ba01-67e65a491bad",
+      "id": "2dd52e24-4686-44cc-87c2-a5a7f32a9fae",
       "name": "Read Memory Ctx",
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
@@ -326,7 +326,7 @@
       }
     },
     {
-      "id": "b1959283-b921-47a6-b9e2-84f837d3fbf5",
+      "id": "e2b99b2c-183e-46ca-a084-291ffdf40d7e",
       "name": "Read Patches Ctx",
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
@@ -359,7 +359,7 @@
       }
     },
     {
-      "id": "6e29674b-ab54-4b6d-bf70-a37c0e9ffaa5",
+      "id": "69002562-f5cf-4e31-ac75-4e2081c9613f",
       "name": "Compose System Prompt",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -372,7 +372,7 @@
       }
     },
     {
-      "id": "d4a16ec6-fcfd-4ee7-b6c2-476d5d056d7d",
+      "id": "e2062ec3-a673-410c-b806-91a203f5bf62",
       "name": "Munjiz Agent",
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 2.2,
@@ -395,7 +395,7 @@
       "waitBetweenTries": 15000
     },
     {
-      "id": "311f8aa5-ceb5-4593-b454-2e17710e9b2f",
+      "id": "815cdbcb-c935-4e94-ad65-b40e6506587a",
       "name": "Gemini Chat Model",
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1,
@@ -417,7 +417,7 @@
       }
     },
     {
-      "id": "8eb191a8-1202-471e-886a-b4b9918290b7",
+      "id": "32a1e0a9-9e9e-44de-b158-5498e77a50dd",
       "name": "Session Memory",
       "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
       "typeVersion": 1.3,
@@ -432,7 +432,7 @@
       }
     },
     {
-      "id": "0dbbbf5c-bdfc-46fc-a84b-ff5aaf2841dc",
+      "id": "8b3ad7de-120d-40c2-8660-190887dda55a",
       "name": "Structured Output",
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "typeVersion": 1.2,
@@ -446,7 +446,7 @@
       }
     },
     {
-      "id": "80277929-9163-4484-b57f-ddcf15484c40",
+      "id": "f9df9cb3-1395-4f27-b793-c8c10d9e23e8",
       "name": "think",
       "type": "@n8n/n8n-nodes-langchain.toolThink",
       "typeVersion": 1,
@@ -457,7 +457,7 @@
       "parameters": {}
     },
     {
-      "id": "fa64e7bf-3d26-4976-8863-4c405f5a35eb",
+      "id": "325ef133-4fa5-4b6a-8e86-c052e21a518f",
       "name": "call_service",
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
@@ -538,7 +538,7 @@
       }
     },
     {
-      "id": "e747c95b-e307-4d62-90d4-d9df9b9fa041",
+      "id": "485d5dd3-0756-4522-a58a-14e2ecb747dd",
       "name": "Deterministic Cross-Check",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -551,7 +551,7 @@
       }
     },
     {
-      "id": "9e5dca6d-31de-4732-be2f-93369c10c81a",
+      "id": "3496e0c7-7ce8-4777-a567-decdd14443be",
       "name": "Needs Re-reason?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
@@ -584,7 +584,7 @@
       }
     },
     {
-      "id": "4ad0a811-e957-43af-8a81-73d5877f3376",
+      "id": "e1f0410f-cd44-4422-b243-5e4879cd73e5",
       "name": "Build Re-reason",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -597,7 +597,7 @@
       }
     },
     {
-      "id": "a492a30c-c7e0-40d9-8507-81b185e744a3",
+      "id": "97626fb1-2316-4d67-9d94-c0772c6c8836",
       "name": "Gemini: Re-reason",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -628,7 +628,7 @@
       "waitBetweenTries": 15000
     },
     {
-      "id": "e9373ee8-ac63-4673-80fe-f090e01492c1",
+      "id": "c0c39d14-f4d3-4eb7-b7d9-2ebf6ee24108",
       "name": "Parse Re-reason",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -641,7 +641,7 @@
       }
     },
     {
-      "id": "ba7cf1d6-c24a-4eb5-9766-3450d04093a4",
+      "id": "601587ea-c8cb-4181-b251-04bf284b172d",
       "name": "Merge Re-reason",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -654,7 +654,7 @@
       }
     },
     {
-      "id": "6bd3aa9b-fa9d-4d94-8070-91e73cc46fd4",
+      "id": "d54baa72-0dcb-450b-a6de-3fe87ce8272f",
       "name": "Respond Chat",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.2,
@@ -682,8 +682,8 @@
       }
     },
     {
-      "id": "6ea17864-a28f-4622-ad12-28bcd0a22233",
-      "name": "Note 2a90ab0f",
+      "id": "01ed8b0c-786a-4a06-ab18-ce1f81a90868",
+      "name": "Note b083105a",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
@@ -698,8 +698,8 @@
       }
     },
     {
-      "id": "e1b1aecb-c2c2-453c-aacb-2efa12e3c9d7",
-      "name": "Note 4d786f74",
+      "id": "b509ba47-4a8f-4c18-8624-78ac64ccef9e",
+      "name": "Note 0e13d84a",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
@@ -714,7 +714,7 @@
       }
     },
     {
-      "id": "9e6a7169-301a-4c21-817a-ff7736874a30",
+      "id": "0f9bf447-508d-4e5f-84a9-7eab8128cbc5",
       "name": "Decide Webhook",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
@@ -728,10 +728,10 @@
         "responseMode": "responseNode",
         "options": {}
       },
-      "webhookId": "723124f9-025c-4520-b1b1-c62ae1054aa4"
+      "webhookId": "4ab0e1bc-a99d-4a0b-a37a-e5fd52c7bd80"
     },
     {
-      "id": "6f7cb4ee-5b76-45a1-99bb-c2bde60dd089",
+      "id": "884c5aab-df4f-41ac-b816-e7f2b979d57d",
       "name": "Read Transactions (decide)",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -760,7 +760,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "79842873-a4f4-44b2-bc02-67ec99fcde77",
+      "id": "4cc1cafe-c457-4a80-8ce8-1a135fc142b9",
       "name": "Read Employees (decide)",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -789,7 +789,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "0345eddf-2969-4c04-bf31-84ab7b08e7e6",
+      "id": "8b10ced2-eb6d-4a04-a57e-c6bb67508bd3",
       "name": "Decide",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -802,7 +802,7 @@
       }
     },
     {
-      "id": "604f168b-e2c4-40f9-b69b-952875384fb6",
+      "id": "32bed0fd-4b83-4f77-8627-0303dc4c2302",
       "name": "OK?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
@@ -835,7 +835,7 @@
       }
     },
     {
-      "id": "57c9be17-cfab-44eb-9a9a-d933f2fbb2b3",
+      "id": "f8cfab3a-4259-41f1-bd8f-b5e9673847d3",
       "name": "Respond Error",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.2,
@@ -863,7 +863,7 @@
       }
     },
     {
-      "id": "04469eae-4966-4b97-9703-6a983a8ab48a",
+      "id": "48218b2d-b7f8-4475-9144-bbe5f5e0832c",
       "name": "Emit Txn Update",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -876,7 +876,7 @@
       }
     },
     {
-      "id": "b7c2b42e-a6bd-4708-8f25-78cc15ece4ae",
+      "id": "91976975-15c2-4e92-aa80-7b4f99c5c099",
       "name": "Update Transaction",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -916,7 +916,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "86335d24-01ed-442b-ae54-5d9642c6a76e",
+      "id": "7485b150-dc0b-461a-8db7-4efb2d484ffd",
       "name": "Read LeaveBalances (side)",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -945,7 +945,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "98bed704-2170-4396-b8ca-d0356f5862d0",
+      "id": "76355a4a-03b6-41ce-9762-92367610141a",
       "name": "Read Employees (side)",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -974,7 +974,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "442bb79e-b5d1-4945-94e5-f023fbfa14dc",
+      "id": "ee8ffded-e2d4-4201-aabb-d00ac6eae7cf",
       "name": "Apply Side Effect",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -988,7 +988,7 @@
       "alwaysOutputData": true
     },
     {
-      "id": "02bc78e0-34b2-49af-bcb8-1d8a7cb8d14e",
+      "id": "8507ccfe-02d0-4bef-8522-d5de6ab336ea",
       "name": "Leave Side?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
@@ -1021,7 +1021,7 @@
       }
     },
     {
-      "id": "cabe6724-6de0-4621-830f-b43eb4b8471c",
+      "id": "9bf1a475-dd9f-4d23-a3c8-823abd401660",
       "name": "Update LeaveBalances",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -1061,7 +1061,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "feec90d7-8978-4d82-bead-5101e142392c",
+      "id": "3db29bd5-2924-421d-b71f-ebab97ee810c",
       "name": "IT Side?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
@@ -1094,7 +1094,7 @@
       }
     },
     {
-      "id": "c334a70c-d10a-4400-ace4-ce0180cf602e",
+      "id": "3807d56f-2091-466b-a344-e0f95f51194b",
       "name": "Update Employee Roles",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -1134,7 +1134,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "d2074755-3627-4d49-b9cf-7757cab380c6",
+      "id": "f0014ebd-b28e-4ab0-abeb-943c38fe7558",
       "name": "Converge",
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
@@ -1145,7 +1145,7 @@
       "parameters": {}
     },
     {
-      "id": "2cafef13-dd7c-4f39-8069-bfb01ba90a06",
+      "id": "23831419-1d4e-4906-b87f-b485ab6b66d3",
       "name": "Build Notification",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1158,7 +1158,7 @@
       }
     },
     {
-      "id": "894efda8-27db-4259-bf73-f241ef362339",
+      "id": "b7f4bbed-1c5c-496b-b460-44258944db74",
       "name": "Notify Employee",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -1188,7 +1188,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "0172d620-6073-4689-bfbb-4484b7eac835",
+      "id": "e1293eae-c1dd-4ec1-a173-ec07e54d5071",
       "name": "Respond Decide",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.2,
@@ -1216,8 +1216,8 @@
       }
     },
     {
-      "id": "97917f31-8ed1-4a0d-81aa-1d5591193bb1",
-      "name": "Note 018131a6",
+      "id": "4254e4c7-2ebd-45da-ade5-11eb7cea96c1",
+      "name": "Note 577a63e7",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
@@ -1232,8 +1232,8 @@
       }
     },
     {
-      "id": "1ce4af0a-b5c6-4699-b353-38030e068026",
-      "name": "Note 3cc95d56",
+      "id": "28cad33b-c60d-4fd2-95b3-79144a86b411",
+      "name": "Note 47f74c55",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
@@ -1248,7 +1248,7 @@
       }
     },
     {
-      "id": "cebb22e7-da4f-4639-a0e0-83a5a11a0a84",
+      "id": "80a9b59c-4cdb-4a64-ad9e-0cf6bbcdd1fb",
       "name": "Every 12 Hours",
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
@@ -1268,7 +1268,7 @@
       }
     },
     {
-      "id": "1b94200c-d24f-4724-be45-a663365076ac",
+      "id": "fe7a0794-b567-4290-89d2-a19c5eaf7a23",
       "name": "Manual Test",
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
@@ -1279,7 +1279,7 @@
       "parameters": {}
     },
     {
-      "id": "2cb3e787-6bf2-448e-8435-f4b07c9fc5cb",
+      "id": "13968140-6f99-4b12-a1c3-04c567efe6cf",
       "name": "Chase Webhook",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
@@ -1293,10 +1293,10 @@
         "responseMode": "responseNode",
         "options": {}
       },
-      "webhookId": "d25c7321-4c12-4868-b50e-86f5fbafa42b"
+      "webhookId": "c305ee5f-5307-472e-a5f8-64ce10aabcc7"
     },
     {
-      "id": "935b84ef-9e66-41aa-9804-6a26d7081047",
+      "id": "233a4eda-3096-42d5-9286-a3482eff1e1b",
       "name": "Respond Chase",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.2,
@@ -1324,7 +1324,7 @@
       }
     },
     {
-      "id": "57607920-a42c-4662-b299-7a4e1aadd2b2",
+      "id": "abbdc44a-7f3a-4845-960d-c848e05768a8",
       "name": "Read All",
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
@@ -1357,7 +1357,7 @@
       }
     },
     {
-      "id": "6bd16cb1-fb2a-43c2-ae0b-863a1886e5b5",
+      "id": "1cc3caba-c759-4cfc-a2f1-b6910e84ee28",
       "name": "Find Stale",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1370,7 +1370,7 @@
       }
     },
     {
-      "id": "d5e5145c-ae72-4160-8592-b23d9730c960",
+      "id": "1fb42ade-2c62-4639-a87c-f35cb3d0d32b",
       "name": "Any Stale?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
@@ -1402,7 +1402,7 @@
       }
     },
     {
-      "id": "87a124b8-7a94-4d8e-ac7c-c57450edf650",
+      "id": "a3f53783-52fe-4357-94db-529362a7422b",
       "name": "Nothing ✓",
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
@@ -1413,7 +1413,7 @@
       "parameters": {}
     },
     {
-      "id": "05437ffb-5947-4735-9bc8-102d8e6690f3",
+      "id": "905bc666-c3a2-4bdf-84b3-0a811b27a144",
       "name": "Chaser Agent",
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 2.2,
@@ -1436,7 +1436,7 @@
       "waitBetweenTries": 15000
     },
     {
-      "id": "e1b3efd1-e931-465e-91d9-2e4ced590e38",
+      "id": "883fc716-44f4-4dbf-a857-a7fee9e15c4b",
       "name": "Gemini Chat Model (chaser)",
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1,
@@ -1458,7 +1458,7 @@
       }
     },
     {
-      "id": "e986ae3c-4e6f-4990-afa9-9a94984a03f6",
+      "id": "33786807-e33b-4198-8d52-996c1713415a",
       "name": "Chaser Output",
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "typeVersion": 1.2,
@@ -1472,7 +1472,7 @@
       }
     },
     {
-      "id": "c163ee65-9c41-490e-9538-00c998247eb9",
+      "id": "ae273318-5fa4-418d-a467-aa2f793b9d6f",
       "name": "Flatten",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1485,7 +1485,7 @@
       }
     },
     {
-      "id": "4c4dbea0-7ee1-41ac-9302-d2fe173bb512",
+      "id": "d242d095-f41f-4d90-a81e-3c4ae9534164",
       "name": "Audit Rows",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1498,7 +1498,7 @@
       }
     },
     {
-      "id": "023f17d5-d884-4f42-86e6-6f80c7b2e5c9",
+      "id": "4c439e04-ce44-4d16-b2a9-53bff5f83cd1",
       "name": "Append AuditLog (chaser)",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -1528,7 +1528,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "ea1065fc-92b8-4ecc-9756-a0f973b07cb8",
+      "id": "3ff571b7-f58d-4e77-8418-a5e86199c436",
       "name": "Carry Decisions",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1541,7 +1541,7 @@
       }
     },
     {
-      "id": "f5416f54-0e3d-4793-8abe-189c64b7de55",
+      "id": "e271665c-8518-46a7-b340-ed787a6d99a0",
       "name": "Chaser Switch",
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
@@ -1604,7 +1604,7 @@
       }
     },
     {
-      "id": "9e4f98e2-ccd7-4987-a75f-b392ae30da0b",
+      "id": "a2f96d83-4365-4706-9364-d7e9a1009b7a",
       "name": "Remind Approver",
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
@@ -1615,7 +1615,7 @@
       "parameters": {}
     },
     {
-      "id": "f757644f-0bc2-4e7e-9289-b15253d20773",
+      "id": "c95a3d85-766a-4cd1-a3e4-6a14a6a9c6ab",
       "name": "Escalate",
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
@@ -1626,8 +1626,8 @@
       "parameters": {}
     },
     {
-      "id": "e2d34162-ec49-4244-9bff-fba28d8cbdf9",
-      "name": "Note 6ab8018a",
+      "id": "87dcee0c-18b7-4112-9412-8a75e30b8cd8",
+      "name": "Note 07a0397e",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
@@ -1642,8 +1642,8 @@
       }
     },
     {
-      "id": "061afab7-18a9-433a-9815-8939d280ef12",
-      "name": "Note ec024942",
+      "id": "9336b099-4a40-4d1f-8425-d7950d39188a",
+      "name": "Note 8d6d2230",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
@@ -1658,7 +1658,7 @@
       }
     },
     {
-      "id": "4fcf3541-40ec-4c19-8bae-ae7e55746354",
+      "id": "b8096f30-9b3c-4208-a617-cecc3e70cdc0",
       "name": "GET State",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
@@ -1672,10 +1672,10 @@
         "responseMode": "responseNode",
         "options": {}
       },
-      "webhookId": "ba30047a-8da8-4593-940a-e88e8c925783"
+      "webhookId": "cf76a09c-7577-4a29-996f-083e583d2d39"
     },
     {
-      "id": "2d626f92-bd17-414a-ab57-a7229257d1a4",
+      "id": "92604602-583c-4b2c-b402-41859dc995ba",
       "name": "Dashboard Start",
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
@@ -1686,7 +1686,7 @@
       "parameters": {}
     },
     {
-      "id": "8ea39731-aa27-4fee-bdac-de1e3592987d",
+      "id": "19cd4c42-d81c-4e90-b222-4e1456b4f021",
       "name": "Read All (dash)",
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
@@ -1719,7 +1719,7 @@
       }
     },
     {
-      "id": "338bf46e-e3a9-4741-b6bf-18d947cfe6cc",
+      "id": "3da4b7fb-4426-4daf-80d2-fc4fe698676a",
       "name": "Assemble Dashboard",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1732,7 +1732,7 @@
       }
     },
     {
-      "id": "e4a3e8dd-282f-4c7d-a779-e67c701a4ced",
+      "id": "b65e36cd-826f-40e6-8883-ac2bea28ea46",
       "name": "Respond State",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.2,
@@ -1760,8 +1760,8 @@
       }
     },
     {
-      "id": "d905a8e6-6eca-41e3-86fb-4b40c34a48c9",
-      "name": "Note f6ee5e1a",
+      "id": "8ed3aff1-bf69-4b4e-b049-d95931482af0",
+      "name": "Note 614ffeef",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
@@ -1776,8 +1776,8 @@
       }
     },
     {
-      "id": "6d1e98c8-ab48-4378-b5c6-35840d4217f9",
-      "name": "Note 482225b1",
+      "id": "a826baee-e819-4e2b-859e-44add7f5dc59",
+      "name": "Note 6ff3b298",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
@@ -1792,7 +1792,7 @@
       }
     },
     {
-      "id": "9066fce9-7f0c-45c2-bb36-229445dfd884",
+      "id": "397aead7-551c-41bb-8f8c-d17fa4fa5983",
       "name": "POST Reset",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
@@ -1806,10 +1806,10 @@
         "responseMode": "responseNode",
         "options": {}
       },
-      "webhookId": "b665274b-70c3-4f9c-ba96-e8f2c3b06a93"
+      "webhookId": "524bee6e-51c6-4c45-b36c-3477c27321ad"
     },
     {
-      "id": "fb11cfbd-b251-49bd-a6cc-68af1317df47",
+      "id": "f3aeb684-3e0b-4c54-8616-be3e9299675b",
       "name": "Seed Manually",
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
@@ -1820,7 +1820,7 @@
       "parameters": {}
     },
     {
-      "id": "472d3d0a-8d6c-4263-80a3-16a87b966d2e",
+      "id": "923c9d5e-9cc8-411e-a5fe-df26adc35d27",
       "name": "Respond Reset",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.2,
@@ -1848,7 +1848,7 @@
       }
     },
     {
-      "id": "bf03271e-d5d0-4706-ad1b-2f2921b3ff55",
+      "id": "d12061e4-ac46-4816-a68a-28e7ca603b35",
       "name": "Create Employees",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -1922,7 +1922,7 @@
       "executeOnce": true
     },
     {
-      "id": "8a348c78-d69e-4862-9566-b22aa280f334",
+      "id": "3e4ed16c-f228-4ba7-b446-a2d6b44c6c8c",
       "name": "Clear Employees",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -1943,7 +1943,7 @@
       "executeOnce": true
     },
     {
-      "id": "29af7ad4-d9c4-470f-9271-a3e988cddc3a",
+      "id": "7bc8efac-b6c1-4a02-a3e7-3b1598bd1f39",
       "name": "Seed Employees",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1956,7 +1956,7 @@
       }
     },
     {
-      "id": "a98d096e-64d6-49d3-8444-a129a6afae7c",
+      "id": "55ae5ab6-db25-497e-bb97-5363891bff64",
       "name": "Insert Employees",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -1986,7 +1986,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "4f1da79c-76dd-47a6-bf78-b5915d481467",
+      "id": "d1e18f32-49a4-4316-8e71-99240466ffa5",
       "name": "Create LeaveBalances",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -2028,7 +2028,7 @@
       "executeOnce": true
     },
     {
-      "id": "1b0e3fe5-e8ec-46b6-a5e8-0e9ed3cb8ef1",
+      "id": "ceeb3e7e-23eb-42eb-8c37-21028901a27f",
       "name": "Clear LeaveBalances",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -2049,7 +2049,7 @@
       "executeOnce": true
     },
     {
-      "id": "c4068ea2-8a9f-43c7-875d-5dd83d69b9bb",
+      "id": "db371493-78bd-477d-8856-ec4f3a09564d",
       "name": "Seed LeaveBalances",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -2062,7 +2062,7 @@
       }
     },
     {
-      "id": "e6242a20-67af-4d8c-a222-c43ff7cbe0b5",
+      "id": "45146973-4066-4678-9995-f3adf3ee3d2b",
       "name": "Insert LeaveBalances",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -2092,7 +2092,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "5673d220-0cf0-4688-8e9c-11b19ceb988b",
+      "id": "755f3303-149f-44e1-b5c4-01aa7968e651",
       "name": "Create ExpensePolicy",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -2130,7 +2130,7 @@
       "executeOnce": true
     },
     {
-      "id": "5256a789-c13e-41e0-9100-12fc07fe2ee4",
+      "id": "535f1fab-3061-4d8c-9ca1-b2624640d555",
       "name": "Clear ExpensePolicy",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -2151,7 +2151,7 @@
       "executeOnce": true
     },
     {
-      "id": "e8dd02a9-3093-4803-8770-1387c5294b65",
+      "id": "b9733bd0-e1d4-4a10-b301-9318542cde83",
       "name": "Seed ExpensePolicy",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -2164,7 +2164,7 @@
       }
     },
     {
-      "id": "1f6256d3-7cf8-4b28-b37e-cdbe7896f51e",
+      "id": "6f353dc3-2fbc-4b1c-ab9b-0da54891d491",
       "name": "Insert ExpensePolicy",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -2194,7 +2194,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "c570efd7-a378-49f5-944d-04a8d68d211c",
+      "id": "1cd96405-4dbd-4c82-a107-8a2c2ce6f6ec",
       "name": "Create SystemCatalog",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -2236,7 +2236,7 @@
       "executeOnce": true
     },
     {
-      "id": "a05ce46c-a97e-408e-a6a9-a6f55986cf07",
+      "id": "26d19623-5cf9-4d5c-9d61-90e857124496",
       "name": "Clear SystemCatalog",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -2257,7 +2257,7 @@
       "executeOnce": true
     },
     {
-      "id": "1fb0ad86-832a-4ba2-b6de-50ca4100b8e7",
+      "id": "71400acc-e7f6-4199-a2c6-cac831e5d07b",
       "name": "Seed SystemCatalog",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -2270,7 +2270,7 @@
       }
     },
     {
-      "id": "faa0b670-3b66-422e-8944-64faa2e9f0a2",
+      "id": "5d46edfd-82c5-4d53-8c2d-3b0a7f8a2287",
       "name": "Insert SystemCatalog",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -2300,7 +2300,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "69a5e113-dc9a-43c0-9384-7b3b27dd4fa9",
+      "id": "eee786f4-0076-468e-9073-4d1413df5d03",
       "name": "Create Transactions",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -2382,7 +2382,7 @@
       "executeOnce": true
     },
     {
-      "id": "9943adba-6828-41bd-b0a1-17d4e1b5a386",
+      "id": "a502fa00-87c7-48c8-be23-2ba19edf6a73",
       "name": "Clear Transactions",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -2403,7 +2403,7 @@
       "executeOnce": true
     },
     {
-      "id": "2dd33789-f403-4a2b-a9d9-2da7ca569faa",
+      "id": "b00b5234-91cb-4af6-8c02-c7efaeeba139",
       "name": "Seed Transactions",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -2412,11 +2412,11 @@
         6340
       ],
       "parameters": {
-        "jsCode": "const rows = JSON.parse(\"[{\\\"txn_id\\\": \\\"TXN-SEED-OVERLAP\\\", \\\"ts\\\": \\\"2026-08-11T14:38:38\\\", \\\"employee_id\\\": \\\"EMP-1003\\\", \\\"employee_name\\\": \\\"\\u0633\\u0627\\u0644\\u0645 \\u0627\\u0644\\u0646\\u0642\\u0628\\u064a (\\u062a\\u062c\\u0631\\u064a\\u0628\\u064a)\\\", \\\"skill_id\\\": \\\"leave-request\\\", \\\"type_ar\\\": \\\"\\u0637\\u0644\\u0628 \\u0625\\u062c\\u0627\\u0632\\u0629\\\", \\\"payload_json\\\": \\\"{\\\\\\\"leave_type\\\\\\\": \\\\\\\"annual\\\\\\\", \\\\\\\"start_date\\\\\\\": \\\\\\\"2026-08-20\\\\\\\", \\\\\\\"end_date\\\\\\\": \\\\\\\"2026-08-24\\\\\\\", \\\\\\\"working_days\\\\\\\": 3, \\\\\\\"reason\\\\\\\": \\\\\\\"\\u0625\\u062c\\u0627\\u0632\\u0629 \\u0639\\u0627\\u0626\\u0644\\u064a\\u0629\\\\\\\"}\\\", \\\"status\\\": \\\"executed\\\", \\\"approval_chain\\\": \\\"manager\\\", \\\"chain_pos\\\": 1, \\\"current_approver\\\": \\\"\\\", \\\"decision_note\\\": \\\"\\u0627\\u0639\\u062a\\u0645\\u062f\\u062a\\\", \\\"output_ref\\\": \\\"\\\", \\\"sla_hours\\\": 48, \\\"updated_at\\\": \\\"2026-08-12T14:38:38\\\"}, {\\\"txn_id\\\": \\\"TXN-SEED-CHASE\\\", \\\"ts\\\": \\\"2026-08-12T08:38:38\\\", \\\"employee_id\\\": \\\"EMP-1004\\\", \\\"employee_name\\\": \\\"\\u0631\\u0627\\u0634\\u062f \\u0627\\u0644\\u0643\\u062a\\u0628\\u064a (\\u062a\\u062c\\u0631\\u064a\\u0628\\u064a)\\\", \\\"skill_id\\\": \\\"expense-claim\\\", \\\"type_ar\\\": \\\"\\u0645\\u0637\\u0627\\u0644\\u0628\\u0629 \\u0646\\u0641\\u0642\\u0627\\u062a / \\u0628\\u062f\\u0644\\u0627\\u062a\\\", \\\"payload_json\\\": \\\"{\\\\\\\"category\\\\\\\": \\\\\\\"training\\\\\\\", \\\\\\\"amount_aed\\\\\\\": 850, \\\\\\\"expense_date\\\\\\\": \\\\\\\"2026-08-07\\\\\\\", \\\\\\\"description\\\\\\\": \\\\\\\"\\u0631\\u0633\\u0648\\u0645 \\u0648\\u0631\\u0634\\u0629 \\u062a\\u062f\\u0631\\u064a\\u0628\\u064a\\u0629 \\u0645\\u0639\\u062a\\u0645\\u062f\\u0629\\\\\\\", \\\\\\\"receipt_ref\\\\\\\": \\\\\\\"RCPT-7741\\\\\\\"}\\\", \\\"status\\\": \\\"awaiting_manager\\\", \\\"approval_chain\\\": \\\"manager;finance\\\", \\\"chain_pos\\\": 0, \\\"current_approver\\\": \\\"manager\\\", \\\"decision_note\\\": \\\"\\\", \\\"output_ref\\\": \\\"\\\", \\\"sla_hours\\\": 24, \\\"updated_at\\\": \\\"2026-08-12T08:38:38\\\"}, {\\\"txn_id\\\": \\\"TXN-SEED-CERT\\\", \\\"ts\\\": \\\"2026-08-04T14:38:38\\\", \\\"employee_id\\\": \\\"EMP-1006\\\", \\\"employee_name\\\": \\\"\\u062e\\u0627\\u0644\\u062f \\u0627\\u0644\\u0647\\u0627\\u0645\\u0644\\u064a (\\u062a\\u062c\\u0631\\u064a\\u0628\\u064a)\\\", \\\"skill_id\\\": \\\"salary-certificate\\\", \\\"type_ar\\\": \\\"\\u0634\\u0647\\u0627\\u062f\\u0629 \\u0631\\u0627\\u062a\\u0628 / \\u0644\\u0645\\u0646 \\u064a\\u0647\\u0645\\u0647 \\u0627\\u0644\\u0623\\u0645\\u0631\\\", \\\"payload_json\\\": \\\"{\\\\\\\"certificate_type\\\\\\\": \\\\\\\"employment\\\\\\\", \\\\\\\"addressed_to\\\\\\\": \\\\\\\"\\u0644\\u0645\\u0646 \\u064a\\u0647\\u0645\\u0647 \\u0627\\u0644\\u0623\\u0645\\u0631\\\\\\\", \\\\\\\"language\\\\\\\": \\\\\\\"ar\\\\\\\"}\\\", \\\"status\\\": \\\"executed\\\", \\\"approval_chain\\\": \\\"\\\", \\\"chain_pos\\\": 0, \\\"current_approver\\\": \\\"\\\", \\\"decision_note\\\": \\\"\\\", \\\"output_ref\\\": \\\"CERT-118204\\\", \\\"sla_hours\\\": 1, \\\"updated_at\\\": \\\"2026-08-04T14:38:38\\\"}]\");\nconst stale = new Date(Date.now() - 30 * 3600 * 1000).toISOString();\n// re-arm the SLA anchor relative to now so the chaser always has a live case\nfor (const r of rows) if (r.txn_id === 'TXN-SEED-CHASE') { r.ts = stale; r.updated_at = stale; }\nreturn rows.map(r => ({ json: r }));"
+        "jsCode": "const rows = JSON.parse(\"[{\\\"txn_id\\\": \\\"TXN-SEED-OVERLAP\\\", \\\"ts\\\": \\\"2026-08-11T14:50:55\\\", \\\"employee_id\\\": \\\"EMP-1003\\\", \\\"employee_name\\\": \\\"\\u0633\\u0627\\u0644\\u0645 \\u0627\\u0644\\u0646\\u0642\\u0628\\u064a (\\u062a\\u062c\\u0631\\u064a\\u0628\\u064a)\\\", \\\"skill_id\\\": \\\"leave-request\\\", \\\"type_ar\\\": \\\"\\u0637\\u0644\\u0628 \\u0625\\u062c\\u0627\\u0632\\u0629\\\", \\\"payload_json\\\": \\\"{\\\\\\\"leave_type\\\\\\\": \\\\\\\"annual\\\\\\\", \\\\\\\"start_date\\\\\\\": \\\\\\\"2026-08-20\\\\\\\", \\\\\\\"end_date\\\\\\\": \\\\\\\"2026-08-24\\\\\\\", \\\\\\\"working_days\\\\\\\": 3, \\\\\\\"reason\\\\\\\": \\\\\\\"\\u0625\\u062c\\u0627\\u0632\\u0629 \\u0639\\u0627\\u0626\\u0644\\u064a\\u0629\\\\\\\"}\\\", \\\"status\\\": \\\"executed\\\", \\\"approval_chain\\\": \\\"manager\\\", \\\"chain_pos\\\": 1, \\\"current_approver\\\": \\\"\\\", \\\"decision_note\\\": \\\"\\u0627\\u0639\\u062a\\u0645\\u062f\\u062a\\\", \\\"output_ref\\\": \\\"\\\", \\\"sla_hours\\\": 48, \\\"updated_at\\\": \\\"2026-08-12T14:50:55\\\"}, {\\\"txn_id\\\": \\\"TXN-SEED-CHASE\\\", \\\"ts\\\": \\\"2026-08-12T08:50:55\\\", \\\"employee_id\\\": \\\"EMP-1004\\\", \\\"employee_name\\\": \\\"\\u0631\\u0627\\u0634\\u062f \\u0627\\u0644\\u0643\\u062a\\u0628\\u064a (\\u062a\\u062c\\u0631\\u064a\\u0628\\u064a)\\\", \\\"skill_id\\\": \\\"expense-claim\\\", \\\"type_ar\\\": \\\"\\u0645\\u0637\\u0627\\u0644\\u0628\\u0629 \\u0646\\u0641\\u0642\\u0627\\u062a / \\u0628\\u062f\\u0644\\u0627\\u062a\\\", \\\"payload_json\\\": \\\"{\\\\\\\"category\\\\\\\": \\\\\\\"training\\\\\\\", \\\\\\\"amount_aed\\\\\\\": 850, \\\\\\\"expense_date\\\\\\\": \\\\\\\"2026-08-07\\\\\\\", \\\\\\\"description\\\\\\\": \\\\\\\"\\u0631\\u0633\\u0648\\u0645 \\u0648\\u0631\\u0634\\u0629 \\u062a\\u062f\\u0631\\u064a\\u0628\\u064a\\u0629 \\u0645\\u0639\\u062a\\u0645\\u062f\\u0629\\\\\\\", \\\\\\\"receipt_ref\\\\\\\": \\\\\\\"RCPT-7741\\\\\\\"}\\\", \\\"status\\\": \\\"awaiting_manager\\\", \\\"approval_chain\\\": \\\"manager;finance\\\", \\\"chain_pos\\\": 0, \\\"current_approver\\\": \\\"manager\\\", \\\"decision_note\\\": \\\"\\\", \\\"output_ref\\\": \\\"\\\", \\\"sla_hours\\\": 24, \\\"updated_at\\\": \\\"2026-08-12T08:50:55\\\"}, {\\\"txn_id\\\": \\\"TXN-SEED-CERT\\\", \\\"ts\\\": \\\"2026-08-04T14:50:55\\\", \\\"employee_id\\\": \\\"EMP-1006\\\", \\\"employee_name\\\": \\\"\\u062e\\u0627\\u0644\\u062f \\u0627\\u0644\\u0647\\u0627\\u0645\\u0644\\u064a (\\u062a\\u062c\\u0631\\u064a\\u0628\\u064a)\\\", \\\"skill_id\\\": \\\"salary-certificate\\\", \\\"type_ar\\\": \\\"\\u0634\\u0647\\u0627\\u062f\\u0629 \\u0631\\u0627\\u062a\\u0628 / \\u0644\\u0645\\u0646 \\u064a\\u0647\\u0645\\u0647 \\u0627\\u0644\\u0623\\u0645\\u0631\\\", \\\"payload_json\\\": \\\"{\\\\\\\"certificate_type\\\\\\\": \\\\\\\"employment\\\\\\\", \\\\\\\"addressed_to\\\\\\\": \\\\\\\"\\u0644\\u0645\\u0646 \\u064a\\u0647\\u0645\\u0647 \\u0627\\u0644\\u0623\\u0645\\u0631\\\\\\\", \\\\\\\"language\\\\\\\": \\\\\\\"ar\\\\\\\"}\\\", \\\"status\\\": \\\"executed\\\", \\\"approval_chain\\\": \\\"\\\", \\\"chain_pos\\\": 0, \\\"current_approver\\\": \\\"\\\", \\\"decision_note\\\": \\\"\\\", \\\"output_ref\\\": \\\"CERT-118204\\\", \\\"sla_hours\\\": 1, \\\"updated_at\\\": \\\"2026-08-04T14:50:55\\\"}]\");\nconst stale = new Date(Date.now() - 30 * 3600 * 1000).toISOString();\n// re-arm the SLA anchor relative to now so the chaser always has a live case\nfor (const r of rows) if (r.txn_id === 'TXN-SEED-CHASE') { r.ts = stale; r.updated_at = stale; }\nreturn rows.map(r => ({ json: r }));"
       }
     },
     {
-      "id": "ea7f7436-8cbe-4688-986d-1b68738fd012",
+      "id": "10f9d88a-c1ad-4031-ae91-0b6c1649500e",
       "name": "Insert Transactions",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -2446,7 +2446,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "d5d72ab1-b771-4817-8100-a31a7e13e2c8",
+      "id": "8a906c21-f2e7-454d-b698-d38c3d540edc",
       "name": "Create AuditLog",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -2496,7 +2496,7 @@
       "executeOnce": true
     },
     {
-      "id": "c5fdd5b4-4e3c-4699-a723-6139e9334055",
+      "id": "418aec52-c456-4b18-a5e5-35777ba65d65",
       "name": "Clear AuditLog",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -2517,7 +2517,7 @@
       "executeOnce": true
     },
     {
-      "id": "396432c8-2d0e-4334-877f-5b3007740d6a",
+      "id": "80fd05ee-d669-47b2-a998-9b7bb1f11a58",
       "name": "Seed AuditLog",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -2526,11 +2526,11 @@
         6340
       ],
       "parameters": {
-        "jsCode": "const rows = JSON.parse(\"[{\\\"ts\\\": \\\"2026-08-11T14:38:38\\\", \\\"session_id\\\": \\\"S-seed-1\\\", \\\"employee_id\\\": \\\"EMP-1003\\\", \\\"skill_id\\\": \\\"leave-request\\\", \\\"service\\\": \\\"get_leave_balance\\\", \\\"request_json\\\": \\\"{}\\\", \\\"result_summary\\\": \\\"OK {\\\\\\\"annual_remaining\\\\\\\":26,...}\\\"}, {\\\"ts\\\": \\\"2026-08-11T14:38:38\\\", \\\"session_id\\\": \\\"S-seed-1\\\", \\\"employee_id\\\": \\\"EMP-1003\\\", \\\"skill_id\\\": \\\"leave-request\\\", \\\"service\\\": \\\"submit_transaction\\\", \\\"request_json\\\": \\\"{\\\\\\\"leave_type\\\\\\\":\\\\\\\"annual\\\\\\\"}\\\", \\\"result_summary\\\": \\\"OK TXN-SEED-OVERLAP awaiting_manager\\\"}]\");\nreturn rows.map(r => ({ json: r }));"
+        "jsCode": "const rows = JSON.parse(\"[{\\\"ts\\\": \\\"2026-08-11T14:50:55\\\", \\\"session_id\\\": \\\"S-seed-1\\\", \\\"employee_id\\\": \\\"EMP-1003\\\", \\\"skill_id\\\": \\\"leave-request\\\", \\\"service\\\": \\\"get_leave_balance\\\", \\\"request_json\\\": \\\"{}\\\", \\\"result_summary\\\": \\\"OK {\\\\\\\"annual_remaining\\\\\\\":26,...}\\\"}, {\\\"ts\\\": \\\"2026-08-11T14:50:55\\\", \\\"session_id\\\": \\\"S-seed-1\\\", \\\"employee_id\\\": \\\"EMP-1003\\\", \\\"skill_id\\\": \\\"leave-request\\\", \\\"service\\\": \\\"submit_transaction\\\", \\\"request_json\\\": \\\"{\\\\\\\"leave_type\\\\\\\":\\\\\\\"annual\\\\\\\"}\\\", \\\"result_summary\\\": \\\"OK TXN-SEED-OVERLAP awaiting_manager\\\"}]\");\nreturn rows.map(r => ({ json: r }));"
       }
     },
     {
-      "id": "f55f8c88-6480-401c-b6d6-a0c52089bfc5",
+      "id": "88c5f9c4-7552-41b9-ada5-9ffada36e016",
       "name": "Insert AuditLog",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -2560,7 +2560,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "8acaec16-8996-49dd-9bcf-4dc1880acb15",
+      "id": "3af46b01-555e-48c8-a823-9bb5812bb604",
       "name": "Create Memory",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -2618,7 +2618,7 @@
       "executeOnce": true
     },
     {
-      "id": "22d8d5a0-af9e-48d6-8da8-4a0f10e0729b",
+      "id": "c1fcd462-9f3e-4e96-9619-2e90c1415194",
       "name": "Clear Memory",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -2639,7 +2639,7 @@
       "executeOnce": true
     },
     {
-      "id": "530c4b6f-f847-40e6-898c-de52c8fcb0ff",
+      "id": "5bbfcaa3-b168-40da-aab8-3ebd680106b2",
       "name": "Seed Memory",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -2648,11 +2648,11 @@
         6340
       ],
       "parameters": {
-        "jsCode": "const rows = JSON.parse(\"[{\\\"memory_id\\\": \\\"MEM-0001\\\", \\\"scope\\\": \\\"org\\\", \\\"subject_id\\\": \\\"\\\", \\\"content\\\": \\\"\\u062a\\u064f\\u063a\\u0644\\u0642 \\u0625\\u062f\\u0627\\u0631\\u0629 \\u0627\\u0644\\u0645\\u0627\\u0644\\u064a\\u0629 \\u062d\\u0633\\u0627\\u0628\\u0627\\u062a\\u0647\\u0627 \\u0627\\u0644\\u0634\\u0647\\u0631\\u064a\\u0629 \\u0641\\u064a \\u0622\\u062e\\u0631 \\u062b\\u0644\\u0627\\u062b\\u0629 \\u0623\\u064a\\u0627\\u0645 \\u0639\\u0645\\u0644 \\u0645\\u0646 \\u0643\\u0644 \\u0634\\u0647\\u0631\\u060c \\u0648\\u062a\\u062a\\u0623\\u062e\\u0631 \\u0627\\u0639\\u062a\\u0645\\u0627\\u062f\\u0627\\u062a \\u0627\\u0644\\u0645\\u0637\\u0627\\u0644\\u0628\\u0627\\u062a \\u0641\\u064a \\u062a\\u0644\\u0643 \\u0627\\u0644\\u0641\\u062a\\u0631\\u0629.\\\", \\\"source\\\": \\\"seed\\\", \\\"status\\\": \\\"active\\\", \\\"use_count\\\": \\\"0\\\", \\\"created_at\\\": \\\"2026-07-24T14:38:38\\\", \\\"updated_at\\\": \\\"2026-07-24T14:38:38\\\"}, {\\\"memory_id\\\": \\\"MEM-0002\\\", \\\"scope\\\": \\\"employee\\\", \\\"subject_id\\\": \\\"EMP-1001\\\", \\\"content\\\": \\\"\\u064a\\u0641\\u0636\\u0651\\u0644 \\u0623\\u062d\\u0645\\u062f \\u0627\\u0644\\u0645\\u0647\\u064a\\u0631\\u064a \\u0627\\u0644\\u0631\\u062f\\u0648\\u062f \\u0627\\u0644\\u0645\\u062e\\u062a\\u0635\\u0631\\u0629 \\u0648\\u0627\\u0644\\u0645\\u0628\\u0627\\u0634\\u0631\\u0629\\u060c \\u0648\\u064a\\u0637\\u0644\\u0628 \\u062f\\u0627\\u0626\\u0645\\u064b\\u0627 \\u062a\\u0623\\u0643\\u064a\\u062f \\u0627\\u0644\\u062a\\u0648\\u0627\\u0631\\u064a\\u062e \\u0628\\u0627\\u0644\\u062a\\u0642\\u0648\\u064a\\u0645 \\u0627\\u0644\\u0645\\u064a\\u0644\\u0627\\u062f\\u064a.\\\", \\\"source\\\": \\\"seed\\\", \\\"status\\\": \\\"active\\\", \\\"use_count\\\": \\\"0\\\", \\\"created_at\\\": \\\"2026-08-07T14:38:38\\\", \\\"updated_at\\\": \\\"2026-08-07T14:38:38\\\"}, {\\\"memory_id\\\": \\\"MEM-0003\\\", \\\"scope\\\": \\\"employee\\\", \\\"subject_id\\\": \\\"EMP-1004\\\", \\\"content\\\": \\\"\\u0631\\u0627\\u0634\\u062f \\u0627\\u0644\\u0643\\u062a\\u0628\\u064a \\u064a\\u0642\\u062f\\u0651\\u0645 \\u0645\\u0637\\u0627\\u0644\\u0628\\u0627\\u062a \\u0646\\u0641\\u0642\\u0627\\u062a \\u062a\\u062f\\u0631\\u064a\\u0628\\u064a\\u0629 \\u0628\\u0634\\u0643\\u0644 \\u0645\\u062a\\u0643\\u0631\\u0631\\u060c \\u0648\\u063a\\u0627\\u0644\\u0628\\u064b\\u0627 \\u0645\\u0627 \\u064a\\u0646\\u0633\\u0649 \\u0625\\u0631\\u0641\\u0627\\u0642 \\u0631\\u0642\\u0645 \\u0627\\u0644\\u0625\\u064a\\u0635\\u0627\\u0644.\\\", \\\"source\\\": \\\"seed\\\", \\\"status\\\": \\\"active\\\", \\\"use_count\\\": \\\"0\\\", \\\"created_at\\\": \\\"2026-08-10T14:38:38\\\", \\\"updated_at\\\": \\\"2026-08-10T14:38:38\\\"}]\");\nreturn rows.map(r => ({ json: r }));"
+        "jsCode": "const rows = JSON.parse(\"[{\\\"memory_id\\\": \\\"MEM-0001\\\", \\\"scope\\\": \\\"org\\\", \\\"subject_id\\\": \\\"\\\", \\\"content\\\": \\\"\\u062a\\u064f\\u063a\\u0644\\u0642 \\u0625\\u062f\\u0627\\u0631\\u0629 \\u0627\\u0644\\u0645\\u0627\\u0644\\u064a\\u0629 \\u062d\\u0633\\u0627\\u0628\\u0627\\u062a\\u0647\\u0627 \\u0627\\u0644\\u0634\\u0647\\u0631\\u064a\\u0629 \\u0641\\u064a \\u0622\\u062e\\u0631 \\u062b\\u0644\\u0627\\u062b\\u0629 \\u0623\\u064a\\u0627\\u0645 \\u0639\\u0645\\u0644 \\u0645\\u0646 \\u0643\\u0644 \\u0634\\u0647\\u0631\\u060c \\u0648\\u062a\\u062a\\u0623\\u062e\\u0631 \\u0627\\u0639\\u062a\\u0645\\u0627\\u062f\\u0627\\u062a \\u0627\\u0644\\u0645\\u0637\\u0627\\u0644\\u0628\\u0627\\u062a \\u0641\\u064a \\u062a\\u0644\\u0643 \\u0627\\u0644\\u0641\\u062a\\u0631\\u0629.\\\", \\\"source\\\": \\\"seed\\\", \\\"status\\\": \\\"active\\\", \\\"use_count\\\": \\\"0\\\", \\\"created_at\\\": \\\"2026-07-24T14:50:55\\\", \\\"updated_at\\\": \\\"2026-07-24T14:50:55\\\"}, {\\\"memory_id\\\": \\\"MEM-0002\\\", \\\"scope\\\": \\\"employee\\\", \\\"subject_id\\\": \\\"EMP-1001\\\", \\\"content\\\": \\\"\\u064a\\u0641\\u0636\\u0651\\u0644 \\u0623\\u062d\\u0645\\u062f \\u0627\\u0644\\u0645\\u0647\\u064a\\u0631\\u064a \\u0627\\u0644\\u0631\\u062f\\u0648\\u062f \\u0627\\u0644\\u0645\\u062e\\u062a\\u0635\\u0631\\u0629 \\u0648\\u0627\\u0644\\u0645\\u0628\\u0627\\u0634\\u0631\\u0629\\u060c \\u0648\\u064a\\u0637\\u0644\\u0628 \\u062f\\u0627\\u0626\\u0645\\u064b\\u0627 \\u062a\\u0623\\u0643\\u064a\\u062f \\u0627\\u0644\\u062a\\u0648\\u0627\\u0631\\u064a\\u062e \\u0628\\u0627\\u0644\\u062a\\u0642\\u0648\\u064a\\u0645 \\u0627\\u0644\\u0645\\u064a\\u0644\\u0627\\u062f\\u064a.\\\", \\\"source\\\": \\\"seed\\\", \\\"status\\\": \\\"active\\\", \\\"use_count\\\": \\\"0\\\", \\\"created_at\\\": \\\"2026-08-07T14:50:55\\\", \\\"updated_at\\\": \\\"2026-08-07T14:50:55\\\"}, {\\\"memory_id\\\": \\\"MEM-0003\\\", \\\"scope\\\": \\\"employee\\\", \\\"subject_id\\\": \\\"EMP-1004\\\", \\\"content\\\": \\\"\\u0631\\u0627\\u0634\\u062f \\u0627\\u0644\\u0643\\u062a\\u0628\\u064a \\u064a\\u0642\\u062f\\u0651\\u0645 \\u0645\\u0637\\u0627\\u0644\\u0628\\u0627\\u062a \\u0646\\u0641\\u0642\\u0627\\u062a \\u062a\\u062f\\u0631\\u064a\\u0628\\u064a\\u0629 \\u0628\\u0634\\u0643\\u0644 \\u0645\\u062a\\u0643\\u0631\\u0631\\u060c \\u0648\\u063a\\u0627\\u0644\\u0628\\u064b\\u0627 \\u0645\\u0627 \\u064a\\u0646\\u0633\\u0649 \\u0625\\u0631\\u0641\\u0627\\u0642 \\u0631\\u0642\\u0645 \\u0627\\u0644\\u0625\\u064a\\u0635\\u0627\\u0644.\\\", \\\"source\\\": \\\"seed\\\", \\\"status\\\": \\\"active\\\", \\\"use_count\\\": \\\"0\\\", \\\"created_at\\\": \\\"2026-08-10T14:50:55\\\", \\\"updated_at\\\": \\\"2026-08-10T14:50:55\\\"}]\");\nreturn rows.map(r => ({ json: r }));"
       }
     },
     {
-      "id": "59fd0ad2-7d5a-4ac2-9c51-391f90825586",
+      "id": "15b609ad-18e7-4884-b572-75d21121026c",
       "name": "Insert Memory",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -2682,7 +2682,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "3f71592d-2d3a-4460-a928-3bfafeb726c8",
+      "id": "828113e2-5900-4b11-98b8-bd373bc43533",
       "name": "Create SkillPatches",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -2752,7 +2752,7 @@
       "executeOnce": true
     },
     {
-      "id": "deb49766-8208-488f-99d2-880726ebb0ff",
+      "id": "c62ce75b-205e-4bea-818d-509eeead836a",
       "name": "Clear SkillPatches",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -2773,7 +2773,7 @@
       "executeOnce": true
     },
     {
-      "id": "06b4468d-2e15-40cf-8f84-dfa26093695b",
+      "id": "02ac347e-b1af-4df9-b55d-5db741025c6c",
       "name": "Seed SkillPatches",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -2782,11 +2782,11 @@
         6340
       ],
       "parameters": {
-        "jsCode": "const rows = JSON.parse(\"[{\\\"patch_id\\\": \\\"PATCH-0001\\\", \\\"skill_id\\\": \\\"expense-claim\\\", \\\"kind\\\": \\\"add_rule\\\", \\\"proposed_text\\\": \\\"\\u0639\\u0646\\u062f \\u0627\\u062e\\u062a\\u064a\\u0627\\u0631 \\u0627\\u0644\\u0641\\u0626\\u0629 training: \\u0630\\u0643\\u0651\\u0631 \\u0627\\u0644\\u0645\\u0648\\u0638\\u0641 \\u0628\\u0631\\u0642\\u0645 \\u0627\\u0644\\u0625\\u064a\\u0635\\u0627\\u0644 \\u0642\\u0628\\u0644 \\u0639\\u0631\\u0636 \\u0628\\u0637\\u0627\\u0642\\u0629 \\u0627\\u0644\\u0645\\u0639\\u0627\\u064a\\u0646\\u0629\\u060c \\u0641\\u0642\\u062f \\u0644\\u0648\\u062d\\u0638 \\u062a\\u0643\\u0631\\u0627\\u0631 \\u0646\\u0633\\u064a\\u0627\\u0646\\u0647.\\\", \\\"rationale\\\": \\\"\\u062b\\u0644\\u0627\\u062b \\u0645\\u0637\\u0627\\u0644\\u0628\\u0627\\u062a \\u062a\\u062f\\u0631\\u064a\\u0628\\u064a\\u0629 \\u0645\\u062a\\u062a\\u0627\\u0644\\u064a\\u0629 \\u0631\\u064f\\u062f\\u0651\\u062a \\u0644\\u063a\\u064a\\u0627\\u0628 \\u0631\\u0642\\u0645 \\u0627\\u0644\\u0625\\u064a\\u0635\\u0627\\u0644.\\\", \\\"evidence\\\": \\\"TXN-SEED-CHASE\\\", \\\"status\\\": \\\"pending\\\", \\\"created_by\\\": \\\"agent\\\", \\\"reviewed_by\\\": \\\"\\\", \\\"review_note\\\": \\\"\\\", \\\"created_at\\\": \\\"2026-08-13T09:38:38\\\", \\\"updated_at\\\": \\\"2026-08-13T09:38:38\\\"}]\");\nreturn rows.map(r => ({ json: r }));"
+        "jsCode": "const rows = JSON.parse(\"[{\\\"patch_id\\\": \\\"PATCH-0001\\\", \\\"skill_id\\\": \\\"expense-claim\\\", \\\"kind\\\": \\\"add_rule\\\", \\\"proposed_text\\\": \\\"\\u0639\\u0646\\u062f \\u0627\\u062e\\u062a\\u064a\\u0627\\u0631 \\u0627\\u0644\\u0641\\u0626\\u0629 training: \\u0630\\u0643\\u0651\\u0631 \\u0627\\u0644\\u0645\\u0648\\u0638\\u0641 \\u0628\\u0631\\u0642\\u0645 \\u0627\\u0644\\u0625\\u064a\\u0635\\u0627\\u0644 \\u0642\\u0628\\u0644 \\u0639\\u0631\\u0636 \\u0628\\u0637\\u0627\\u0642\\u0629 \\u0627\\u0644\\u0645\\u0639\\u0627\\u064a\\u0646\\u0629\\u060c \\u0641\\u0642\\u062f \\u0644\\u0648\\u062d\\u0638 \\u062a\\u0643\\u0631\\u0627\\u0631 \\u0646\\u0633\\u064a\\u0627\\u0646\\u0647.\\\", \\\"rationale\\\": \\\"\\u062b\\u0644\\u0627\\u062b \\u0645\\u0637\\u0627\\u0644\\u0628\\u0627\\u062a \\u062a\\u062f\\u0631\\u064a\\u0628\\u064a\\u0629 \\u0645\\u062a\\u062a\\u0627\\u0644\\u064a\\u0629 \\u0631\\u064f\\u062f\\u0651\\u062a \\u0644\\u063a\\u064a\\u0627\\u0628 \\u0631\\u0642\\u0645 \\u0627\\u0644\\u0625\\u064a\\u0635\\u0627\\u0644.\\\", \\\"evidence\\\": \\\"TXN-SEED-CHASE\\\", \\\"status\\\": \\\"pending\\\", \\\"created_by\\\": \\\"agent\\\", \\\"reviewed_by\\\": \\\"\\\", \\\"review_note\\\": \\\"\\\", \\\"created_at\\\": \\\"2026-08-13T09:50:55\\\", \\\"updated_at\\\": \\\"2026-08-13T09:50:55\\\"}]\");\nreturn rows.map(r => ({ json: r }));"
       }
     },
     {
-      "id": "e7eec93a-ffb7-4656-898b-8ce38325fd17",
+      "id": "df6a8dcd-ff5f-4db4-9b03-6baca6544797",
       "name": "Insert SkillPatches",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -2816,7 +2816,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "66517379-0fba-4cac-8154-a189fd30bce0",
+      "id": "d74df831-e544-44bb-8dbd-fc4f34627a5d",
       "name": "Create Skills",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -2898,7 +2898,7 @@
       "executeOnce": true
     },
     {
-      "id": "fc36aea3-37ce-4086-91fa-b8c047e20cae",
+      "id": "b4898b11-f118-4188-b502-30be08010739",
       "name": "Clear Skills",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -2919,7 +2919,7 @@
       "executeOnce": true
     },
     {
-      "id": "e86dca74-4b49-4df3-b04a-9793abd9960f",
+      "id": "364bbd22-cabb-4ae4-a462-946354e8e1a9",
       "name": "Seed Skills",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -2928,11 +2928,11 @@
         6340
       ],
       "parameters": {
-        "jsCode": "const rows = JSON.parse(\"[{\\\"skill_id\\\": \\\"leave-request\\\", \\\"version\\\": \\\"1.2.0\\\", \\\"status\\\": \\\"approved\\\", \\\"title_ar\\\": \\\"\\u0637\\u0644\\u0628 \\u0625\\u062c\\u0627\\u0632\\u0629\\\", \\\"title_en\\\": \\\"Leave Request\\\", \\\"keywords\\\": \\\"\\u0625\\u062c\\u0627\\u0632\\u0629;\\u0627\\u062c\\u0627\\u0632\\u0629;\\u0625\\u062c\\u0627\\u0632\\u0647;leave;vacation;annual;sick;\\u0645\\u0631\\u0636\\u064a\\u0629;\\u0633\\u0646\\u0648\\u064a\\u0629;\\u0637\\u0627\\u0631\\u0626\\u0629;emergency\\\", \\\"profile_id\\\": \\\"hr-officer\\\", \\\"allowed_services\\\": \\\"get_employee_profile;get_leave_balance;check_leave_overlap;submit_transaction\\\", \\\"approval_chain\\\": \\\"manager\\\", \\\"auto_execute\\\": \\\"false\\\", \\\"sla_hours\\\": \\\"48\\\", \\\"internal\\\": \\\"false\\\", \\\"body_md\\\": \\\"---\\\\nid: leave-request\\\\nversion: 1.2.0\\\\nstatus: approved\\\\ntitle_ar: \\u0637\\u0644\\u0628 \\u0625\\u062c\\u0627\\u0632\\u0629\\\\ntitle_en: Leave Request\\\\nowner: HR Operations (\\u0639\\u0645\\u0644\\u064a\\u0627\\u062a \\u0627\\u0644\\u0645\\u0648\\u0627\\u0631\\u062f \\u0627\\u0644\\u0628\\u0634\\u0631\\u064a\\u0629)\\\\nprofile: hr-officer\\\\nallowed_services: [get_employee_profile, get_leave_balance, check_leave_overlap, submit_transaction]\\\\napproval_chain: [manager]\\\\nauto_execute: false\\\\nsla_hours: 48\\\\n---\\\\n\\\\n# \\u0645\\u0647\\u0627\\u0631\\u0629: \\u0637\\u0644\\u0628 \\u0625\\u062c\\u0627\\u0632\\u0629 \\u2014 Leave Request\\\\n\\\\n## \\u0627\\u0644\\u063a\\u0631\\u0636\\\\n\\u062a\\u0645\\u0643\\u064a\\u0646 \\u0627\\u0644\\u0645\\u0648\\u0638\\u0641 \\u0645\\u0646 \\u062a\\u0642\\u062f\\u064a\\u0645 \\u0637\\u0644\\u0628 \\u0625\\u062c\\u0627\\u0632\\u0629 (\\u0633\\u0646\\u0648\\u064a\\u0629 / \\u0645\\u0631\\u0636\\u064a\\u0629 / \\u0637\\u0627\\u0631\\u0626\\u0629) \\u0645\\u062d\\u0627\\u062f\\u062b\\u0629\\u064b\\u060c \\u0645\\u0639 \\u062a\\u062d\\u0642\\u0642 \\u0622\\u0644\\u064a \\u0643\\u0627\\u0645\\u0644 \\u0645\\u0646 \\u0627\\u0644\\u0631\\u0635\\u064a\\u062f \\u0648\\u0627\\u0644\\u062a\\u0639\\u0627\\u0631\\u0636\\u0627\\u062a \\u0648\\u0627\\u0644\\u0633\\u064a\\u0627\\u0633\\u0629 \\u0642\\u0628\\u0644 \\u0623\\u0646 \\u064a\\u0635\\u0644 \\u0627\\u0644\\u0637\\u0644\\u0628 \\u0625\\u0644\\u0649 \\u0627\\u0644\\u0645\\u062f\\u064a\\u0631 \\u0644\\u0644\\u0627\\u0639\\u062a\\u0645\\u0627\\u062f.\\\\n\\\\n## \\u0627\\u0644\\u062d\\u0642\\u0648\\u0644 \\u0627\\u0644\\u0645\\u0637\\u0644\\u0648\\u0628\\u0629 (\\u0627\\u062c\\u0645\\u0639\\u0647\\u0627 \\u0645\\u062d\\u0627\\u062f\\u062b\\u0629\\u064b \\u0648\\u0644\\u0627 \\u062a\\u0641\\u062a\\u0631\\u0636 \\u0634\\u064a\\u0626\\u064b\\u0627)\\\\n| \\u0627\\u0644\\u062d\\u0642\\u0644 | \\u0627\\u0644\\u0642\\u064a\\u0645 | \\u0645\\u0644\\u0627\\u062d\\u0638\\u0627\\u062a |\\\\n|---|---|---|\\\\n| leave_type | annual \\\\\\\\| sick \\\\\\\\| emergency | \\u00ab\\u0633\\u0646\\u0648\\u064a\\u0629 / \\u0645\\u0631\\u0636\\u064a\\u0629 / \\u0637\\u0627\\u0631\\u0626\\u0629\\u00bb |\\\\n| start_date | YYYY-MM-DD | \\u0644\\u0627 \\u064a\\u064f\\u0642\\u0628\\u0644 \\u062a\\u0627\\u0631\\u064a\\u062e \\u0641\\u064a \\u0627\\u0644\\u0645\\u0627\\u0636\\u064a |\\\\n| end_date | YYYY-MM-DD | \\u2265 start_date |\\\\n| reason | \\u0646\\u0635 \\u062d\\u0631 \\u0642\\u0635\\u064a\\u0631 | \\u0625\\u0644\\u0632\\u0627\\u0645\\u064a \\u0644\\u0644\\u0637\\u0627\\u0631\\u0626\\u0629\\u060c \\u0627\\u062e\\u062a\\u064a\\u0627\\u0631\\u064a \\u0644\\u0644\\u0633\\u0646\\u0648\\u064a\\u0629 |\\\\n| coverage_colleague | \\u0627\\u0633\\u0645 \\u0632\\u0645\\u064a\\u0644 \\u0627\\u0644\\u062a\\u063a\\u0637\\u064a\\u0629 | \\u0645\\u0637\\u0644\\u0648\\u0628 \\u0625\\u0630\\u0627 \\u0643\\u0627\\u0646\\u062a \\u0627\\u0644\\u0645\\u062f\\u0629 > 5 \\u0623\\u064a\\u0627\\u0645 \\u0639\\u0645\\u0644 |\\\\n\\\\n## \\u0642\\u0648\\u0627\\u0639\\u062f \\u0627\\u0644\\u0623\\u0647\\u0644\\u064a\\u0629 \\u0648\\u0627\\u0644\\u0633\\u064a\\u0627\\u0633\\u0629 (\\u0637\\u0628\\u0651\\u0642\\u0647\\u0627 \\u062d\\u0631\\u0641\\u064a\\u064b\\u0627)\\\\n1. \\u0627\\u062d\\u0633\\u0628 \\u0639\\u062f\\u062f \\u0623\\u064a\\u0627\\u0645 \\u0627\\u0644\\u0625\\u062c\\u0627\\u0632\\u0629 **\\u0628\\u0623\\u064a\\u0627\\u0645 \\u0627\\u0644\\u0639\\u0645\\u0644** (\\u0639\\u0637\\u0644\\u0629 \\u0627\\u0644\\u0633\\u0628\\u062a \\u0648\\u0627\\u0644\\u0623\\u062d\\u062f \\u0644\\u0627 \\u062a\\u064f\\u062d\\u062a\\u0633\\u0628).\\\\n2. **annual**: \\u0627\\u0644\\u0631\\u0635\\u064a\\u062f \\u0627\\u0644\\u0645\\u062a\\u0627\\u062d \\u0645\\u0646 get_leave_balance \\u064a\\u062c\\u0628 \\u0623\\u0646 \\u064a\\u063a\\u0637\\u064a \\u0627\\u0644\\u0645\\u062f\\u0629 \\u0643\\u0627\\u0645\\u0644\\u0629. \\u0631\\u0635\\u064a\\u062f \\u063a\\u064a\\u0631 \\u0643\\u0627\\u0641\\u064d \\u21d2 \\u0627\\u0631\\u0641\\u0636 \\u0628\\u0644\\u0637\\u0641 \\u0648\\u0627\\u0639\\u0631\\u0636 \\u0627\\u0644\\u0631\\u0635\\u064a\\u062f \\u0627\\u0644\\u0645\\u062a\\u0628\\u0642\\u064a \\u0648\\u0627\\u0642\\u062a\\u0631\\u062d \\u0623\\u0642\\u0631\\u0628 \\u0645\\u062f\\u0629 \\u0645\\u0645\\u0643\\u0646\\u0629.\\\\n3. **sick**: \\u062d\\u062a\\u0649 \\u064a\\u0648\\u0645\\u064a\\u0646 \\u062f\\u0648\\u0646 \\u0645\\u0633\\u062a\\u0646\\u062f\\u061b 3 \\u0623\\u064a\\u0627\\u0645 \\u0641\\u0623\\u0643\\u062b\\u0631 \\u062a\\u062a\\u0637\\u0644\\u0628 \\u0625\\u0634\\u0627\\u0631\\u0629 \\u0625\\u0644\\u0649 \\u062a\\u0642\\u0631\\u064a\\u0631 \\u0637\\u0628\\u064a (\\u0627\\u0637\\u0644\\u0628 \\u0631\\u0642\\u0645 \\u0627\\u0644\\u062a\\u0642\\u0631\\u064a\\u0631 \\u0641\\u0642\\u0637 \\u2014 \\u0644\\u0627 \\u0645\\u0631\\u0641\\u0642\\u0627\\u062a).\\\\n4. **emergency**: 3 \\u0623\\u064a\\u0627\\u0645 \\u0643\\u062d\\u062f \\u0623\\u0642\\u0635\\u0649 \\u0641\\u064a \\u0627\\u0644\\u0637\\u0644\\u0628 \\u0627\\u0644\\u0648\\u0627\\u062d\\u062f\\u060c \\u0648\\u0627\\u0644\\u0633\\u0628\\u0628 \\u0625\\u0644\\u0632\\u0627\\u0645\\u064a.\\\\n5. \\u0627\\u0633\\u062a\\u062f\\u0639\\u0650 check_leave_overlap \\u062f\\u0627\\u0626\\u0645\\u064b\\u0627: \\u0625\\u0646 \\u062a\\u0639\\u0627\\u0631\\u0636\\u062a \\u0627\\u0644\\u0645\\u062f\\u0629 \\u0645\\u0639 \\u0625\\u062c\\u0627\\u0632\\u0629 \\u0645\\u0639\\u062a\\u0645\\u062f\\u0629 \\u0644\\u0632\\u0645\\u064a\\u0644 \\u0641\\u064a \\u0627\\u0644\\u0641\\u0631\\u064a\\u0642 \\u0646\\u0641\\u0633\\u0647\\u060c \\u062d\\u0630\\u0651\\u0631 \\u0627\\u0644\\u0645\\u0648\\u0638\\u0641 \\u0648\\u0627\\u0637\\u0644\\u0628 \\u062a\\u0623\\u0643\\u064a\\u062f\\u064b\\u0627 \\u0635\\u0631\\u064a\\u062d\\u064b\\u0627 \\u0642\\u0628\\u0644 \\u0627\\u0644\\u0645\\u062a\\u0627\\u0628\\u0639\\u0629\\u060c \\u0648\\u0623\\u062f\\u0631\\u062c \\u0627\\u0644\\u062a\\u0639\\u0627\\u0631\\u0636 \\u0641\\u064a \\u0645\\u0644\\u0627\\u062d\\u0638\\u0629 \\u0627\\u0644\\u0637\\u0644\\u0628.\\\\n6. \\u0627\\u0644\\u0637\\u0644\\u0628 > 10 \\u0623\\u064a\\u0627\\u0645 \\u0639\\u0645\\u0644 \\u21d2 \\u0635\\u0639\\u0651\\u062f\\u0647 \\u0645\\u0639 approval_chain \\u0645\\u0648\\u0633\\u0651\\u0639\\u0629 (manager \\u062b\\u0645 hr_head) \\u0648\\u0627\\u0630\\u0643\\u0631 \\u0630\\u0644\\u0643 \\u0641\\u064a \\u0627\\u0644\\u0645\\u0639\\u0627\\u064a\\u0646\\u0629.\\\\n\\\\n## \\u062e\\u0637\\u0648\\u0627\\u062a \\u0627\\u0644\\u0625\\u062c\\u0631\\u0627\\u0621\\\\n1. get_employee_profile \\u0644\\u0644\\u062a\\u062d\\u0642\\u0642 \\u0645\\u0646 \\u0647\\u0648\\u064a\\u0629 \\u0627\\u0644\\u0645\\u0648\\u0638\\u0641 \\u0648\\u0641\\u0631\\u064a\\u0642\\u0647 \\u0648\\u0645\\u062f\\u064a\\u0631\\u0647.\\\\n2. \\u0627\\u062c\\u0645\\u0639 \\u0627\\u0644\\u062d\\u0642\\u0648\\u0644 \\u0627\\u0644\\u0646\\u0627\\u0642\\u0635\\u0629 \\u0633\\u0624\\u0627\\u0644\\u064b\\u0627 \\u0648\\u0627\\u062d\\u062f\\u064b\\u0627 \\u0645\\u0631\\u0643\\u0651\\u0632\\u064b\\u0627 \\u0641\\u064a \\u0643\\u0644 \\u0631\\u0633\\u0627\\u0644\\u0629 (\\u0644\\u0627 \\u062a\\u0633\\u0623\\u0644 \\u0639\\u0646 \\u0623\\u0643\\u062b\\u0631 \\u0645\\u0646 \\u062d\\u0642\\u0644\\u064a\\u0646 \\u0645\\u0639\\u064b\\u0627).\\\\n3. get_leave_balance \\u062b\\u0645 \\u0637\\u0628\\u0651\\u0642 \\u0642\\u0648\\u0627\\u0639\\u062f \\u0627\\u0644\\u0633\\u064a\\u0627\\u0633\\u0629 \\u0623\\u0639\\u0644\\u0627\\u0647 \\u0628\\u0627\\u0644\\u062a\\u0631\\u062a\\u064a\\u0628.\\\\n4. check_leave_overlap \\u0644\\u0644\\u0645\\u062f\\u0629 \\u0627\\u0644\\u0645\\u0637\\u0644\\u0648\\u0628\\u0629.\\\\n5. \\u0627\\u0639\\u0631\\u0636 **\\u0628\\u0637\\u0627\\u0642\\u0629 \\u0645\\u0639\\u0627\\u064a\\u0646\\u0629** \\u0643\\u0627\\u0645\\u0644\\u0629: \\u0627\\u0644\\u0646\\u0648\\u0639\\u060c \\u0627\\u0644\\u0645\\u062f\\u0629 \\u0628\\u0623\\u064a\\u0627\\u0645 \\u0627\\u0644\\u0639\\u0645\\u0644\\u060c \\u0627\\u0644\\u0631\\u0635\\u064a\\u062f \\u0642\\u0628\\u0644/\\u0628\\u0639\\u062f\\u060c \\u0627\\u0644\\u0645\\u0639\\u062a\\u0645\\u0650\\u062f\\u060c \\u0623\\u064a \\u062a\\u062d\\u0630\\u064a\\u0631\\u0627\\u062a.\\\\n6. \\u0628\\u0639\\u062f \\u062a\\u0623\\u0643\\u064a\\u062f \\u0627\\u0644\\u0645\\u0648\\u0638\\u0641 \\u0641\\u0642\\u0637: submit_transaction. \\u0644\\u0627 \\u0625\\u0631\\u0633\\u0627\\u0644 \\u0642\\u0628\\u0644 \\u062a\\u0623\\u0643\\u064a\\u062f \\u0635\\u0631\\u064a\\u062d.\\\\n\\\\n## \\u0627\\u0644\\u062a\\u0635\\u0639\\u064a\\u062f \\u0648\\u0627\\u0644\\u0627\\u0633\\u062a\\u062b\\u0646\\u0627\\u0621\\u0627\\u062a\\\\n- \\u0627\\u0644\\u0631\\u0635\\u064a\\u062f \\u0623\\u0648 \\u0627\\u0644\\u0628\\u064a\\u0627\\u0646\\u0627\\u062a \\u063a\\u064a\\u0631 \\u0645\\u062a\\u0627\\u062d\\u0629 \\u0645\\u0646 \\u0627\\u0644\\u062e\\u062f\\u0645\\u0627\\u062a \\u21d2 \\u0627\\u0639\\u062a\\u0630\\u0631\\u060c \\u0623\\u0646\\u0634\\u0626 \\u0637\\u0644\\u0628\\u064b\\u0627 \\u0628\\u062d\\u0627\\u0644\\u0629 needs_attention \\u0639\\u0628\\u0631 submit_transaction\\u060c \\u0648\\u0623\\u062e\\u0628\\u0631 \\u0627\\u0644\\u0645\\u0648\\u0638\\u0641 \\u0623\\u0646 \\u0627\\u0644\\u0645\\u0648\\u0627\\u0631\\u062f \\u0627\\u0644\\u0628\\u0634\\u0631\\u064a\\u0629 \\u0633\\u062a\\u062a\\u0648\\u0627\\u0635\\u0644 \\u0645\\u0639\\u0647.\\\\n- \\u0637\\u0644\\u0628 \\u064a\\u062e\\u0627\\u0644\\u0641 \\u0627\\u0644\\u0633\\u064a\\u0627\\u0633\\u0629 \\u0648\\u0644\\u0627 \\u064a\\u0642\\u0628\\u0644 \\u0627\\u0644\\u0645\\u0648\\u0638\\u0641 \\u0627\\u0644\\u062a\\u0639\\u062f\\u064a\\u0644 \\u21d2 \\u0644\\u0627 \\u062a\\u0631\\u0633\\u0644\\u061b \\u0627\\u0634\\u0631\\u062d \\u0627\\u0644\\u0642\\u0627\\u0639\\u062f\\u0629 \\u0627\\u0644\\u0645\\u062e\\u0627\\u0644\\u0641\\u0629 \\u0628\\u0646\\u0635\\u0647\\u0627.\\\\n\\\\n## \\u0645\\u0627 \\u0644\\u0627 \\u064a\\u062c\\u0648\\u0632 (\\u062e\\u0637\\u0648\\u0637 \\u062d\\u0645\\u0631\\u0627\\u0621)\\\\n- \\u0644\\u0627 \\u062a\\u0639\\u062a\\u0645\\u062f \\u0627\\u0644\\u0625\\u062c\\u0627\\u0632\\u0629 \\u0628\\u0646\\u0641\\u0633\\u0643 \\u2014 \\u0627\\u0644\\u0627\\u0639\\u062a\\u0645\\u0627\\u062f \\u0644\\u0644\\u0645\\u062f\\u064a\\u0631 \\u062d\\u0635\\u0631\\u064b\\u0627.\\\\n- \\u0644\\u0627 \\u062a\\u062a\\u062c\\u0627\\u0648\\u0632 \\u0627\\u0644\\u0631\\u0635\\u064a\\u062f \\u0648\\u0644\\u0648 \\u0628\\u064a\\u0648\\u0645 \\u0648\\u0627\\u062d\\u062f \\u00ab\\u0627\\u0633\\u062a\\u062b\\u0646\\u0627\\u0621\\u064b\\u00bb.\\\\n- \\u0644\\u0627 \\u062a\\u0637\\u0644\\u0628 \\u0623\\u0648 \\u062a\\u0633\\u062c\\u0644 \\u0623\\u064a \\u0628\\u064a\\u0627\\u0646\\u0627\\u062a \\u0635\\u062d\\u064a\\u0629 \\u062a\\u0641\\u0635\\u064a\\u0644\\u064a\\u0629 (\\u0627\\u0644\\u062a\\u0634\\u062e\\u064a\\u0635\\u060c \\u0627\\u0644\\u062d\\u0627\\u0644\\u0629) \\u2014 \\u0631\\u0642\\u0645 \\u0627\\u0644\\u062a\\u0642\\u0631\\u064a\\u0631 \\u0627\\u0644\\u0637\\u0628\\u064a \\u0641\\u0642\\u0637.\\\\n\\\", \\\"created_by\\\": \\\"human\\\", \\\"updated_at\\\": \\\"2026-08-13T14:38:38\\\"}, {\\\"skill_id\\\": \\\"salary-certificate\\\", \\\"version\\\": \\\"1.1.0\\\", \\\"status\\\": \\\"approved\\\", \\\"title_ar\\\": \\\"\\u0634\\u0647\\u0627\\u062f\\u0629 \\u0631\\u0627\\u062a\\u0628 / \\u0644\\u0645\\u0646 \\u064a\\u0647\\u0645\\u0647 \\u0627\\u0644\\u0623\\u0645\\u0631\\\", \\\"title_en\\\": \\\"Salary / Employment Certificate\\\", \\\"keywords\\\": \\\"\\u0634\\u0647\\u0627\\u062f\\u0629;\\u0631\\u0627\\u062a\\u0628;\\u0644\\u0645\\u0646 \\u064a\\u0647\\u0645\\u0647 \\u0627\\u0644\\u0623\\u0645\\u0631;certificate;salary;employment;\\u0628\\u0646\\u0643;\\u0633\\u0641\\u0627\\u0631\\u0629\\\", \\\"profile_id\\\": \\\"hr-officer\\\", \\\"allowed_services\\\": \\\"get_employee_profile;get_salary_record;submit_transaction\\\", \\\"approval_chain\\\": \\\"\\\", \\\"auto_execute\\\": \\\"true\\\", \\\"sla_hours\\\": \\\"1\\\", \\\"internal\\\": \\\"false\\\", \\\"body_md\\\": \\\"---\\\\nid: salary-certificate\\\\nversion: 1.1.0\\\\nstatus: approved\\\\ntitle_ar: \\u0634\\u0647\\u0627\\u062f\\u0629 \\u0631\\u0627\\u062a\\u0628 / \\u0644\\u0645\\u0646 \\u064a\\u0647\\u0645\\u0647 \\u0627\\u0644\\u0623\\u0645\\u0631\\\\ntitle_en: Salary / Employment Certificate\\\\nowner: HR Operations (\\u0639\\u0645\\u0644\\u064a\\u0627\\u062a \\u0627\\u0644\\u0645\\u0648\\u0627\\u0631\\u062f \\u0627\\u0644\\u0628\\u0634\\u0631\\u064a\\u0629)\\\\nprofile: hr-officer\\\\nallowed_services: [get_employee_profile, get_salary_record, submit_transaction]\\\\napproval_chain: []\\\\nauto_execute: true\\\\nsla_hours: 1\\\\n---\\\\n\\\\n# \\u0645\\u0647\\u0627\\u0631\\u0629: \\u0634\\u0647\\u0627\\u062f\\u0629 \\u0631\\u0627\\u062a\\u0628 / \\u0644\\u0645\\u0646 \\u064a\\u0647\\u0645\\u0647 \\u0627\\u0644\\u0623\\u0645\\u0631\\\\n\\\\n## \\u0627\\u0644\\u063a\\u0631\\u0636\\\\n\\u0625\\u0635\\u062f\\u0627\\u0631 \\u0634\\u0647\\u0627\\u062f\\u0629 \\u0631\\u0633\\u0645\\u064a\\u0629 \\u0641\\u0648\\u0631\\u064a\\u0629 (\\u0644\\u0627 \\u062a\\u062d\\u062a\\u0627\\u062c \\u0627\\u0639\\u062a\\u0645\\u0627\\u062f\\u064b\\u0627 \\u0628\\u0634\\u0631\\u064a\\u064b\\u0627) \\u062a\\u064f\\u0648\\u062c\\u064e\\u0651\\u0647 \\u0625\\u0644\\u0649 \\u062c\\u0647\\u0629 \\u064a\\u062d\\u062f\\u062f\\u0647\\u0627 \\u0627\\u0644\\u0645\\u0648\\u0638\\u0641: \\u0628\\u0646\\u0643\\u060c \\u0633\\u0641\\u0627\\u0631\\u0629\\u060c \\u062c\\u0647\\u0629 \\u062d\\u0643\\u0648\\u0645\\u064a\\u0629\\u060c \\u0623\\u0648 \\u00ab\\u0644\\u0645\\u0646 \\u064a\\u0647\\u0645\\u0647 \\u0627\\u0644\\u0623\\u0645\\u0631\\u00bb.\\\\n\\\\n## \\u0627\\u0644\\u062d\\u0642\\u0648\\u0644 \\u0627\\u0644\\u0645\\u0637\\u0644\\u0648\\u0628\\u0629\\\\n| \\u0627\\u0644\\u062d\\u0642\\u0644 | \\u0627\\u0644\\u0642\\u064a\\u0645 | \\u0645\\u0644\\u0627\\u062d\\u0638\\u0627\\u062a |\\\\n|---|---|---|\\\\n| certificate_type | salary \\\\\\\\| employment | \\u00ab\\u0634\\u0647\\u0627\\u062f\\u0629 \\u0631\\u0627\\u062a\\u0628\\u00bb \\u062a\\u062a\\u0636\\u0645\\u0646 \\u0627\\u0644\\u0631\\u0627\\u062a\\u0628\\u061b \\u00ab\\u0634\\u0647\\u0627\\u062f\\u0629 \\u0639\\u0645\\u0644\\u00bb \\u0628\\u062f\\u0648\\u0646\\u0647 |\\\\n| addressed_to | \\u0646\\u0635 | \\u0627\\u0633\\u0645 \\u0627\\u0644\\u062c\\u0647\\u0629\\u060c \\u0623\\u0648 \\u00ab\\u0644\\u0645\\u0646 \\u064a\\u0647\\u0645\\u0647 \\u0627\\u0644\\u0623\\u0645\\u0631\\u00bb |\\\\n| language | ar \\\\\\\\| en | \\u0627\\u0644\\u0627\\u0641\\u062a\\u0631\\u0627\\u0636\\u064a ar |\\\\n| include_allowances | true \\\\\\\\| false | \\u0644\\u0634\\u0647\\u0627\\u062f\\u0629 \\u0627\\u0644\\u0631\\u0627\\u062a\\u0628 \\u0641\\u0642\\u0637: \\u0647\\u0644 \\u062a\\u064f\\u0641\\u0635\\u064e\\u0651\\u0644 \\u0627\\u0644\\u0628\\u062f\\u0644\\u0627\\u062a\\u061f |\\\\n\\\\n## \\u0642\\u0648\\u0627\\u0639\\u062f \\u0627\\u0644\\u0623\\u0647\\u0644\\u064a\\u0629 \\u0648\\u0627\\u0644\\u0633\\u064a\\u0627\\u0633\\u0629\\\\n1. \\u062a\\u064f\\u0635\\u062f\\u0631 \\u0627\\u0644\\u0634\\u0647\\u0627\\u062f\\u0629 \\u0644\\u0644\\u0645\\u0648\\u0638\\u0641 **\\u0639\\u0646 \\u0646\\u0641\\u0633\\u0647 \\u0641\\u0642\\u0637** \\u2014 \\u064a\\u064f\\u0631\\u0641\\u0636 \\u0623\\u064a \\u0637\\u0644\\u0628 \\u0634\\u0647\\u0627\\u062f\\u0629 \\u0639\\u0646 \\u0645\\u0648\\u0638\\u0641 \\u0622\\u062e\\u0631 \\u0645\\u0647\\u0645\\u0627 \\u0643\\u0627\\u0646 \\u0627\\u0644\\u0645\\u0628\\u0631\\u0631\\u060c \\u0648\\u064a\\u064f\\u0642\\u062a\\u0631\\u062d \\u0623\\u0646 \\u064a\\u0637\\u0644\\u0628\\u0647\\u0627 \\u0635\\u0627\\u062d\\u0628\\u0647\\u0627 \\u0628\\u0646\\u0641\\u0633\\u0647.\\\\n2. \\u0628\\u064a\\u0627\\u0646\\u0627\\u062a \\u0627\\u0644\\u0634\\u0647\\u0627\\u062f\\u0629 \\u062a\\u0624\\u062e\\u0630 **\\u062d\\u0631\\u0641\\u064a\\u064b\\u0627** \\u0645\\u0646 get_salary_record \\u0648get_employee_profile \\u2014 \\u064a\\u064f\\u0645\\u0646\\u0639 \\u062a\\u0639\\u062f\\u064a\\u0644 \\u0623\\u064a \\u0631\\u0642\\u0645 \\u0623\\u0648 \\u0645\\u0633\\u0645\\u0649 \\u0648\\u0638\\u064a\\u0641\\u064a \\u0628\\u0637\\u0644\\u0628 \\u0627\\u0644\\u0645\\u0648\\u0638\\u0641\\u061b \\u0627\\u0644\\u0627\\u0639\\u062a\\u0631\\u0627\\u0636 \\u0639\\u0644\\u0649 \\u0627\\u0644\\u0628\\u064a\\u0627\\u0646\\u0627\\u062a \\u064a\\u064f\\u062d\\u0627\\u0644 \\u0625\\u0644\\u0649 \\u0627\\u0644\\u0645\\u0648\\u0627\\u0631\\u062f \\u0627\\u0644\\u0628\\u0634\\u0631\\u064a\\u0629 (needs_attention).\\\\n3. \\u0627\\u0644\\u0645\\u0648\\u0638\\u0641 \\u062a\\u062d\\u062a \\u0641\\u062a\\u0631\\u0629 \\u0627\\u0644\\u0625\\u0634\\u0639\\u0627\\u0631 (status = notice) \\u21d2 \\u0634\\u0647\\u0627\\u062f\\u0629 \\u0639\\u0645\\u0644 \\u0641\\u0642\\u0637\\u060c \\u0628\\u0644\\u0627 \\u0631\\u0627\\u062a\\u0628\\u060c \\u0645\\u0639 \\u0639\\u0628\\u0627\\u0631\\u0629 \\u00ab\\u062d\\u062a\\u0649 \\u062a\\u0627\\u0631\\u064a\\u062e\\u0647\\u00bb.\\\\n4. \\u0627\\u0644\\u062d\\u062f: 3 \\u0634\\u0647\\u0627\\u062f\\u0627\\u062a \\u0641\\u064a \\u0627\\u0644\\u0634\\u0647\\u0631 \\u0627\\u0644\\u0648\\u0627\\u062d\\u062f\\u061b \\u062a\\u062c\\u0627\\u0648\\u0632\\u0647\\u0627 \\u21d2 \\u0627\\u0639\\u062a\\u0630\\u0631 \\u0648\\u0627\\u0630\\u0643\\u0631 \\u062a\\u0627\\u0631\\u064a\\u062e \\u0623\\u0648\\u0644 \\u0634\\u0647\\u0627\\u062f\\u0629 \\u0645\\u062a\\u0627\\u062d\\u0629.\\\\n\\\\n## \\u062e\\u0637\\u0648\\u0627\\u062a \\u0627\\u0644\\u0625\\u062c\\u0631\\u0627\\u0621\\\\n1. get_employee_profile \\u062b\\u0645 get_salary_record.\\\\n2. \\u0627\\u062c\\u0645\\u0639 \\u0627\\u0644\\u062d\\u0642\\u0648\\u0644 \\u0627\\u0644\\u0646\\u0627\\u0642\\u0635\\u0629 (\\u0633\\u0624\\u0627\\u0644 \\u0648\\u0627\\u062d\\u062f \\u0645\\u0631\\u0643\\u0651\\u0632 \\u0641\\u064a \\u0643\\u0644 \\u0631\\u0633\\u0627\\u0644\\u0629).\\\\n3. \\u0627\\u0639\\u0631\\u0636 **\\u0628\\u0637\\u0627\\u0642\\u0629 \\u0645\\u0639\\u0627\\u064a\\u0646\\u0629** \\u0628\\u0646\\u0635 \\u0627\\u0644\\u0634\\u0647\\u0627\\u062f\\u0629 \\u0643\\u0627\\u0645\\u0644\\u064b\\u0627 \\u0628\\u0627\\u0644\\u0628\\u0646\\u064a\\u0629 \\u0627\\u0644\\u0631\\u0633\\u0645\\u064a\\u0629: \\u0627\\u0644\\u062a\\u0631\\u0648\\u064a\\u0633\\u0629\\u060c \\u00ab\\u062a\\u0634\\u0647\\u062f \\u0627\\u0644\\u062c\\u0647\\u0629 \\u0628\\u0623\\u0646 \\u0627\\u0644\\u0633\\u064a\\u062f/\\u0629 \\u2026 \\u064a\\u0639\\u0645\\u0644 \\u0644\\u062f\\u064a\\u0646\\u0627 \\u0628\\u0648\\u0638\\u064a\\u0641\\u0629 \\u2026 \\u0645\\u0646\\u0630 \\u2026\\u00bb\\u060c \\u0628\\u064a\\u0627\\u0646\\u0627\\u062a \\u0627\\u0644\\u0631\\u0627\\u062a\\u0628 \\u0625\\u0646 \\u0637\\u064f\\u0644\\u0628\\u062a\\u060c \\u0639\\u0628\\u0627\\u0631\\u0629 \\u0627\\u0644\\u0625\\u062e\\u0644\\u0627\\u0621 \\u00ab\\u0623\\u064f\\u0635\\u062f\\u0631\\u062a \\u0647\\u0630\\u0647 \\u0627\\u0644\\u0634\\u0647\\u0627\\u062f\\u0629 \\u0628\\u0646\\u0627\\u0621\\u064b \\u0639\\u0644\\u0649 \\u0637\\u0644\\u0628 \\u0627\\u0644\\u0645\\u0648\\u0638\\u0641 \\u062f\\u0648\\u0646 \\u0623\\u062f\\u0646\\u0649 \\u0645\\u0633\\u0624\\u0648\\u0644\\u064a\\u0629 \\u0639\\u0644\\u0649 \\u0627\\u0644\\u062c\\u0647\\u0629 \\u062a\\u062c\\u0627\\u0647 \\u0627\\u0644\\u063a\\u064a\\u0631\\u00bb\\u060c \\u0648\\u0627\\u0644\\u062a\\u0630\\u064a\\u064a\\u0644.\\\\n4. \\u0628\\u0639\\u062f \\u062a\\u0623\\u0643\\u064a\\u062f \\u0627\\u0644\\u0645\\u0648\\u0638\\u0641: submit_transaction \\u2014 \\u062a\\u064f\\u0646\\u0641\\u064e\\u0651\\u0630 \\u0641\\u0648\\u0631\\u064b\\u0627 (auto_execute) \\u0648\\u064a\\u062d\\u0635\\u0644 \\u0627\\u0644\\u0645\\u0648\\u0638\\u0641 \\u0639\\u0644\\u0649 \\u0631\\u0642\\u0645 \\u0627\\u0644\\u0634\\u0647\\u0627\\u062f\\u0629.\\\\n\\\\n## \\u0627\\u0644\\u062a\\u0635\\u0639\\u064a\\u062f \\u0648\\u0627\\u0644\\u0627\\u0633\\u062a\\u062b\\u0646\\u0627\\u0621\\u0627\\u062a\\\\n- \\u0628\\u064a\\u0627\\u0646\\u0627\\u062a \\u0627\\u0644\\u0631\\u0627\\u062a\\u0628 \\u063a\\u064a\\u0631 \\u0645\\u062a\\u0648\\u0641\\u0631\\u0629 \\u0623\\u0648 \\u0645\\u062a\\u0646\\u0627\\u0642\\u0636\\u0629 \\u21d2 needs_attention \\u0648\\u0644\\u0627 \\u062a\\u064f\\u0635\\u062f\\u0631 \\u0634\\u0647\\u0627\\u062f\\u0629 \\u0628\\u0623\\u0631\\u0642\\u0627\\u0645 \\u063a\\u064a\\u0631 \\u0645\\u0624\\u0643\\u062f\\u0629.\\\\n\\\\n## \\u0645\\u0627 \\u0644\\u0627 \\u064a\\u062c\\u0648\\u0632\\\\n- \\u0644\\u0627 \\u0634\\u0647\\u0627\\u062f\\u0629 \\u0644\\u0645\\u0648\\u0638\\u0641 \\u0622\\u062e\\u0631\\u060c \\u0648\\u0644\\u0627 \\u062a\\u0639\\u062f\\u064a\\u0644 \\u0623\\u064a \\u0631\\u0642\\u0645\\u060c \\u0648\\u0644\\u0627 \\u0648\\u0639\\u0648\\u062f \\u0628\\u0645\\u062d\\u062a\\u0648\\u0649 \\u0645\\u0633\\u062a\\u0642\\u0628\\u0644\\u064a (\\u00ab\\u0633\\u064a\\u0635\\u0628\\u062d \\u0631\\u0627\\u062a\\u0628\\u0647\\u2026\\u00bb).\\\\n\\\", \\\"created_by\\\": \\\"human\\\", \\\"updated_at\\\": \\\"2026-08-13T14:38:38\\\"}, {\\\"skill_id\\\": \\\"expense-claim\\\", \\\"version\\\": \\\"1.0.2\\\", \\\"status\\\": \\\"approved\\\", \\\"title_ar\\\": \\\"\\u0645\\u0637\\u0627\\u0644\\u0628\\u0629 \\u0646\\u0641\\u0642\\u0627\\u062a / \\u0628\\u062f\\u0644\\u0627\\u062a\\\", \\\"title_en\\\": \\\"Expense / Allowance Claim\\\", \\\"keywords\\\": \\\"\\u0646\\u0641\\u0642\\u0627\\u062a;\\u0645\\u0635\\u0627\\u0631\\u064a\\u0641;\\u0628\\u062f\\u0644;\\u0645\\u0637\\u0627\\u0644\\u0628\\u0629;expense;claim;reimbursement;allowance;\\u0641\\u0627\\u062a\\u0648\\u0631\\u0629\\\", \\\"profile_id\\\": \\\"finance-officer\\\", \\\"allowed_services\\\": \\\"get_employee_profile;get_expense_policy;submit_transaction\\\", \\\"approval_chain\\\": \\\"manager;finance\\\", \\\"auto_execute\\\": \\\"false\\\", \\\"sla_hours\\\": \\\"72\\\", \\\"internal\\\": \\\"false\\\", \\\"body_md\\\": \\\"---\\\\nid: expense-claim\\\\nversion: 1.0.2\\\\nstatus: approved\\\\ntitle_ar: \\u0645\\u0637\\u0627\\u0644\\u0628\\u0629 \\u0646\\u0641\\u0642\\u0627\\u062a / \\u0628\\u062f\\u0644\\u0627\\u062a\\\\ntitle_en: Expense / Allowance Claim\\\\nowner: Finance Operations (\\u0627\\u0644\\u0639\\u0645\\u0644\\u064a\\u0627\\u062a \\u0627\\u0644\\u0645\\u0627\\u0644\\u064a\\u0629)\\\\nprofile: finance-officer\\\\nallowed_services: [get_employee_profile, get_expense_policy, submit_transaction]\\\\napproval_chain: [manager, finance]\\\\nauto_execute: false\\\\nsla_hours: 72\\\\n---\\\\n\\\\n# \\u0645\\u0647\\u0627\\u0631\\u0629: \\u0645\\u0637\\u0627\\u0644\\u0628\\u0629 \\u0646\\u0641\\u0642\\u0627\\u062a / \\u0628\\u062f\\u0644\\u0627\\u062a\\\\n\\\\n## \\u0627\\u0644\\u063a\\u0631\\u0636\\\\n\\u062a\\u0642\\u062f\\u064a\\u0645 \\u0645\\u0637\\u0627\\u0644\\u0628\\u0629 \\u0627\\u0633\\u062a\\u0631\\u062f\\u0627\\u062f \\u0646\\u0641\\u0642\\u0627\\u062a \\u0639\\u0645\\u0644 (\\u0645\\u0648\\u0627\\u0635\\u0644\\u0627\\u062a\\u060c \\u0636\\u064a\\u0627\\u0641\\u0629 \\u0631\\u0633\\u0645\\u064a\\u0629\\u060c \\u062a\\u062f\\u0631\\u064a\\u0628\\u060c \\u0627\\u062a\\u0635\\u0627\\u0644\\u0627\\u062a\\u060c \\u0623\\u062e\\u0631\\u0649) \\u0645\\u0639 \\u0641\\u0631\\u0636 \\u0633\\u0642\\u0648\\u0641 \\u0627\\u0644\\u0633\\u064a\\u0627\\u0633\\u0629 \\u0622\\u0644\\u064a\\u064b\\u0627 \\u0642\\u0628\\u0644 \\u0648\\u0635\\u0648\\u0644\\u0647\\u0627 \\u0625\\u0644\\u0649 \\u0627\\u0644\\u0645\\u062f\\u064a\\u0631 \\u062b\\u0645 \\u0627\\u0644\\u0645\\u0627\\u0644\\u064a\\u0629.\\\\n\\\\n## \\u0627\\u0644\\u062d\\u0642\\u0648\\u0644 \\u0627\\u0644\\u0645\\u0637\\u0644\\u0648\\u0628\\u0629\\\\n| \\u0627\\u0644\\u062d\\u0642\\u0644 | \\u0627\\u0644\\u0642\\u064a\\u0645 | \\u0645\\u0644\\u0627\\u062d\\u0638\\u0627\\u062a |\\\\n|---|---|---|\\\\n| category | transport \\\\\\\\| hospitality \\\\\\\\| training \\\\\\\\| communication \\\\\\\\| other | \\u0635\\u0646\\u0651\\u0641 \\u0645\\u0646 \\u0648\\u0635\\u0641 \\u0627\\u0644\\u0645\\u0648\\u0638\\u0641 \\u0648\\u0623\\u0643\\u0651\\u062f \\u0627\\u0644\\u062a\\u0635\\u0646\\u064a\\u0641 \\u0645\\u0639\\u0647 |\\\\n| amount_aed | \\u0631\\u0642\\u0645 \\u0628\\u0627\\u0644\\u062f\\u0631\\u0647\\u0645 | > 0 |\\\\n| expense_date | YYYY-MM-DD | \\u062e\\u0644\\u0627\\u0644 \\u0622\\u062e\\u0631 60 \\u064a\\u0648\\u0645\\u064b\\u0627 |\\\\n| description | \\u0646\\u0635 | \\u0627\\u0644\\u063a\\u0631\\u0636 \\u0627\\u0644\\u0631\\u0633\\u0645\\u064a \\u0644\\u0644\\u0646\\u0641\\u0642\\u0629 |\\\\n| receipt_ref | \\u0631\\u0642\\u0645/\\u0645\\u0631\\u062c\\u0639 \\u0627\\u0644\\u0625\\u064a\\u0635\\u0627\\u0644 | \\u0625\\u0644\\u0632\\u0627\\u0645\\u064a \\u0641\\u0648\\u0642 100 \\u062f\\u0631\\u0647\\u0645 |\\\\n\\\\n## \\u0642\\u0648\\u0627\\u0639\\u062f \\u0627\\u0644\\u0623\\u0647\\u0644\\u064a\\u0629 \\u0648\\u0627\\u0644\\u0633\\u064a\\u0627\\u0633\\u0629 (\\u0627\\u062d\\u0635\\u0644 \\u0639\\u0644\\u0649 \\u0627\\u0644\\u0633\\u0642\\u0648\\u0641 \\u0645\\u0646 get_expense_policy \\u2014 \\u0644\\u0627 \\u062a\\u062d\\u0641\\u0638\\u0647\\u0627)\\\\n1. \\u0627\\u0644\\u0645\\u0628\\u0644\\u063a \\u2264 \\u0633\\u0642\\u0641 \\u0627\\u0644\\u0641\\u0626\\u0629 \\u0627\\u0644\\u0634\\u0647\\u0631\\u064a\\u061b \\u0627\\u0644\\u062a\\u062c\\u0627\\u0648\\u0632 \\u21d2 \\u0627\\u0631\\u0641\\u0636 \\u0648\\u0627\\u0639\\u0631\\u0636 \\u0627\\u0644\\u0633\\u0642\\u0641 \\u0648\\u0627\\u0644\\u0645\\u062a\\u0628\\u0642\\u064a \\u0645\\u0646\\u0647 \\u0647\\u0630\\u0627 \\u0627\\u0644\\u0634\\u0647\\u0631.\\\\n2. expense_date \\u0623\\u0642\\u062f\\u0645 \\u0645\\u0646 60 \\u064a\\u0648\\u0645\\u064b\\u0627 \\u21d2 \\u063a\\u064a\\u0631 \\u0642\\u0627\\u0628\\u0644\\u0629 \\u0644\\u0644\\u0627\\u0633\\u062a\\u0631\\u062f\\u0627\\u062f (\\u0627\\u0630\\u0643\\u0631 \\u0627\\u0644\\u0642\\u0627\\u0639\\u062f\\u0629).\\\\n3. category = other \\u21d2 \\u0627\\u0644\\u0648\\u0635\\u0641 \\u0625\\u0644\\u0632\\u0627\\u0645\\u064a \\u0648\\u0645\\u0641\\u0635\\u0651\\u0644\\u060c \\u0648\\u0627\\u0644\\u062d\\u062f 500 \\u062f\\u0631\\u0647\\u0645.\\\\n4. \\u0623\\u064a \\u0645\\u0637\\u0627\\u0644\\u0628\\u0629 > 2000 \\u062f\\u0631\\u0647\\u0645 \\u21d2 \\u0623\\u062f\\u0631\\u062c \\u062a\\u062d\\u0630\\u064a\\u0631 \\u00ab\\u062a\\u062e\\u0636\\u0639 \\u0644\\u062a\\u062f\\u0642\\u064a\\u0642 \\u0625\\u0636\\u0627\\u0641\\u064a\\u00bb \\u0641\\u064a \\u0627\\u0644\\u0645\\u0639\\u0627\\u064a\\u0646\\u0629 \\u0648\\u0623\\u0636\\u0641 finance_audit \\u0625\\u0644\\u0649 \\u0633\\u0644\\u0633\\u0644\\u0629 \\u0627\\u0644\\u0627\\u0639\\u062a\\u0645\\u0627\\u062f.\\\\n5. **\\u062a\\u062d\\u0642\\u0651\\u0642 \\u062d\\u0633\\u0627\\u0628\\u064a \\u0625\\u0644\\u0632\\u0627\\u0645\\u064a:** \\u0644\\u0627 \\u062a\\u0642\\u0628\\u0644 \\u0645\\u0628\\u0644\\u063a\\u064b\\u0627 \\u063a\\u064a\\u0631 \\u0631\\u0642\\u0645\\u064a \\u0623\\u0648 \\u0633\\u0627\\u0644\\u0628\\u064b\\u0627\\u061b \\u0642\\u0631\\u0651\\u0628 \\u0644\\u0623\\u0642\\u0631\\u0628 \\u0641\\u0644\\u0633\\u064a\\u0646.\\\\n\\\\n## \\u062e\\u0637\\u0648\\u0627\\u062a \\u0627\\u0644\\u0625\\u062c\\u0631\\u0627\\u0621\\\\n1. get_employee_profile \\u062b\\u0645 get_expense_policy \\u0644\\u0644\\u0641\\u0626\\u0629.\\\\n2. \\u0627\\u062c\\u0645\\u0639 \\u0627\\u0644\\u062d\\u0642\\u0648\\u0644 \\u0627\\u0644\\u0646\\u0627\\u0642\\u0635\\u0629 \\u062a\\u062f\\u0631\\u064a\\u062c\\u064a\\u064b\\u0627 \\u0648\\u0637\\u0628\\u0651\\u0642 \\u0627\\u0644\\u0642\\u0648\\u0627\\u0639\\u062f \\u0628\\u0627\\u0644\\u062a\\u0631\\u062a\\u064a\\u0628.\\\\n3. \\u0627\\u0639\\u0631\\u0636 **\\u0628\\u0637\\u0627\\u0642\\u0629 \\u0645\\u0639\\u0627\\u064a\\u0646\\u0629**: \\u0627\\u0644\\u0641\\u0626\\u0629\\u060c \\u0627\\u0644\\u0645\\u0628\\u0644\\u063a\\u060c \\u0627\\u0644\\u062a\\u0627\\u0631\\u064a\\u062e\\u060c \\u0645\\u0631\\u062c\\u0639 \\u0627\\u0644\\u0625\\u064a\\u0635\\u0627\\u0644\\u060c \\u0633\\u0644\\u0633\\u0644\\u0629 \\u0627\\u0644\\u0627\\u0639\\u062a\\u0645\\u0627\\u062f (\\u0627\\u0644\\u0645\\u062f\\u064a\\u0631 \\u2190 \\u0627\\u0644\\u0645\\u0627\\u0644\\u064a\\u0629)\\u060c \\u0648\\u0623\\u064a \\u062a\\u062d\\u0630\\u064a\\u0631\\u0627\\u062a.\\\\n4. \\u0628\\u0639\\u062f \\u062a\\u0623\\u0643\\u064a\\u062f \\u0627\\u0644\\u0645\\u0648\\u0638\\u0641: submit_transaction.\\\\n\\\\n## \\u0627\\u0644\\u062a\\u0635\\u0639\\u064a\\u062f \\u0648\\u0627\\u0644\\u0627\\u0633\\u062a\\u062b\\u0646\\u0627\\u0621\\u0627\\u062a\\\\n- \\u062e\\u062f\\u0645\\u0629 \\u0627\\u0644\\u0633\\u064a\\u0627\\u0633\\u0629 \\u063a\\u064a\\u0631 \\u0645\\u062a\\u0627\\u062d\\u0629 \\u21d2 needs_attention\\u061b \\u0644\\u0627 \\u062a\\u062e\\u0645\\u0651\\u0646 \\u0627\\u0644\\u0633\\u0642\\u0648\\u0641 \\u0623\\u0628\\u062f\\u064b\\u0627.\\\\n- \\u0645\\u0648\\u0638\\u0641 \\u064a\\u0635\\u0631\\u0651 \\u0639\\u0644\\u0649 \\u0645\\u0628\\u0644\\u063a \\u0641\\u0648\\u0642 \\u0627\\u0644\\u0633\\u0642\\u0641 \\u21d2 \\u0644\\u0627 \\u062a\\u0631\\u0633\\u0644\\u061b \\u0627\\u0642\\u062a\\u0631\\u062d \\u062a\\u0642\\u062f\\u064a\\u0645 \\u0627\\u0644\\u062c\\u0632\\u0621 \\u0627\\u0644\\u0645\\u0648\\u0627\\u0641\\u0642 \\u0644\\u0644\\u0633\\u064a\\u0627\\u0633\\u0629 \\u0641\\u0642\\u0637.\\\\n\\\\n## \\u0645\\u0627 \\u0644\\u0627 \\u064a\\u062c\\u0648\\u0632\\\\n- \\u0644\\u0627 \\u062a\\u0639\\u062f\\u064a\\u0644 \\u0644\\u0644\\u0633\\u0642\\u0648\\u0641\\u060c \\u0644\\u0627 \\u062a\\u062c\\u0632\\u0626\\u0629 \\u0645\\u0637\\u0627\\u0644\\u0628\\u0629 \\u0648\\u0627\\u062d\\u062f\\u0629 \\u0644\\u0639\\u062f\\u0629 \\u0637\\u0644\\u0628\\u0627\\u062a \\u0644\\u0644\\u0627\\u0644\\u062a\\u0641\\u0627\\u0641 \\u0639\\u0644\\u0649 \\u0627\\u0644\\u0633\\u0642\\u0641 (\\u0627\\u0631\\u0641\\u0636 \\u0627\\u0644\\u0646\\u0645\\u0637 \\u0635\\u0631\\u0627\\u062d\\u0629\\u064b \\u0625\\u0630\\u0627 \\u0644\\u0627\\u062d\\u0638\\u062a\\u0647)\\u060c \\u0644\\u0627 \\u0645\\u0637\\u0627\\u0644\\u0628\\u0627\\u062a \\u0644\\u0645\\u0648\\u0638\\u0641 \\u0622\\u062e\\u0631.\\\\n\\\", \\\"created_by\\\": \\\"human\\\", \\\"updated_at\\\": \\\"2026-08-13T14:38:38\\\"}, {\\\"skill_id\\\": \\\"it-access-request\\\", \\\"version\\\": \\\"1.0.0\\\", \\\"status\\\": \\\"approved\\\", \\\"title_ar\\\": \\\"\\u0637\\u0644\\u0628 \\u0635\\u0644\\u0627\\u062d\\u064a\\u0629 \\u0646\\u0638\\u0627\\u0645\\\", \\\"title_en\\\": \\\"IT System Access Request\\\", \\\"keywords\\\": \\\"\\u0635\\u0644\\u0627\\u062d\\u064a\\u0629;\\u0646\\u0638\\u0627\\u0645;\\u0648\\u0635\\u0648\\u0644;access;system;permission;\\u062d\\u0633\\u0627\\u0628;\\u062f\\u062e\\u0648\\u0644;it\\\", \\\"profile_id\\\": \\\"it-officer\\\", \\\"allowed_services\\\": \\\"get_employee_profile;get_it_roles;get_system_catalog;submit_transaction\\\", \\\"approval_chain\\\": \\\"manager;it_security\\\", \\\"auto_execute\\\": \\\"false\\\", \\\"sla_hours\\\": \\\"24\\\", \\\"internal\\\": \\\"false\\\", \\\"body_md\\\": \\\"---\\\\nid: it-access-request\\\\nversion: 1.0.0\\\\nstatus: approved\\\\ntitle_ar: \\u0637\\u0644\\u0628 \\u0635\\u0644\\u0627\\u062d\\u064a\\u0629 \\u0646\\u0638\\u0627\\u0645\\\\ntitle_en: IT System Access Request\\\\nowner: IT Security (\\u0623\\u0645\\u0646 \\u0627\\u0644\\u0645\\u0639\\u0644\\u0648\\u0645\\u0627\\u062a)\\\\nprofile: it-officer\\\\nallowed_services: [get_employee_profile, get_it_roles, get_system_catalog, submit_transaction]\\\\napproval_chain: [manager, it_security]\\\\nauto_execute: false\\\\nsla_hours: 24\\\\n---\\\\n\\\\n# \\u0645\\u0647\\u0627\\u0631\\u0629: \\u0637\\u0644\\u0628 \\u0635\\u0644\\u0627\\u062d\\u064a\\u0629 \\u0646\\u0638\\u0627\\u0645\\\\n\\\\n## \\u0627\\u0644\\u063a\\u0631\\u0636\\\\n\\u0637\\u0644\\u0628 \\u0645\\u0646\\u062d \\u0623\\u0648 \\u062a\\u0631\\u0642\\u064a\\u0629 \\u0635\\u0644\\u0627\\u062d\\u064a\\u0629 \\u0639\\u0644\\u0649 \\u0646\\u0638\\u0627\\u0645 \\u0645\\u0624\\u0633\\u0633\\u064a\\u060c \\u0645\\u0639 \\u0641\\u0631\\u0636 \\u0645\\u0628\\u062f\\u0623 **\\u0627\\u0644\\u062d\\u062f \\u0627\\u0644\\u0623\\u062f\\u0646\\u0649 \\u0645\\u0646 \\u0627\\u0644\\u0635\\u0644\\u0627\\u062d\\u064a\\u0627\\u062a** \\u0648\\u0641\\u062d\\u0635 \\u0627\\u0644\\u0623\\u0647\\u0644\\u064a\\u0629 \\u0627\\u0644\\u0648\\u0638\\u064a\\u0641\\u064a\\u0629 \\u0642\\u0628\\u0644 \\u0648\\u0635\\u0648\\u0644 \\u0627\\u0644\\u0637\\u0644\\u0628 \\u0644\\u0633\\u0644\\u0633\\u0644\\u0629 \\u0627\\u0644\\u0627\\u0639\\u062a\\u0645\\u0627\\u062f \\u0627\\u0644\\u0623\\u0645\\u0646\\u064a\\u0629.\\\\n\\\\n## \\u0627\\u0644\\u062d\\u0642\\u0648\\u0644 \\u0627\\u0644\\u0645\\u0637\\u0644\\u0648\\u0628\\u0629\\\\n| \\u0627\\u0644\\u062d\\u0642\\u0644 | \\u0627\\u0644\\u0642\\u064a\\u0645 | \\u0645\\u0644\\u0627\\u062d\\u0638\\u0627\\u062a |\\\\n|---|---|---|\\\\n| system_id | \\u0645\\u0646 get_system_catalog | \\u0625\\u0646 \\u0630\\u0643\\u0631 \\u0627\\u0644\\u0645\\u0648\\u0638\\u0641 \\u0627\\u0633\\u0645\\u064b\\u0627 \\u062a\\u062c\\u0627\\u0631\\u064a\\u064b\\u0627 \\u0641\\u0637\\u0627\\u0628\\u0642\\u0647 \\u0645\\u0639 \\u0627\\u0644\\u062f\\u0644\\u064a\\u0644 \\u0648\\u0623\\u0643\\u0651\\u062f |\\\\n| access_level | read \\\\\\\\| write \\\\\\\\| admin | \\u0627\\u0634\\u0631\\u062d \\u0627\\u0644\\u0641\\u0631\\u0642 \\u0625\\u0630\\u0627 \\u062a\\u0631\\u062f\\u062f \\u0627\\u0644\\u0645\\u0648\\u0638\\u0641 |\\\\n| business_justification | \\u0646\\u0635 | \\u0625\\u0644\\u0632\\u0627\\u0645\\u064a \\u062f\\u0627\\u0626\\u0645\\u064b\\u0627\\u061b \\u0627\\u0631\\u0628\\u0637\\u0647 \\u0628\\u0645\\u0647\\u0645\\u0629 \\u0648\\u0638\\u064a\\u0641\\u064a\\u0629 \\u0645\\u062d\\u062f\\u062f\\u0629 |\\\\n| duration | permanent \\\\\\\\| temporary(end_date) | \\u0627\\u0644\\u0645\\u0624\\u0642\\u062a\\u0629 \\u062a\\u064f\\u0641\\u0636\\u064e\\u0651\\u0644 \\u0648\\u064a\\u0630\\u0643\\u0631 \\u0630\\u0644\\u0643 |\\\\n\\\\n## \\u0642\\u0648\\u0627\\u0639\\u062f \\u0627\\u0644\\u0623\\u0647\\u0644\\u064a\\u0629 \\u0648\\u0627\\u0644\\u0633\\u064a\\u0627\\u0633\\u0629\\\\n1. \\u0645\\u0646 get_system_catalog: \\u0644\\u0644\\u0646\\u0638\\u0627\\u0645 \\u0642\\u0627\\u0626\\u0645\\u0629 \\u0623\\u062f\\u0648\\u0627\\u0631 \\u0645\\u062e\\u0648\\u0651\\u0644\\u0629 (allowed_roles) \\u0648\\u062f\\u0631\\u062c\\u0629 \\u062d\\u0633\\u0627\\u0633\\u064a\\u0629 (normal / sensitive / critical).\\\\n2. \\u062f\\u0648\\u0631 \\u0627\\u0644\\u0645\\u0648\\u0638\\u0641 (\\u0645\\u0646 get_employee_profile) \\u062e\\u0627\\u0631\\u062c allowed_roles \\u21d2 **\\u0627\\u0631\\u0641\\u0636** \\u0645\\u0639 \\u0630\\u0643\\u0631 \\u0627\\u0644\\u0623\\u062f\\u0648\\u0627\\u0631 \\u0627\\u0644\\u0645\\u062e\\u0648\\u0651\\u0644\\u0629 \\u0646\\u0635\\u064b\\u0627\\u061b \\u0644\\u0627 \\u0627\\u0633\\u062a\\u062b\\u0646\\u0627\\u0621\\u0627\\u062a \\u0645\\u062d\\u0627\\u062f\\u062b\\u0629\\u064b.\\\\n3. access_level = admin \\u21d2 \\u0645\\u0628\\u0631\\u0631 \\u062a\\u0641\\u0635\\u064a\\u0644\\u064a + duration \\u0645\\u0624\\u0642\\u062a\\u0629 \\u0625\\u0644\\u0632\\u0627\\u0645\\u064a\\u0629 + \\u0625\\u0636\\u0627\\u0641\\u0629 ciso \\u0625\\u0644\\u0649 \\u0633\\u0644\\u0633\\u0644\\u0629 \\u0627\\u0644\\u0627\\u0639\\u062a\\u0645\\u0627\\u062f.\\\\n4. \\u0627\\u0644\\u0646\\u0638\\u0627\\u0645 critical \\u21d2 \\u062d\\u062a\\u0649 \\u0635\\u0644\\u0627\\u062d\\u064a\\u0629 \\u0627\\u0644\\u0642\\u0631\\u0627\\u0621\\u0629 \\u062a\\u0645\\u0631 \\u0639\\u0628\\u0631 it_security\\u060c \\u0648\\u0623\\u062f\\u0631\\u062c \\u062a\\u062d\\u0630\\u064a\\u0631 \\u0627\\u0644\\u062d\\u0633\\u0627\\u0633\\u064a\\u0629 \\u0641\\u064a \\u0627\\u0644\\u0645\\u0639\\u0627\\u064a\\u0646\\u0629.\\\\n5. \\u0627\\u0644\\u0645\\u0648\\u0638\\u0641 \\u064a\\u0645\\u0644\\u0643 \\u0627\\u0644\\u0635\\u0644\\u0627\\u062d\\u064a\\u0629 \\u0646\\u0641\\u0633\\u0647\\u0627 \\u0623\\u0648 \\u0623\\u0639\\u0644\\u0649 (\\u0645\\u0646 get_it_roles) \\u21d2 \\u0623\\u062e\\u0628\\u0631\\u0647 \\u0648\\u0644\\u0627 \\u062a\\u0646\\u0634\\u0626 \\u0637\\u0644\\u0628\\u064b\\u0627 \\u0645\\u0643\\u0631\\u0631\\u064b\\u0627.\\\\n6. \\u0637\\u0628\\u0651\\u0642 \\u062f\\u0627\\u0626\\u0645\\u064b\\u0627 \\u0627\\u0644\\u062d\\u062f \\u0627\\u0644\\u0623\\u062f\\u0646\\u0649: \\u0625\\u0646 \\u0643\\u0641\\u062a read \\u0644\\u0645\\u0628\\u0631\\u0631 \\u0627\\u0644\\u0645\\u0648\\u0638\\u0641 \\u0641\\u0627\\u0642\\u062a\\u0631\\u062d\\u0647\\u0627 \\u0628\\u062f\\u0644 write \\u0648\\u0627\\u0630\\u0643\\u0631 \\u0627\\u0644\\u0633\\u0628\\u0628.\\\\n\\\\n## \\u062e\\u0637\\u0648\\u0627\\u062a \\u0627\\u0644\\u0625\\u062c\\u0631\\u0627\\u0621\\\\n1. get_employee_profile \\u062b\\u0645 get_it_roles \\u0644\\u0644\\u0635\\u0644\\u0627\\u062d\\u064a\\u0627\\u062a \\u0627\\u0644\\u062d\\u0627\\u0644\\u064a\\u0629.\\\\n2. get_system_catalog \\u0644\\u0645\\u0637\\u0627\\u0628\\u0642\\u0629 \\u0627\\u0644\\u0646\\u0638\\u0627\\u0645 \\u0648\\u0642\\u0631\\u0627\\u0621\\u0629 \\u062d\\u0633\\u0627\\u0633\\u064a\\u062a\\u0647 \\u0648\\u0623\\u062f\\u0648\\u0627\\u0631\\u0647.\\\\n3. \\u0627\\u062c\\u0645\\u0639 \\u0627\\u0644\\u062d\\u0642\\u0648\\u0644 \\u0648\\u0637\\u0628\\u0651\\u0642 \\u0627\\u0644\\u0642\\u0648\\u0627\\u0639\\u062f \\u0623\\u0639\\u0644\\u0627\\u0647 \\u0628\\u0627\\u0644\\u062a\\u0631\\u062a\\u064a\\u0628.\\\\n4. \\u0627\\u0639\\u0631\\u0636 **\\u0628\\u0637\\u0627\\u0642\\u0629 \\u0645\\u0639\\u0627\\u064a\\u0646\\u0629**: \\u0627\\u0644\\u0646\\u0638\\u0627\\u0645\\u060c \\u0627\\u0644\\u0645\\u0633\\u062a\\u0648\\u0649\\u060c \\u0627\\u0644\\u0645\\u062f\\u0629\\u060c \\u0627\\u0644\\u0645\\u0628\\u0631\\u0631\\u060c \\u0633\\u0644\\u0633\\u0644\\u0629 \\u0627\\u0644\\u0627\\u0639\\u062a\\u0645\\u0627\\u062f \\u0627\\u0644\\u0643\\u0627\\u0645\\u0644\\u0629\\u060c \\u0648\\u062a\\u062d\\u0630\\u064a\\u0631 \\u0627\\u0644\\u062d\\u0633\\u0627\\u0633\\u064a\\u0629 \\u0625\\u0646 \\u0648\\u062c\\u062f.\\\\n5. \\u0628\\u0639\\u062f \\u062a\\u0623\\u0643\\u064a\\u062f \\u0627\\u0644\\u0645\\u0648\\u0638\\u0641: submit_transaction.\\\\n\\\\n## \\u0627\\u0644\\u062a\\u0635\\u0639\\u064a\\u062f \\u0648\\u0627\\u0644\\u0627\\u0633\\u062a\\u062b\\u0646\\u0627\\u0621\\u0627\\u062a\\\\n- \\u0637\\u0644\\u0628 \\u00ab\\u0645\\u0633\\u062a\\u0639\\u062c\\u0644 \\u062c\\u062f\\u064b\\u0627\\u00bb \\u0644\\u062a\\u062c\\u0627\\u0648\\u0632 \\u0627\\u0644\\u0633\\u0644\\u0633\\u0644\\u0629 \\u21d2 \\u0627\\u0631\\u0641\\u0636 \\u0627\\u0644\\u062a\\u062c\\u0627\\u0648\\u0632 \\u0648\\u0627\\u0634\\u0631\\u062d \\u0623\\u0646 \\u0627\\u0644\\u0633\\u0644\\u0633\\u0644\\u0629 \\u0642\\u0635\\u064a\\u0631\\u0629 (sla 24 \\u0633\\u0627\\u0639\\u0629).\\\\n- \\u0646\\u0638\\u0627\\u0645 \\u063a\\u064a\\u0631 \\u0645\\u0648\\u062c\\u0648\\u062f \\u0641\\u064a \\u0627\\u0644\\u062f\\u0644\\u064a\\u0644 \\u21d2 needs_attention \\u0644\\u0641\\u0631\\u064a\\u0642 \\u0627\\u0644\\u062a\\u0642\\u0646\\u064a\\u0629\\u061b \\u0644\\u0627 \\u062a\\u062e\\u062a\\u0631\\u0639 \\u0623\\u0646\\u0638\\u0645\\u0629.\\\\n\\\\n## \\u0645\\u0627 \\u0644\\u0627 \\u064a\\u062c\\u0648\\u0632\\\\n- \\u0644\\u0627 \\u0645\\u0646\\u062d \\u0641\\u0648\\u0631\\u064a \\u0644\\u0623\\u064a \\u0635\\u0644\\u0627\\u062d\\u064a\\u0629\\u060c \\u0644\\u0627 admin \\u062f\\u0627\\u0626\\u0645\\u0629\\u060c \\u0644\\u0627 \\u0637\\u0644\\u0628 \\u0646\\u064a\\u0627\\u0628\\u0629 \\u0639\\u0646 \\u0645\\u0648\\u0638\\u0641 \\u0622\\u062e\\u0631\\u060c \\u0648\\u0644\\u0627 \\u0642\\u0628\\u0648\\u0644 \\u0645\\u0628\\u0631\\u0631 \\u0639\\u0627\\u0645 (\\u00ab\\u0623\\u062d\\u062a\\u0627\\u062c\\u0647 \\u0644\\u0639\\u0645\\u0644\\u064a\\u00bb) \\u062f\\u0648\\u0646 \\u0645\\u0647\\u0645\\u0629 \\u0645\\u062d\\u062f\\u062f\\u0629.\\\\n\\\", \\\"created_by\\\": \\\"human\\\", \\\"updated_at\\\": \\\"2026-08-13T14:38:38\\\"}, {\\\"skill_id\\\": \\\"reflection\\\", \\\"version\\\": \\\"1.0.0\\\", \\\"status\\\": \\\"approved\\\", \\\"title_ar\\\": \\\"\\u0645\\u0631\\u0627\\u062c\\u0639\\u0629 \\u0645\\u0627 \\u0628\\u0639\\u062f \\u0627\\u0644\\u062f\\u0648\\u0631 (\\u0627\\u0644\\u062a\\u0639\\u0644\\u0651\\u0645)\\\", \\\"title_en\\\": \\\"Post-turn Reflection (Learning)\\\", \\\"keywords\\\": \\\"reflection;learning;\\u062a\\u0639\\u0644\\u0651\\u0645;\\u0645\\u0631\\u0627\\u062c\\u0639\\u0629\\\", \\\"profile_id\\\": \\\"general\\\", \\\"allowed_services\\\": \\\"read_memory;write_memory;propose_skill_patch\\\", \\\"approval_chain\\\": \\\"\\\", \\\"auto_execute\\\": \\\"true\\\", \\\"sla_hours\\\": \\\"1\\\", \\\"internal\\\": \\\"true\\\", \\\"body_md\\\": \\\"---\\\\nid: reflection\\\\nversion: 1.0.0\\\\nstatus: approved\\\\ntitle_ar: \\u0645\\u0631\\u0627\\u062c\\u0639\\u0629 \\u0645\\u0627 \\u0628\\u0639\\u062f \\u0627\\u0644\\u062f\\u0648\\u0631 (\\u0627\\u0644\\u062a\\u0639\\u0644\\u0651\\u0645)\\\\ntitle_en: Post-turn Reflection (Learning)\\\\nowner: Governance Office (\\u0645\\u0643\\u062a\\u0628 \\u0627\\u0644\\u062d\\u0648\\u0643\\u0645\\u0629)\\\\nprofile: general\\\\nallowed_services: [read_memory, write_memory, propose_skill_patch]\\\\napproval_chain: []\\\\nauto_execute: true\\\\nsla_hours: 1\\\\n---\\\\n\\\\n# \\u0645\\u0647\\u0627\\u0631\\u0629: \\u0645\\u0631\\u0627\\u062c\\u0639\\u0629 \\u0645\\u0627 \\u0628\\u0639\\u062f \\u0627\\u0644\\u062f\\u0648\\u0631 \\u2014 \\u0627\\u0644\\u062a\\u0639\\u0644\\u0651\\u0645 \\u0627\\u0644\\u0645\\u0624\\u0633\\u0633\\u064a\\\\n\\\\n> \\u062a\\u0639\\u0645\\u0644 \\u0647\\u0630\\u0647 \\u0627\\u0644\\u0645\\u0631\\u0627\\u062c\\u0639\\u0629 **\\u0628\\u0639\\u062f** \\u0623\\u0646 \\u064a\\u0643\\u0648\\u0646 \\u0627\\u0644\\u0645\\u0648\\u0638\\u0641 \\u0642\\u062f \\u062d\\u0635\\u0644 \\u0639\\u0644\\u0649 \\u0625\\u062c\\u0627\\u0628\\u062a\\u0647\\u060c \\u0641\\u064a \\u0645\\u0633\\u0627\\u0631 \\u0645\\u0646\\u0641\\u0635\\u0644 \\u0644\\u0627 \\u064a\\u0628\\u0637\\u0626 \\u0627\\u0644\\u062e\\u062f\\u0645\\u0629. \\u0645\\u0647\\u0645\\u062a\\u0647\\u0627 \\u0627\\u0644\\u0648\\u062d\\u064a\\u062f\\u0629: \\u0645\\u0627\\u0630\\u0627 \\u0643\\u0627\\u0646 \\u064a\\u0646\\u0628\\u063a\\u064a \\u0623\\u0646 \\u062a\\u062a\\u0639\\u0644\\u0651\\u0645\\u0647 \\u0627\\u0644\\u0645\\u0646\\u0638\\u0648\\u0645\\u0629 \\u0645\\u0646 \\u0647\\u0630\\u0647 \\u0627\\u0644\\u0645\\u0639\\u0627\\u0645\\u0644\\u0627\\u062a\\u061f\\\\n> **\\u0645\\u0631\\u0648\\u0631 \\u0628\\u0644\\u0627 \\u0623\\u064a \\u062a\\u062d\\u062f\\u064a\\u062b \\u0644\\u064a\\u0633 \\u0646\\u062a\\u064a\\u062c\\u0629 \\u0645\\u062d\\u0627\\u064a\\u062f\\u0629 \\u2014 \\u0628\\u0644 \\u0641\\u0631\\u0635\\u0629 \\u062a\\u0639\\u0644\\u0651\\u0645 \\u0636\\u0627\\u0626\\u0639\\u0629.** \\u0643\\u0646 \\u0641\\u0627\\u0639\\u0644\\u064b\\u0627: \\u0623\\u063a\\u0644\\u0628 \\u0627\\u0644\\u062c\\u0648\\u0644\\u0627\\u062a \\u062a\\u064f\\u0646\\u062a\\u062c \\u062a\\u062d\\u062f\\u064a\\u062b\\u064b\\u0627 \\u0648\\u0627\\u062d\\u062f\\u064b\\u0627 \\u0639\\u0644\\u0649 \\u0627\\u0644\\u0623\\u0642\\u0644 \\u0648\\u0644\\u0648 \\u0635\\u063a\\u064a\\u0631\\u064b\\u0627.\\\\n\\\\n## \\u0627\\u0644\\u0641\\u0635\\u0644 \\u0627\\u0644\\u062f\\u0644\\u0627\\u0644\\u064a \\u0628\\u064a\\u0646 \\u0627\\u0644\\u0630\\u0627\\u0643\\u0631\\u0629 \\u0648\\u0627\\u0644\\u0645\\u0647\\u0627\\u0631\\u0629 (\\u0642\\u0627\\u0639\\u062f\\u0629 \\u062d\\u0627\\u0643\\u0645\\u0629)\\\\n- **\\u0627\\u0644\\u0630\\u0627\\u0643\\u0631\\u0629** \\u062a\\u0642\\u0648\\u0644: \\u00ab\\u0645\\u0646 \\u0647\\u0648 \\u0627\\u0644\\u0645\\u0648\\u0638\\u0641\\u060c \\u0648\\u0645\\u0627 \\u0627\\u0644\\u0648\\u0636\\u0639 \\u0627\\u0644\\u0642\\u0627\\u0626\\u0645\\u00bb \\u2014 \\u0648\\u0642\\u0627\\u0626\\u0639 \\u062e\\u0628\\u0631\\u064a\\u0629 \\u062f\\u0627\\u0626\\u0645\\u0629.\\\\n- **\\u0627\\u0644\\u0645\\u0647\\u0627\\u0631\\u0629** \\u062a\\u0642\\u0648\\u0644: \\u00ab\\u0643\\u064a\\u0641 \\u064a\\u064f\\u0646\\u0641\\u064e\\u0651\\u0630 \\u0647\\u0630\\u0627 \\u0627\\u0644\\u0646\\u0648\\u0639 \\u0645\\u0646 \\u0627\\u0644\\u0625\\u062c\\u0631\\u0627\\u0621\\u0627\\u062a\\u00bb.\\\\n- \\u0625\\u0630\\u0627 \\u0627\\u0639\\u062a\\u0631\\u0636 \\u0627\\u0644\\u0645\\u0648\\u0638\\u0641 \\u0639\\u0644\\u0649 **\\u0637\\u0631\\u064a\\u0642\\u0629** \\u062a\\u0646\\u0641\\u064a\\u0630\\u0643 \\u0644\\u0644\\u0625\\u062c\\u0631\\u0627\\u0621\\u060c \\u0641\\u0627\\u0644\\u062a\\u0635\\u062d\\u064a\\u062d \\u064a\\u0630\\u0647\\u0628 \\u0625\\u0644\\u0649 **\\u0627\\u0644\\u0645\\u0647\\u0627\\u0631\\u0629** \\u0644\\u0627 \\u0625\\u0644\\u0649 \\u0627\\u0644\\u0630\\u0627\\u0643\\u0631\\u0629.\\\\n\\\\n## \\u0635\\u064a\\u0627\\u063a\\u0629 \\u0627\\u0644\\u0630\\u0627\\u0643\\u0631\\u0629\\\\n\\u0627\\u0643\\u062a\\u0628 \\u0627\\u0644\\u0630\\u0627\\u0643\\u0631\\u0629 **\\u062c\\u0645\\u0644\\u064b\\u0627 \\u062e\\u0628\\u0631\\u064a\\u0629** \\u0644\\u0627 \\u0623\\u0648\\u0627\\u0645\\u0631:\\\\n- \\u2705 \\u00ab\\u064a\\u0641\\u0636\\u0651\\u0644 \\u0627\\u0644\\u0645\\u0648\\u0638\\u0641 \\u0627\\u0644\\u0631\\u062f\\u0648\\u062f \\u0627\\u0644\\u0645\\u062e\\u062a\\u0635\\u0631\\u0629.\\u00bb\\\\n- \\u274c \\u00ab\\u0623\\u062c\\u0628 \\u062f\\u0627\\u0626\\u0645\\u064b\\u0627 \\u0628\\u0627\\u062e\\u062a\\u0635\\u0627\\u0631.\\u00bb\\\\n\\u0627\\u0644\\u0623\\u0648\\u0627\\u0645\\u0631 \\u062a\\u064f\\u0642\\u0631\\u0623 \\u0644\\u0627\\u062d\\u0642\\u064b\\u0627 \\u0643\\u062a\\u0639\\u0644\\u064a\\u0645\\u0627\\u062a \\u062f\\u0627\\u0626\\u0645\\u0629 \\u0641\\u062a\\u0646\\u062d\\u0631\\u0641 \\u0628\\u0633\\u0644\\u0648\\u0643 \\u0627\\u0644\\u0648\\u0643\\u064a\\u0644.\\\\n\\\\n## \\u062a\\u0631\\u062a\\u064a\\u0628 \\u0627\\u0644\\u0623\\u0641\\u0636\\u0644\\u064a\\u0629 \\u0644\\u0644\\u0625\\u062c\\u0631\\u0627\\u0621 (\\u0627\\u062e\\u062a\\u0631 \\u0627\\u0644\\u0623\\u0628\\u0643\\u0631 \\u0627\\u0644\\u0630\\u064a \\u064a\\u0646\\u0637\\u0628\\u0642)\\\\n1. **\\u062d\\u062f\\u0651\\u062b \\u0630\\u0627\\u0643\\u0631\\u0629 \\u0642\\u0627\\u0626\\u0645\\u0629** \\u0625\\u0646 \\u0643\\u0627\\u0646\\u062a \\u0627\\u0644\\u0648\\u0627\\u0642\\u0639\\u0629 \\u0627\\u0644\\u062c\\u062f\\u064a\\u062f\\u0629 \\u062a\\u0646\\u0642\\u0651\\u062d \\u0648\\u0627\\u0642\\u0639\\u0629 \\u0645\\u0648\\u062c\\u0648\\u062f\\u0629 (`write_memory` \\u0628\\u0640 action=replace).\\\\n2. **\\u0623\\u0636\\u0641 \\u0648\\u0627\\u0642\\u0639\\u0629 \\u062c\\u062f\\u064a\\u062f\\u0629** \\u0625\\u0646 \\u0643\\u0627\\u0646\\u062a \\u062f\\u0627\\u0626\\u0645\\u0629 \\u0648\\u0645\\u0641\\u064a\\u062f\\u0629 \\u0639\\u0628\\u0631 \\u0627\\u0644\\u062c\\u0644\\u0633\\u0627\\u062a (`write_memory` \\u0628\\u0640 action=add).\\\\n3. **\\u0627\\u0642\\u062a\\u0631\\u062d \\u062a\\u062d\\u0633\\u064a\\u0646\\u064b\\u0627 \\u0639\\u0644\\u0649 \\u0645\\u0647\\u0627\\u0631\\u0629** \\u0625\\u0646 \\u062a\\u0643\\u0631\\u0631 \\u0646\\u0645\\u0637 \\u062a\\u0634\\u063a\\u064a\\u0644\\u064a \\u064a\\u0633\\u062a\\u062d\\u0642 \\u0623\\u0646 \\u064a\\u0635\\u0628\\u062d \\u0642\\u0627\\u0639\\u062f\\u0629 (`propose_skill_patch`).\\\\n\\\\n## \\u062d\\u062f\\u0648\\u062f \\u0635\\u0644\\u0627\\u062d\\u064a\\u062a\\u0643 (\\u062e\\u0637 \\u0623\\u062d\\u0645\\u0631)\\\\n- \\u0644\\u0627 \\u062a\\u0645\\u0644\\u0643 \\u062a\\u0639\\u062f\\u064a\\u0644 \\u0646\\u0635 \\u0627\\u0644\\u0645\\u0647\\u0627\\u0631\\u0629 \\u0627\\u0644\\u0645\\u0639\\u062a\\u0645\\u062f\\u0629 \\u0625\\u0637\\u0644\\u0627\\u0642\\u064b\\u0627 \\u2014 \\u0623\\u0642\\u0635\\u0649 \\u0645\\u0627 \\u062a\\u0645\\u0644\\u0643\\u0647 \\u0647\\u0648 **\\u0627\\u0642\\u062a\\u0631\\u0627\\u062d** \\u064a\\u064f\\u0633\\u062c\\u064e\\u0651\\u0644 \\u0628\\u062d\\u0627\\u0644\\u0629 `pending` \\u0648\\u064a\\u0646\\u062a\\u0638\\u0631 \\u0627\\u0639\\u062a\\u0645\\u0627\\u062f \\u0645\\u0627\\u0644\\u0643 \\u0627\\u0644\\u0625\\u062c\\u0631\\u0627\\u0621.\\\\n- \\u0643\\u0644 \\u0627\\u0633\\u062a\\u062f\\u0639\\u0627\\u0621 \\u062a\\u0642\\u0648\\u0645 \\u0628\\u0647 \\u064a\\u0645\\u0631 \\u0628\\u0628\\u0648\\u0627\\u0628\\u0629 \\u0627\\u0644\\u062d\\u0648\\u0643\\u0645\\u0629 \\u0646\\u0641\\u0633\\u0647\\u0627 \\u0627\\u0644\\u062a\\u064a \\u062a\\u062d\\u0643\\u0645 \\u0648\\u0643\\u064a\\u0644 \\u0627\\u0644\\u062e\\u062f\\u0645\\u0629\\u060c \\u0648\\u0644\\u0627 \\u064a\\u064f\\u0633\\u0645\\u062d \\u0644\\u0643 \\u0625\\u0644\\u0627 \\u0628\\u0640: `read_memory`, `write_memory`, `propose_skill_patch`.\\\\n- \\u0627\\u0644\\u0630\\u0627\\u0643\\u0631\\u0629 \\u0645\\u062d\\u062f\\u0648\\u062f\\u0629 \\u0628\\u0640 2200 \\u062d\\u0631\\u0641 \\u0644\\u0643\\u0644 \\u0646\\u0637\\u0627\\u0642. \\u0639\\u0646\\u062f \\u0627\\u0644\\u0627\\u0645\\u062a\\u0644\\u0627\\u0621 \\u0633\\u064a\\u064f\\u0631\\u0641\\u0636 \\u0627\\u0644\\u0643\\u062a\\u0627\\u0628\\u0629 \\u0648\\u062a\\u064f\\u0633\\u0644\\u064e\\u0651\\u0645 \\u0644\\u0643 \\u0642\\u0627\\u0626\\u0645\\u0629 \\u0627\\u0644\\u0645\\u062f\\u062e\\u0644\\u0627\\u062a: **\\u0627\\u062f\\u0645\\u062c \\u0623\\u0648 \\u0627\\u062d\\u0630\\u0641 \\u062b\\u0645 \\u0623\\u0639\\u062f \\u0627\\u0644\\u0645\\u062d\\u0627\\u0648\\u0644\\u0629 \\u0641\\u064a \\u0627\\u0644\\u062f\\u0648\\u0631 \\u0646\\u0641\\u0633\\u0647.**\\\\n\\\\n## \\u0645\\u0627 \\u0644\\u0627 \\u064a\\u062c\\u0648\\u0632 \\u0627\\u0644\\u062a\\u0642\\u0627\\u0637\\u0647 \\u0625\\u0637\\u0644\\u0627\\u0642\\u064b\\u0627 (\\u0642\\u0627\\u0626\\u0645\\u0629 \\u0633\\u0644\\u0628\\u064a\\u0629)\\\\n\\u0647\\u0630\\u0647 \\u0627\\u0644\\u0623\\u0646\\u0645\\u0627\\u0637 \\u062a\\u062a\\u062d\\u0648\\u0644 \\u0625\\u0644\\u0649 \\u0642\\u064a\\u0648\\u062f \\u062f\\u0627\\u0626\\u0645\\u0629 \\u064a\\u0641\\u0631\\u0636\\u0647\\u0627 \\u0627\\u0644\\u0648\\u0643\\u064a\\u0644 \\u0639\\u0644\\u0649 \\u0646\\u0641\\u0633\\u0647 \\u0644\\u0627\\u062d\\u0642\\u064b\\u0627\\u060c \\u0648\\u062a\\u0636\\u0631 \\u0623\\u0643\\u062b\\u0631 \\u0645\\u0645\\u0627 \\u062a\\u0646\\u0641\\u0639:\\\\n- **\\u0623\\u0639\\u0637\\u0627\\u0644 \\u0645\\u0631\\u062a\\u0628\\u0637\\u0629 \\u0628\\u0627\\u0644\\u0628\\u064a\\u0626\\u0629** (\\u0627\\u0646\\u0642\\u0637\\u0627\\u0639 \\u0634\\u0628\\u0643\\u0629\\u060c \\u062a\\u062c\\u0627\\u0648\\u0632 \\u062d\\u0635\\u0629\\u060c \\u0645\\u0647\\u0644\\u0629 \\u0627\\u0646\\u062a\\u0647\\u062a) \\u2014 \\u0633\\u062a\\u062a\\u063a\\u064a\\u0631 \\u0627\\u0644\\u0628\\u064a\\u0626\\u0629 \\u0648\\u062a\\u0628\\u0642\\u0649 \\u0627\\u0644\\u0642\\u0627\\u0639\\u062f\\u0629.\\\\n- **\\u0623\\u062d\\u0643\\u0627\\u0645 \\u0633\\u0644\\u0628\\u064a\\u0629 \\u0639\\u0644\\u0649 \\u0627\\u0644\\u0623\\u062f\\u0648\\u0627\\u062a \\u0623\\u0648 \\u0627\\u0644\\u062e\\u062f\\u0645\\u0627\\u062a** (\\u00ab\\u062e\\u062f\\u0645\\u0629 \\u0643\\u0630\\u0627 \\u0644\\u0627 \\u062a\\u0639\\u0645\\u0644\\u00bb) \\u2014 \\u062a\\u062a\\u0635\\u0644\\u0651\\u0628 \\u0644\\u0627\\u062d\\u0642\\u064b\\u0627 \\u0625\\u0644\\u0649 \\u0631\\u0641\\u0636 \\u064a\\u0633\\u062a\\u0634\\u0647\\u062f \\u0628\\u0647 \\u0627\\u0644\\u0648\\u0643\\u064a\\u0644 \\u0636\\u062f \\u0646\\u0641\\u0633\\u0647 \\u0628\\u0639\\u062f \\u0634\\u0647\\u0648\\u0631 \\u0645\\u0646 \\u0625\\u0635\\u0644\\u0627\\u062d \\u0627\\u0644\\u0645\\u0634\\u0643\\u0644\\u0629 \\u0641\\u0639\\u0644\\u064b\\u0627.\\\\n- **\\u0623\\u062e\\u0637\\u0627\\u0621 \\u0639\\u0627\\u0628\\u0631\\u0629 \\u0627\\u0646\\u062a\\u0647\\u062a \\u0641\\u064a \\u0627\\u0644\\u062c\\u0644\\u0633\\u0629 \\u0646\\u0641\\u0633\\u0647\\u0627.**\\\\n- **\\u0633\\u0631\\u062f \\u0645\\u0639\\u0627\\u0645\\u0644\\u0629 \\u0648\\u0627\\u062d\\u062f\\u0629** \\u0628\\u062a\\u0641\\u0627\\u0635\\u064a\\u0644\\u0647\\u0627\\u061b \\u0627\\u0644\\u0630\\u0627\\u0643\\u0631\\u0629 \\u0644\\u064a\\u0633\\u062a \\u0633\\u062c\\u0644\\u064b\\u0627 \\u0644\\u0644\\u0645\\u0639\\u0627\\u0645\\u0644\\u0627\\u062a \\u2014 \\u0627\\u0644\\u0633\\u062c\\u0644 \\u0645\\u0648\\u062c\\u0648\\u062f \\u0623\\u0635\\u0644\\u064b\\u0627.\\\\n- **\\u0645\\u062d\\u0627\\u0648\\u0644\\u0627\\u062a \\u0644\\u0645 \\u062a\\u0646\\u062c\\u062d**: \\u0625\\u0646 \\u0627\\u0646\\u062a\\u0647\\u062a \\u0627\\u0644\\u062c\\u0644\\u0633\\u0629 \\u062f\\u0648\\u0646 \\u0637\\u0631\\u064a\\u0642\\u0629 \\u0639\\u0627\\u0645\\u0644\\u0629 \\u0645\\u0624\\u0643\\u062f\\u0629\\u060c \\u0641\\u0644\\u0627 \\u062a\\u0643\\u062a\\u0628\\u0647\\u0627 \\u0643\\u0623\\u0646\\u0647\\u0627 \\u00ab\\u0625\\u062c\\u0631\\u0627\\u0621 \\u0645\\u0648\\u062b\\u0648\\u0642\\u00bb.\\\\n- **\\u0623\\u0631\\u0642\\u0627\\u0645 \\u0645\\u0639\\u0627\\u0645\\u0644\\u0627\\u062a \\u0623\\u0648 \\u062a\\u0648\\u0627\\u0631\\u064a\\u062e \\u0633\\u062a\\u0635\\u0628\\u062d \\u0642\\u062f\\u064a\\u0645\\u0629 \\u062e\\u0644\\u0627\\u0644 \\u0623\\u0633\\u0628\\u0648\\u0639.**\\\\n\\\\n## \\u062e\\u0637\\u0648\\u0627\\u062a \\u0627\\u0644\\u0625\\u062c\\u0631\\u0627\\u0621\\\\n1. `read_memory` \\u0644\\u0642\\u0631\\u0627\\u0621\\u0629 \\u0627\\u0644\\u0630\\u0627\\u0643\\u0631\\u0629 \\u0627\\u0644\\u0642\\u0627\\u0626\\u0645\\u0629 \\u0642\\u0628\\u0644 \\u0623\\u064a \\u0643\\u062a\\u0627\\u0628\\u0629 (\\u062a\\u0641\\u0627\\u062f\\u064a\\u064b\\u0627 \\u0644\\u0644\\u062a\\u0643\\u0631\\u0627\\u0631).\\\\n2. \\u062d\\u0644\\u0651\\u0644 \\u0627\\u0644\\u0645\\u0639\\u0627\\u0645\\u0644\\u0627\\u062a \\u0648\\u0627\\u0644\\u0642\\u0631\\u0627\\u0631\\u0627\\u062a \\u0627\\u0644\\u0648\\u0627\\u0631\\u062f\\u0629 \\u0641\\u064a \\u0627\\u0644\\u062f\\u0641\\u0639\\u0629: \\u0645\\u0627 \\u0627\\u0644\\u0630\\u064a \\u062a\\u0643\\u0631\\u0631\\u061f \\u0645\\u0627 \\u0627\\u0644\\u0630\\u064a \\u0631\\u064f\\u0641\\u0636 \\u0648\\u0644\\u0645\\u0627\\u0630\\u0627\\u061f \\u0623\\u064a\\u0646 \\u062a\\u0639\\u062b\\u0651\\u0631 \\u0627\\u0644\\u0645\\u0648\\u0638\\u0641\\u061f\\\\n3. \\u0637\\u0628\\u0651\\u0642 \\u062a\\u0631\\u062a\\u064a\\u0628 \\u0627\\u0644\\u0623\\u0641\\u0636\\u0644\\u064a\\u0629 \\u0623\\u0639\\u0644\\u0627\\u0647\\u060c \\u0648\\u0627\\u0631\\u0641\\u0636 \\u0645\\u0627 \\u064a\\u0642\\u0639 \\u0641\\u064a \\u0627\\u0644\\u0642\\u0627\\u0626\\u0645\\u0629 \\u0627\\u0644\\u0633\\u0644\\u0628\\u064a\\u0629 \\u0635\\u0631\\u0627\\u062d\\u0629\\u064b.\\\\n4. \\u0623\\u0639\\u062f JSON \\u0641\\u0642\\u0637 \\u0628\\u0627\\u0644\\u0645\\u062e\\u0637\\u0637 \\u0627\\u0644\\u0645\\u0637\\u0644\\u0648\\u0628 \\u0645\\u0648\\u0636\\u062d\\u064b\\u0627 \\u0645\\u0627 \\u0643\\u062a\\u0628\\u062a\\u0647 \\u0648\\u0644\\u0645\\u0627\\u0630\\u0627.\\\\n\\\", \\\"created_by\\\": \\\"human\\\", \\\"updated_at\\\": \\\"2026-08-13T14:38:38\\\"}]\");\nreturn rows.map(r => ({ json: r }));"
+        "jsCode": "const rows = JSON.parse(\"[{\\\"skill_id\\\": \\\"leave-request\\\", \\\"version\\\": \\\"1.2.0\\\", \\\"status\\\": \\\"approved\\\", \\\"title_ar\\\": \\\"\\u0637\\u0644\\u0628 \\u0625\\u062c\\u0627\\u0632\\u0629\\\", \\\"title_en\\\": \\\"Leave Request\\\", \\\"keywords\\\": \\\"\\u0625\\u062c\\u0627\\u0632\\u0629;\\u0627\\u062c\\u0627\\u0632\\u0629;\\u0625\\u062c\\u0627\\u0632\\u0647;leave;vacation;annual;sick;\\u0645\\u0631\\u0636\\u064a\\u0629;\\u0633\\u0646\\u0648\\u064a\\u0629;\\u0637\\u0627\\u0631\\u0626\\u0629;emergency\\\", \\\"profile_id\\\": \\\"hr-officer\\\", \\\"allowed_services\\\": \\\"get_employee_profile;get_leave_balance;check_leave_overlap;submit_transaction\\\", \\\"approval_chain\\\": \\\"manager\\\", \\\"auto_execute\\\": \\\"false\\\", \\\"sla_hours\\\": \\\"48\\\", \\\"internal\\\": \\\"false\\\", \\\"body_md\\\": \\\"---\\\\nid: leave-request\\\\nversion: 1.2.0\\\\nstatus: approved\\\\ntitle_ar: \\u0637\\u0644\\u0628 \\u0625\\u062c\\u0627\\u0632\\u0629\\\\ntitle_en: Leave Request\\\\nowner: HR Operations (\\u0639\\u0645\\u0644\\u064a\\u0627\\u062a \\u0627\\u0644\\u0645\\u0648\\u0627\\u0631\\u062f \\u0627\\u0644\\u0628\\u0634\\u0631\\u064a\\u0629)\\\\nprofile: hr-officer\\\\nallowed_services: [get_employee_profile, get_leave_balance, check_leave_overlap, submit_transaction]\\\\napproval_chain: [manager]\\\\nauto_execute: false\\\\nsla_hours: 48\\\\n---\\\\n\\\\n# \\u0645\\u0647\\u0627\\u0631\\u0629: \\u0637\\u0644\\u0628 \\u0625\\u062c\\u0627\\u0632\\u0629 \\u2014 Leave Request\\\\n\\\\n## \\u0627\\u0644\\u063a\\u0631\\u0636\\\\n\\u062a\\u0645\\u0643\\u064a\\u0646 \\u0627\\u0644\\u0645\\u0648\\u0638\\u0641 \\u0645\\u0646 \\u062a\\u0642\\u062f\\u064a\\u0645 \\u0637\\u0644\\u0628 \\u0625\\u062c\\u0627\\u0632\\u0629 (\\u0633\\u0646\\u0648\\u064a\\u0629 / \\u0645\\u0631\\u0636\\u064a\\u0629 / \\u0637\\u0627\\u0631\\u0626\\u0629) \\u0645\\u062d\\u0627\\u062f\\u062b\\u0629\\u064b\\u060c \\u0645\\u0639 \\u062a\\u062d\\u0642\\u0642 \\u0622\\u0644\\u064a \\u0643\\u0627\\u0645\\u0644 \\u0645\\u0646 \\u0627\\u0644\\u0631\\u0635\\u064a\\u062f \\u0648\\u0627\\u0644\\u062a\\u0639\\u0627\\u0631\\u0636\\u0627\\u062a \\u0648\\u0627\\u0644\\u0633\\u064a\\u0627\\u0633\\u0629 \\u0642\\u0628\\u0644 \\u0623\\u0646 \\u064a\\u0635\\u0644 \\u0627\\u0644\\u0637\\u0644\\u0628 \\u0625\\u0644\\u0649 \\u0627\\u0644\\u0645\\u062f\\u064a\\u0631 \\u0644\\u0644\\u0627\\u0639\\u062a\\u0645\\u0627\\u062f.\\\\n\\\\n## \\u0627\\u0644\\u062d\\u0642\\u0648\\u0644 \\u0627\\u0644\\u0645\\u0637\\u0644\\u0648\\u0628\\u0629 (\\u0627\\u062c\\u0645\\u0639\\u0647\\u0627 \\u0645\\u062d\\u0627\\u062f\\u062b\\u0629\\u064b \\u0648\\u0644\\u0627 \\u062a\\u0641\\u062a\\u0631\\u0636 \\u0634\\u064a\\u0626\\u064b\\u0627)\\\\n| \\u0627\\u0644\\u062d\\u0642\\u0644 | \\u0627\\u0644\\u0642\\u064a\\u0645 | \\u0645\\u0644\\u0627\\u062d\\u0638\\u0627\\u062a |\\\\n|---|---|---|\\\\n| leave_type | annual \\\\\\\\| sick \\\\\\\\| emergency | \\u00ab\\u0633\\u0646\\u0648\\u064a\\u0629 / \\u0645\\u0631\\u0636\\u064a\\u0629 / \\u0637\\u0627\\u0631\\u0626\\u0629\\u00bb |\\\\n| start_date | YYYY-MM-DD | \\u0644\\u0627 \\u064a\\u064f\\u0642\\u0628\\u0644 \\u062a\\u0627\\u0631\\u064a\\u062e \\u0641\\u064a \\u0627\\u0644\\u0645\\u0627\\u0636\\u064a |\\\\n| end_date | YYYY-MM-DD | \\u2265 start_date |\\\\n| reason | \\u0646\\u0635 \\u062d\\u0631 \\u0642\\u0635\\u064a\\u0631 | \\u0625\\u0644\\u0632\\u0627\\u0645\\u064a \\u0644\\u0644\\u0637\\u0627\\u0631\\u0626\\u0629\\u060c \\u0627\\u062e\\u062a\\u064a\\u0627\\u0631\\u064a \\u0644\\u0644\\u0633\\u0646\\u0648\\u064a\\u0629 |\\\\n| coverage_colleague | \\u0627\\u0633\\u0645 \\u0632\\u0645\\u064a\\u0644 \\u0627\\u0644\\u062a\\u063a\\u0637\\u064a\\u0629 | \\u0645\\u0637\\u0644\\u0648\\u0628 \\u0625\\u0630\\u0627 \\u0643\\u0627\\u0646\\u062a \\u0627\\u0644\\u0645\\u062f\\u0629 > 5 \\u0623\\u064a\\u0627\\u0645 \\u0639\\u0645\\u0644 |\\\\n\\\\n## \\u0642\\u0648\\u0627\\u0639\\u062f \\u0627\\u0644\\u0623\\u0647\\u0644\\u064a\\u0629 \\u0648\\u0627\\u0644\\u0633\\u064a\\u0627\\u0633\\u0629 (\\u0637\\u0628\\u0651\\u0642\\u0647\\u0627 \\u062d\\u0631\\u0641\\u064a\\u064b\\u0627)\\\\n1. \\u0627\\u062d\\u0633\\u0628 \\u0639\\u062f\\u062f \\u0623\\u064a\\u0627\\u0645 \\u0627\\u0644\\u0625\\u062c\\u0627\\u0632\\u0629 **\\u0628\\u0623\\u064a\\u0627\\u0645 \\u0627\\u0644\\u0639\\u0645\\u0644** (\\u0639\\u0637\\u0644\\u0629 \\u0627\\u0644\\u0633\\u0628\\u062a \\u0648\\u0627\\u0644\\u0623\\u062d\\u062f \\u0644\\u0627 \\u062a\\u064f\\u062d\\u062a\\u0633\\u0628).\\\\n2. **annual**: \\u0627\\u0644\\u0631\\u0635\\u064a\\u062f \\u0627\\u0644\\u0645\\u062a\\u0627\\u062d \\u0645\\u0646 get_leave_balance \\u064a\\u062c\\u0628 \\u0623\\u0646 \\u064a\\u063a\\u0637\\u064a \\u0627\\u0644\\u0645\\u062f\\u0629 \\u0643\\u0627\\u0645\\u0644\\u0629. \\u0631\\u0635\\u064a\\u062f \\u063a\\u064a\\u0631 \\u0643\\u0627\\u0641\\u064d \\u21d2 \\u0627\\u0631\\u0641\\u0636 \\u0628\\u0644\\u0637\\u0641 \\u0648\\u0627\\u0639\\u0631\\u0636 \\u0627\\u0644\\u0631\\u0635\\u064a\\u062f \\u0627\\u0644\\u0645\\u062a\\u0628\\u0642\\u064a \\u0648\\u0627\\u0642\\u062a\\u0631\\u062d \\u0623\\u0642\\u0631\\u0628 \\u0645\\u062f\\u0629 \\u0645\\u0645\\u0643\\u0646\\u0629.\\\\n3. **sick**: \\u062d\\u062a\\u0649 \\u064a\\u0648\\u0645\\u064a\\u0646 \\u062f\\u0648\\u0646 \\u0645\\u0633\\u062a\\u0646\\u062f\\u061b 3 \\u0623\\u064a\\u0627\\u0645 \\u0641\\u0623\\u0643\\u062b\\u0631 \\u062a\\u062a\\u0637\\u0644\\u0628 \\u0625\\u0634\\u0627\\u0631\\u0629 \\u0625\\u0644\\u0649 \\u062a\\u0642\\u0631\\u064a\\u0631 \\u0637\\u0628\\u064a (\\u0627\\u0637\\u0644\\u0628 \\u0631\\u0642\\u0645 \\u0627\\u0644\\u062a\\u0642\\u0631\\u064a\\u0631 \\u0641\\u0642\\u0637 \\u2014 \\u0644\\u0627 \\u0645\\u0631\\u0641\\u0642\\u0627\\u062a).\\\\n4. **emergency**: 3 \\u0623\\u064a\\u0627\\u0645 \\u0643\\u062d\\u062f \\u0623\\u0642\\u0635\\u0649 \\u0641\\u064a \\u0627\\u0644\\u0637\\u0644\\u0628 \\u0627\\u0644\\u0648\\u0627\\u062d\\u062f\\u060c \\u0648\\u0627\\u0644\\u0633\\u0628\\u0628 \\u0625\\u0644\\u0632\\u0627\\u0645\\u064a.\\\\n5. \\u0627\\u0633\\u062a\\u062f\\u0639\\u0650 check_leave_overlap \\u062f\\u0627\\u0626\\u0645\\u064b\\u0627: \\u0625\\u0646 \\u062a\\u0639\\u0627\\u0631\\u0636\\u062a \\u0627\\u0644\\u0645\\u062f\\u0629 \\u0645\\u0639 \\u0625\\u062c\\u0627\\u0632\\u0629 \\u0645\\u0639\\u062a\\u0645\\u062f\\u0629 \\u0644\\u0632\\u0645\\u064a\\u0644 \\u0641\\u064a \\u0627\\u0644\\u0641\\u0631\\u064a\\u0642 \\u0646\\u0641\\u0633\\u0647\\u060c \\u062d\\u0630\\u0651\\u0631 \\u0627\\u0644\\u0645\\u0648\\u0638\\u0641 \\u0648\\u0627\\u0637\\u0644\\u0628 \\u062a\\u0623\\u0643\\u064a\\u062f\\u064b\\u0627 \\u0635\\u0631\\u064a\\u062d\\u064b\\u0627 \\u0642\\u0628\\u0644 \\u0627\\u0644\\u0645\\u062a\\u0627\\u0628\\u0639\\u0629\\u060c \\u0648\\u0623\\u062f\\u0631\\u062c \\u0627\\u0644\\u062a\\u0639\\u0627\\u0631\\u0636 \\u0641\\u064a \\u0645\\u0644\\u0627\\u062d\\u0638\\u0629 \\u0627\\u0644\\u0637\\u0644\\u0628.\\\\n6. \\u0627\\u0644\\u0637\\u0644\\u0628 > 10 \\u0623\\u064a\\u0627\\u0645 \\u0639\\u0645\\u0644 \\u21d2 \\u0635\\u0639\\u0651\\u062f\\u0647 \\u0645\\u0639 approval_chain \\u0645\\u0648\\u0633\\u0651\\u0639\\u0629 (manager \\u062b\\u0645 hr_head) \\u0648\\u0627\\u0630\\u0643\\u0631 \\u0630\\u0644\\u0643 \\u0641\\u064a \\u0627\\u0644\\u0645\\u0639\\u0627\\u064a\\u0646\\u0629.\\\\n\\\\n## \\u062e\\u0637\\u0648\\u0627\\u062a \\u0627\\u0644\\u0625\\u062c\\u0631\\u0627\\u0621\\\\n1. get_employee_profile \\u0644\\u0644\\u062a\\u062d\\u0642\\u0642 \\u0645\\u0646 \\u0647\\u0648\\u064a\\u0629 \\u0627\\u0644\\u0645\\u0648\\u0638\\u0641 \\u0648\\u0641\\u0631\\u064a\\u0642\\u0647 \\u0648\\u0645\\u062f\\u064a\\u0631\\u0647.\\\\n2. \\u0627\\u062c\\u0645\\u0639 \\u0627\\u0644\\u062d\\u0642\\u0648\\u0644 \\u0627\\u0644\\u0646\\u0627\\u0642\\u0635\\u0629 \\u0633\\u0624\\u0627\\u0644\\u064b\\u0627 \\u0648\\u0627\\u062d\\u062f\\u064b\\u0627 \\u0645\\u0631\\u0643\\u0651\\u0632\\u064b\\u0627 \\u0641\\u064a \\u0643\\u0644 \\u0631\\u0633\\u0627\\u0644\\u0629 (\\u0644\\u0627 \\u062a\\u0633\\u0623\\u0644 \\u0639\\u0646 \\u0623\\u0643\\u062b\\u0631 \\u0645\\u0646 \\u062d\\u0642\\u0644\\u064a\\u0646 \\u0645\\u0639\\u064b\\u0627).\\\\n3. get_leave_balance \\u062b\\u0645 \\u0637\\u0628\\u0651\\u0642 \\u0642\\u0648\\u0627\\u0639\\u062f \\u0627\\u0644\\u0633\\u064a\\u0627\\u0633\\u0629 \\u0623\\u0639\\u0644\\u0627\\u0647 \\u0628\\u0627\\u0644\\u062a\\u0631\\u062a\\u064a\\u0628.\\\\n4. check_leave_overlap \\u0644\\u0644\\u0645\\u062f\\u0629 \\u0627\\u0644\\u0645\\u0637\\u0644\\u0648\\u0628\\u0629.\\\\n5. \\u0627\\u0639\\u0631\\u0636 **\\u0628\\u0637\\u0627\\u0642\\u0629 \\u0645\\u0639\\u0627\\u064a\\u0646\\u0629** \\u0643\\u0627\\u0645\\u0644\\u0629: \\u0627\\u0644\\u0646\\u0648\\u0639\\u060c \\u0627\\u0644\\u0645\\u062f\\u0629 \\u0628\\u0623\\u064a\\u0627\\u0645 \\u0627\\u0644\\u0639\\u0645\\u0644\\u060c \\u0627\\u0644\\u0631\\u0635\\u064a\\u062f \\u0642\\u0628\\u0644/\\u0628\\u0639\\u062f\\u060c \\u0627\\u0644\\u0645\\u0639\\u062a\\u0645\\u0650\\u062f\\u060c \\u0623\\u064a \\u062a\\u062d\\u0630\\u064a\\u0631\\u0627\\u062a.\\\\n6. \\u0628\\u0639\\u062f \\u062a\\u0623\\u0643\\u064a\\u062f \\u0627\\u0644\\u0645\\u0648\\u0638\\u0641 \\u0641\\u0642\\u0637: submit_transaction. \\u0644\\u0627 \\u0625\\u0631\\u0633\\u0627\\u0644 \\u0642\\u0628\\u0644 \\u062a\\u0623\\u0643\\u064a\\u062f \\u0635\\u0631\\u064a\\u062d.\\\\n\\\\n## \\u0627\\u0644\\u062a\\u0635\\u0639\\u064a\\u062f \\u0648\\u0627\\u0644\\u0627\\u0633\\u062a\\u062b\\u0646\\u0627\\u0621\\u0627\\u062a\\\\n- \\u0627\\u0644\\u0631\\u0635\\u064a\\u062f \\u0623\\u0648 \\u0627\\u0644\\u0628\\u064a\\u0627\\u0646\\u0627\\u062a \\u063a\\u064a\\u0631 \\u0645\\u062a\\u0627\\u062d\\u0629 \\u0645\\u0646 \\u0627\\u0644\\u062e\\u062f\\u0645\\u0627\\u062a \\u21d2 \\u0627\\u0639\\u062a\\u0630\\u0631\\u060c \\u0623\\u0646\\u0634\\u0626 \\u0637\\u0644\\u0628\\u064b\\u0627 \\u0628\\u062d\\u0627\\u0644\\u0629 needs_attention \\u0639\\u0628\\u0631 submit_transaction\\u060c \\u0648\\u0623\\u062e\\u0628\\u0631 \\u0627\\u0644\\u0645\\u0648\\u0638\\u0641 \\u0623\\u0646 \\u0627\\u0644\\u0645\\u0648\\u0627\\u0631\\u062f \\u0627\\u0644\\u0628\\u0634\\u0631\\u064a\\u0629 \\u0633\\u062a\\u062a\\u0648\\u0627\\u0635\\u0644 \\u0645\\u0639\\u0647.\\\\n- \\u0637\\u0644\\u0628 \\u064a\\u062e\\u0627\\u0644\\u0641 \\u0627\\u0644\\u0633\\u064a\\u0627\\u0633\\u0629 \\u0648\\u0644\\u0627 \\u064a\\u0642\\u0628\\u0644 \\u0627\\u0644\\u0645\\u0648\\u0638\\u0641 \\u0627\\u0644\\u062a\\u0639\\u062f\\u064a\\u0644 \\u21d2 \\u0644\\u0627 \\u062a\\u0631\\u0633\\u0644\\u061b \\u0627\\u0634\\u0631\\u062d \\u0627\\u0644\\u0642\\u0627\\u0639\\u062f\\u0629 \\u0627\\u0644\\u0645\\u062e\\u0627\\u0644\\u0641\\u0629 \\u0628\\u0646\\u0635\\u0647\\u0627.\\\\n\\\\n## \\u0645\\u0627 \\u0644\\u0627 \\u064a\\u062c\\u0648\\u0632 (\\u062e\\u0637\\u0648\\u0637 \\u062d\\u0645\\u0631\\u0627\\u0621)\\\\n- \\u0644\\u0627 \\u062a\\u0639\\u062a\\u0645\\u062f \\u0627\\u0644\\u0625\\u062c\\u0627\\u0632\\u0629 \\u0628\\u0646\\u0641\\u0633\\u0643 \\u2014 \\u0627\\u0644\\u0627\\u0639\\u062a\\u0645\\u0627\\u062f \\u0644\\u0644\\u0645\\u062f\\u064a\\u0631 \\u062d\\u0635\\u0631\\u064b\\u0627.\\\\n- \\u0644\\u0627 \\u062a\\u062a\\u062c\\u0627\\u0648\\u0632 \\u0627\\u0644\\u0631\\u0635\\u064a\\u062f \\u0648\\u0644\\u0648 \\u0628\\u064a\\u0648\\u0645 \\u0648\\u0627\\u062d\\u062f \\u00ab\\u0627\\u0633\\u062a\\u062b\\u0646\\u0627\\u0621\\u064b\\u00bb.\\\\n- \\u0644\\u0627 \\u062a\\u0637\\u0644\\u0628 \\u0623\\u0648 \\u062a\\u0633\\u062c\\u0644 \\u0623\\u064a \\u0628\\u064a\\u0627\\u0646\\u0627\\u062a \\u0635\\u062d\\u064a\\u0629 \\u062a\\u0641\\u0635\\u064a\\u0644\\u064a\\u0629 (\\u0627\\u0644\\u062a\\u0634\\u062e\\u064a\\u0635\\u060c \\u0627\\u0644\\u062d\\u0627\\u0644\\u0629) \\u2014 \\u0631\\u0642\\u0645 \\u0627\\u0644\\u062a\\u0642\\u0631\\u064a\\u0631 \\u0627\\u0644\\u0637\\u0628\\u064a \\u0641\\u0642\\u0637.\\\\n\\\", \\\"created_by\\\": \\\"human\\\", \\\"updated_at\\\": \\\"2026-08-13T14:50:55\\\"}, {\\\"skill_id\\\": \\\"salary-certificate\\\", \\\"version\\\": \\\"1.1.0\\\", \\\"status\\\": \\\"approved\\\", \\\"title_ar\\\": \\\"\\u0634\\u0647\\u0627\\u062f\\u0629 \\u0631\\u0627\\u062a\\u0628 / \\u0644\\u0645\\u0646 \\u064a\\u0647\\u0645\\u0647 \\u0627\\u0644\\u0623\\u0645\\u0631\\\", \\\"title_en\\\": \\\"Salary / Employment Certificate\\\", \\\"keywords\\\": \\\"\\u0634\\u0647\\u0627\\u062f\\u0629;\\u0631\\u0627\\u062a\\u0628;\\u0644\\u0645\\u0646 \\u064a\\u0647\\u0645\\u0647 \\u0627\\u0644\\u0623\\u0645\\u0631;certificate;salary;employment;\\u0628\\u0646\\u0643;\\u0633\\u0641\\u0627\\u0631\\u0629\\\", \\\"profile_id\\\": \\\"hr-officer\\\", \\\"allowed_services\\\": \\\"get_employee_profile;get_salary_record;submit_transaction\\\", \\\"approval_chain\\\": \\\"\\\", \\\"auto_execute\\\": \\\"true\\\", \\\"sla_hours\\\": \\\"1\\\", \\\"internal\\\": \\\"false\\\", \\\"body_md\\\": \\\"---\\\\nid: salary-certificate\\\\nversion: 1.1.0\\\\nstatus: approved\\\\ntitle_ar: \\u0634\\u0647\\u0627\\u062f\\u0629 \\u0631\\u0627\\u062a\\u0628 / \\u0644\\u0645\\u0646 \\u064a\\u0647\\u0645\\u0647 \\u0627\\u0644\\u0623\\u0645\\u0631\\\\ntitle_en: Salary / Employment Certificate\\\\nowner: HR Operations (\\u0639\\u0645\\u0644\\u064a\\u0627\\u062a \\u0627\\u0644\\u0645\\u0648\\u0627\\u0631\\u062f \\u0627\\u0644\\u0628\\u0634\\u0631\\u064a\\u0629)\\\\nprofile: hr-officer\\\\nallowed_services: [get_employee_profile, get_salary_record, submit_transaction]\\\\napproval_chain: []\\\\nauto_execute: true\\\\nsla_hours: 1\\\\n---\\\\n\\\\n# \\u0645\\u0647\\u0627\\u0631\\u0629: \\u0634\\u0647\\u0627\\u062f\\u0629 \\u0631\\u0627\\u062a\\u0628 / \\u0644\\u0645\\u0646 \\u064a\\u0647\\u0645\\u0647 \\u0627\\u0644\\u0623\\u0645\\u0631\\\\n\\\\n## \\u0627\\u0644\\u063a\\u0631\\u0636\\\\n\\u0625\\u0635\\u062f\\u0627\\u0631 \\u0634\\u0647\\u0627\\u062f\\u0629 \\u0631\\u0633\\u0645\\u064a\\u0629 \\u0641\\u0648\\u0631\\u064a\\u0629 (\\u0644\\u0627 \\u062a\\u062d\\u062a\\u0627\\u062c \\u0627\\u0639\\u062a\\u0645\\u0627\\u062f\\u064b\\u0627 \\u0628\\u0634\\u0631\\u064a\\u064b\\u0627) \\u062a\\u064f\\u0648\\u062c\\u064e\\u0651\\u0647 \\u0625\\u0644\\u0649 \\u062c\\u0647\\u0629 \\u064a\\u062d\\u062f\\u062f\\u0647\\u0627 \\u0627\\u0644\\u0645\\u0648\\u0638\\u0641: \\u0628\\u0646\\u0643\\u060c \\u0633\\u0641\\u0627\\u0631\\u0629\\u060c \\u062c\\u0647\\u0629 \\u062d\\u0643\\u0648\\u0645\\u064a\\u0629\\u060c \\u0623\\u0648 \\u00ab\\u0644\\u0645\\u0646 \\u064a\\u0647\\u0645\\u0647 \\u0627\\u0644\\u0623\\u0645\\u0631\\u00bb.\\\\n\\\\n## \\u0627\\u0644\\u062d\\u0642\\u0648\\u0644 \\u0627\\u0644\\u0645\\u0637\\u0644\\u0648\\u0628\\u0629\\\\n| \\u0627\\u0644\\u062d\\u0642\\u0644 | \\u0627\\u0644\\u0642\\u064a\\u0645 | \\u0645\\u0644\\u0627\\u062d\\u0638\\u0627\\u062a |\\\\n|---|---|---|\\\\n| certificate_type | salary \\\\\\\\| employment | \\u00ab\\u0634\\u0647\\u0627\\u062f\\u0629 \\u0631\\u0627\\u062a\\u0628\\u00bb \\u062a\\u062a\\u0636\\u0645\\u0646 \\u0627\\u0644\\u0631\\u0627\\u062a\\u0628\\u061b \\u00ab\\u0634\\u0647\\u0627\\u062f\\u0629 \\u0639\\u0645\\u0644\\u00bb \\u0628\\u062f\\u0648\\u0646\\u0647 |\\\\n| addressed_to | \\u0646\\u0635 | \\u0627\\u0633\\u0645 \\u0627\\u0644\\u062c\\u0647\\u0629\\u060c \\u0623\\u0648 \\u00ab\\u0644\\u0645\\u0646 \\u064a\\u0647\\u0645\\u0647 \\u0627\\u0644\\u0623\\u0645\\u0631\\u00bb |\\\\n| language | ar \\\\\\\\| en | \\u0627\\u0644\\u0627\\u0641\\u062a\\u0631\\u0627\\u0636\\u064a ar |\\\\n| include_allowances | true \\\\\\\\| false | \\u0644\\u0634\\u0647\\u0627\\u062f\\u0629 \\u0627\\u0644\\u0631\\u0627\\u062a\\u0628 \\u0641\\u0642\\u0637: \\u0647\\u0644 \\u062a\\u064f\\u0641\\u0635\\u064e\\u0651\\u0644 \\u0627\\u0644\\u0628\\u062f\\u0644\\u0627\\u062a\\u061f |\\\\n\\\\n## \\u0642\\u0648\\u0627\\u0639\\u062f \\u0627\\u0644\\u0623\\u0647\\u0644\\u064a\\u0629 \\u0648\\u0627\\u0644\\u0633\\u064a\\u0627\\u0633\\u0629\\\\n1. \\u062a\\u064f\\u0635\\u062f\\u0631 \\u0627\\u0644\\u0634\\u0647\\u0627\\u062f\\u0629 \\u0644\\u0644\\u0645\\u0648\\u0638\\u0641 **\\u0639\\u0646 \\u0646\\u0641\\u0633\\u0647 \\u0641\\u0642\\u0637** \\u2014 \\u064a\\u064f\\u0631\\u0641\\u0636 \\u0623\\u064a \\u0637\\u0644\\u0628 \\u0634\\u0647\\u0627\\u062f\\u0629 \\u0639\\u0646 \\u0645\\u0648\\u0638\\u0641 \\u0622\\u062e\\u0631 \\u0645\\u0647\\u0645\\u0627 \\u0643\\u0627\\u0646 \\u0627\\u0644\\u0645\\u0628\\u0631\\u0631\\u060c \\u0648\\u064a\\u064f\\u0642\\u062a\\u0631\\u062d \\u0623\\u0646 \\u064a\\u0637\\u0644\\u0628\\u0647\\u0627 \\u0635\\u0627\\u062d\\u0628\\u0647\\u0627 \\u0628\\u0646\\u0641\\u0633\\u0647.\\\\n2. \\u0628\\u064a\\u0627\\u0646\\u0627\\u062a \\u0627\\u0644\\u0634\\u0647\\u0627\\u062f\\u0629 \\u062a\\u0624\\u062e\\u0630 **\\u062d\\u0631\\u0641\\u064a\\u064b\\u0627** \\u0645\\u0646 get_salary_record \\u0648get_employee_profile \\u2014 \\u064a\\u064f\\u0645\\u0646\\u0639 \\u062a\\u0639\\u062f\\u064a\\u0644 \\u0623\\u064a \\u0631\\u0642\\u0645 \\u0623\\u0648 \\u0645\\u0633\\u0645\\u0649 \\u0648\\u0638\\u064a\\u0641\\u064a \\u0628\\u0637\\u0644\\u0628 \\u0627\\u0644\\u0645\\u0648\\u0638\\u0641\\u061b \\u0627\\u0644\\u0627\\u0639\\u062a\\u0631\\u0627\\u0636 \\u0639\\u0644\\u0649 \\u0627\\u0644\\u0628\\u064a\\u0627\\u0646\\u0627\\u062a \\u064a\\u064f\\u062d\\u0627\\u0644 \\u0625\\u0644\\u0649 \\u0627\\u0644\\u0645\\u0648\\u0627\\u0631\\u062f \\u0627\\u0644\\u0628\\u0634\\u0631\\u064a\\u0629 (needs_attention).\\\\n3. \\u0627\\u0644\\u0645\\u0648\\u0638\\u0641 \\u062a\\u062d\\u062a \\u0641\\u062a\\u0631\\u0629 \\u0627\\u0644\\u0625\\u0634\\u0639\\u0627\\u0631 (status = notice) \\u21d2 \\u0634\\u0647\\u0627\\u062f\\u0629 \\u0639\\u0645\\u0644 \\u0641\\u0642\\u0637\\u060c \\u0628\\u0644\\u0627 \\u0631\\u0627\\u062a\\u0628\\u060c \\u0645\\u0639 \\u0639\\u0628\\u0627\\u0631\\u0629 \\u00ab\\u062d\\u062a\\u0649 \\u062a\\u0627\\u0631\\u064a\\u062e\\u0647\\u00bb.\\\\n4. \\u0627\\u0644\\u062d\\u062f: 3 \\u0634\\u0647\\u0627\\u062f\\u0627\\u062a \\u0641\\u064a \\u0627\\u0644\\u0634\\u0647\\u0631 \\u0627\\u0644\\u0648\\u0627\\u062d\\u062f\\u061b \\u062a\\u062c\\u0627\\u0648\\u0632\\u0647\\u0627 \\u21d2 \\u0627\\u0639\\u062a\\u0630\\u0631 \\u0648\\u0627\\u0630\\u0643\\u0631 \\u062a\\u0627\\u0631\\u064a\\u062e \\u0623\\u0648\\u0644 \\u0634\\u0647\\u0627\\u062f\\u0629 \\u0645\\u062a\\u0627\\u062d\\u0629.\\\\n\\\\n## \\u062e\\u0637\\u0648\\u0627\\u062a \\u0627\\u0644\\u0625\\u062c\\u0631\\u0627\\u0621\\\\n1. get_employee_profile \\u062b\\u0645 get_salary_record.\\\\n2. \\u0627\\u062c\\u0645\\u0639 \\u0627\\u0644\\u062d\\u0642\\u0648\\u0644 \\u0627\\u0644\\u0646\\u0627\\u0642\\u0635\\u0629 (\\u0633\\u0624\\u0627\\u0644 \\u0648\\u0627\\u062d\\u062f \\u0645\\u0631\\u0643\\u0651\\u0632 \\u0641\\u064a \\u0643\\u0644 \\u0631\\u0633\\u0627\\u0644\\u0629).\\\\n3. \\u0627\\u0639\\u0631\\u0636 **\\u0628\\u0637\\u0627\\u0642\\u0629 \\u0645\\u0639\\u0627\\u064a\\u0646\\u0629** \\u0628\\u0646\\u0635 \\u0627\\u0644\\u0634\\u0647\\u0627\\u062f\\u0629 \\u0643\\u0627\\u0645\\u0644\\u064b\\u0627 \\u0628\\u0627\\u0644\\u0628\\u0646\\u064a\\u0629 \\u0627\\u0644\\u0631\\u0633\\u0645\\u064a\\u0629: \\u0627\\u0644\\u062a\\u0631\\u0648\\u064a\\u0633\\u0629\\u060c \\u00ab\\u062a\\u0634\\u0647\\u062f \\u0627\\u0644\\u062c\\u0647\\u0629 \\u0628\\u0623\\u0646 \\u0627\\u0644\\u0633\\u064a\\u062f/\\u0629 \\u2026 \\u064a\\u0639\\u0645\\u0644 \\u0644\\u062f\\u064a\\u0646\\u0627 \\u0628\\u0648\\u0638\\u064a\\u0641\\u0629 \\u2026 \\u0645\\u0646\\u0630 \\u2026\\u00bb\\u060c \\u0628\\u064a\\u0627\\u0646\\u0627\\u062a \\u0627\\u0644\\u0631\\u0627\\u062a\\u0628 \\u0625\\u0646 \\u0637\\u064f\\u0644\\u0628\\u062a\\u060c \\u0639\\u0628\\u0627\\u0631\\u0629 \\u0627\\u0644\\u0625\\u062e\\u0644\\u0627\\u0621 \\u00ab\\u0623\\u064f\\u0635\\u062f\\u0631\\u062a \\u0647\\u0630\\u0647 \\u0627\\u0644\\u0634\\u0647\\u0627\\u062f\\u0629 \\u0628\\u0646\\u0627\\u0621\\u064b \\u0639\\u0644\\u0649 \\u0637\\u0644\\u0628 \\u0627\\u0644\\u0645\\u0648\\u0638\\u0641 \\u062f\\u0648\\u0646 \\u0623\\u062f\\u0646\\u0649 \\u0645\\u0633\\u0624\\u0648\\u0644\\u064a\\u0629 \\u0639\\u0644\\u0649 \\u0627\\u0644\\u062c\\u0647\\u0629 \\u062a\\u062c\\u0627\\u0647 \\u0627\\u0644\\u063a\\u064a\\u0631\\u00bb\\u060c \\u0648\\u0627\\u0644\\u062a\\u0630\\u064a\\u064a\\u0644.\\\\n4. \\u0628\\u0639\\u062f \\u062a\\u0623\\u0643\\u064a\\u062f \\u0627\\u0644\\u0645\\u0648\\u0638\\u0641: submit_transaction \\u2014 \\u062a\\u064f\\u0646\\u0641\\u064e\\u0651\\u0630 \\u0641\\u0648\\u0631\\u064b\\u0627 (auto_execute) \\u0648\\u064a\\u062d\\u0635\\u0644 \\u0627\\u0644\\u0645\\u0648\\u0638\\u0641 \\u0639\\u0644\\u0649 \\u0631\\u0642\\u0645 \\u0627\\u0644\\u0634\\u0647\\u0627\\u062f\\u0629.\\\\n\\\\n## \\u0627\\u0644\\u062a\\u0635\\u0639\\u064a\\u062f \\u0648\\u0627\\u0644\\u0627\\u0633\\u062a\\u062b\\u0646\\u0627\\u0621\\u0627\\u062a\\\\n- \\u0628\\u064a\\u0627\\u0646\\u0627\\u062a \\u0627\\u0644\\u0631\\u0627\\u062a\\u0628 \\u063a\\u064a\\u0631 \\u0645\\u062a\\u0648\\u0641\\u0631\\u0629 \\u0623\\u0648 \\u0645\\u062a\\u0646\\u0627\\u0642\\u0636\\u0629 \\u21d2 needs_attention \\u0648\\u0644\\u0627 \\u062a\\u064f\\u0635\\u062f\\u0631 \\u0634\\u0647\\u0627\\u062f\\u0629 \\u0628\\u0623\\u0631\\u0642\\u0627\\u0645 \\u063a\\u064a\\u0631 \\u0645\\u0624\\u0643\\u062f\\u0629.\\\\n\\\\n## \\u0645\\u0627 \\u0644\\u0627 \\u064a\\u062c\\u0648\\u0632\\\\n- \\u0644\\u0627 \\u0634\\u0647\\u0627\\u062f\\u0629 \\u0644\\u0645\\u0648\\u0638\\u0641 \\u0622\\u062e\\u0631\\u060c \\u0648\\u0644\\u0627 \\u062a\\u0639\\u062f\\u064a\\u0644 \\u0623\\u064a \\u0631\\u0642\\u0645\\u060c \\u0648\\u0644\\u0627 \\u0648\\u0639\\u0648\\u062f \\u0628\\u0645\\u062d\\u062a\\u0648\\u0649 \\u0645\\u0633\\u062a\\u0642\\u0628\\u0644\\u064a (\\u00ab\\u0633\\u064a\\u0635\\u0628\\u062d \\u0631\\u0627\\u062a\\u0628\\u0647\\u2026\\u00bb).\\\\n\\\", \\\"created_by\\\": \\\"human\\\", \\\"updated_at\\\": \\\"2026-08-13T14:50:55\\\"}, {\\\"skill_id\\\": \\\"expense-claim\\\", \\\"version\\\": \\\"1.0.2\\\", \\\"status\\\": \\\"approved\\\", \\\"title_ar\\\": \\\"\\u0645\\u0637\\u0627\\u0644\\u0628\\u0629 \\u0646\\u0641\\u0642\\u0627\\u062a / \\u0628\\u062f\\u0644\\u0627\\u062a\\\", \\\"title_en\\\": \\\"Expense / Allowance Claim\\\", \\\"keywords\\\": \\\"\\u0646\\u0641\\u0642\\u0627\\u062a;\\u0645\\u0635\\u0627\\u0631\\u064a\\u0641;\\u0628\\u062f\\u0644;\\u0645\\u0637\\u0627\\u0644\\u0628\\u0629;expense;claim;reimbursement;allowance;\\u0641\\u0627\\u062a\\u0648\\u0631\\u0629\\\", \\\"profile_id\\\": \\\"finance-officer\\\", \\\"allowed_services\\\": \\\"get_employee_profile;get_expense_policy;submit_transaction\\\", \\\"approval_chain\\\": \\\"manager;finance\\\", \\\"auto_execute\\\": \\\"false\\\", \\\"sla_hours\\\": \\\"72\\\", \\\"internal\\\": \\\"false\\\", \\\"body_md\\\": \\\"---\\\\nid: expense-claim\\\\nversion: 1.0.2\\\\nstatus: approved\\\\ntitle_ar: \\u0645\\u0637\\u0627\\u0644\\u0628\\u0629 \\u0646\\u0641\\u0642\\u0627\\u062a / \\u0628\\u062f\\u0644\\u0627\\u062a\\\\ntitle_en: Expense / Allowance Claim\\\\nowner: Finance Operations (\\u0627\\u0644\\u0639\\u0645\\u0644\\u064a\\u0627\\u062a \\u0627\\u0644\\u0645\\u0627\\u0644\\u064a\\u0629)\\\\nprofile: finance-officer\\\\nallowed_services: [get_employee_profile, get_expense_policy, submit_transaction]\\\\napproval_chain: [manager, finance]\\\\nauto_execute: false\\\\nsla_hours: 72\\\\n---\\\\n\\\\n# \\u0645\\u0647\\u0627\\u0631\\u0629: \\u0645\\u0637\\u0627\\u0644\\u0628\\u0629 \\u0646\\u0641\\u0642\\u0627\\u062a / \\u0628\\u062f\\u0644\\u0627\\u062a\\\\n\\\\n## \\u0627\\u0644\\u063a\\u0631\\u0636\\\\n\\u062a\\u0642\\u062f\\u064a\\u0645 \\u0645\\u0637\\u0627\\u0644\\u0628\\u0629 \\u0627\\u0633\\u062a\\u0631\\u062f\\u0627\\u062f \\u0646\\u0641\\u0642\\u0627\\u062a \\u0639\\u0645\\u0644 (\\u0645\\u0648\\u0627\\u0635\\u0644\\u0627\\u062a\\u060c \\u0636\\u064a\\u0627\\u0641\\u0629 \\u0631\\u0633\\u0645\\u064a\\u0629\\u060c \\u062a\\u062f\\u0631\\u064a\\u0628\\u060c \\u0627\\u062a\\u0635\\u0627\\u0644\\u0627\\u062a\\u060c \\u0623\\u062e\\u0631\\u0649) \\u0645\\u0639 \\u0641\\u0631\\u0636 \\u0633\\u0642\\u0648\\u0641 \\u0627\\u0644\\u0633\\u064a\\u0627\\u0633\\u0629 \\u0622\\u0644\\u064a\\u064b\\u0627 \\u0642\\u0628\\u0644 \\u0648\\u0635\\u0648\\u0644\\u0647\\u0627 \\u0625\\u0644\\u0649 \\u0627\\u0644\\u0645\\u062f\\u064a\\u0631 \\u062b\\u0645 \\u0627\\u0644\\u0645\\u0627\\u0644\\u064a\\u0629.\\\\n\\\\n## \\u0627\\u0644\\u062d\\u0642\\u0648\\u0644 \\u0627\\u0644\\u0645\\u0637\\u0644\\u0648\\u0628\\u0629\\\\n| \\u0627\\u0644\\u062d\\u0642\\u0644 | \\u0627\\u0644\\u0642\\u064a\\u0645 | \\u0645\\u0644\\u0627\\u062d\\u0638\\u0627\\u062a |\\\\n|---|---|---|\\\\n| category | transport \\\\\\\\| hospitality \\\\\\\\| training \\\\\\\\| communication \\\\\\\\| other | \\u0635\\u0646\\u0651\\u0641 \\u0645\\u0646 \\u0648\\u0635\\u0641 \\u0627\\u0644\\u0645\\u0648\\u0638\\u0641 \\u0648\\u0623\\u0643\\u0651\\u062f \\u0627\\u0644\\u062a\\u0635\\u0646\\u064a\\u0641 \\u0645\\u0639\\u0647 |\\\\n| amount_aed | \\u0631\\u0642\\u0645 \\u0628\\u0627\\u0644\\u062f\\u0631\\u0647\\u0645 | > 0 |\\\\n| expense_date | YYYY-MM-DD | \\u062e\\u0644\\u0627\\u0644 \\u0622\\u062e\\u0631 60 \\u064a\\u0648\\u0645\\u064b\\u0627 |\\\\n| description | \\u0646\\u0635 | \\u0627\\u0644\\u063a\\u0631\\u0636 \\u0627\\u0644\\u0631\\u0633\\u0645\\u064a \\u0644\\u0644\\u0646\\u0641\\u0642\\u0629 |\\\\n| receipt_ref | \\u0631\\u0642\\u0645/\\u0645\\u0631\\u062c\\u0639 \\u0627\\u0644\\u0625\\u064a\\u0635\\u0627\\u0644 | \\u0625\\u0644\\u0632\\u0627\\u0645\\u064a \\u0641\\u0648\\u0642 100 \\u062f\\u0631\\u0647\\u0645 |\\\\n\\\\n## \\u0642\\u0648\\u0627\\u0639\\u062f \\u0627\\u0644\\u0623\\u0647\\u0644\\u064a\\u0629 \\u0648\\u0627\\u0644\\u0633\\u064a\\u0627\\u0633\\u0629 (\\u0627\\u062d\\u0635\\u0644 \\u0639\\u0644\\u0649 \\u0627\\u0644\\u0633\\u0642\\u0648\\u0641 \\u0645\\u0646 get_expense_policy \\u2014 \\u0644\\u0627 \\u062a\\u062d\\u0641\\u0638\\u0647\\u0627)\\\\n1. \\u0627\\u0644\\u0645\\u0628\\u0644\\u063a \\u2264 \\u0633\\u0642\\u0641 \\u0627\\u0644\\u0641\\u0626\\u0629 \\u0627\\u0644\\u0634\\u0647\\u0631\\u064a\\u061b \\u0627\\u0644\\u062a\\u062c\\u0627\\u0648\\u0632 \\u21d2 \\u0627\\u0631\\u0641\\u0636 \\u0648\\u0627\\u0639\\u0631\\u0636 \\u0627\\u0644\\u0633\\u0642\\u0641 \\u0648\\u0627\\u0644\\u0645\\u062a\\u0628\\u0642\\u064a \\u0645\\u0646\\u0647 \\u0647\\u0630\\u0627 \\u0627\\u0644\\u0634\\u0647\\u0631.\\\\n2. expense_date \\u0623\\u0642\\u062f\\u0645 \\u0645\\u0646 60 \\u064a\\u0648\\u0645\\u064b\\u0627 \\u21d2 \\u063a\\u064a\\u0631 \\u0642\\u0627\\u0628\\u0644\\u0629 \\u0644\\u0644\\u0627\\u0633\\u062a\\u0631\\u062f\\u0627\\u062f (\\u0627\\u0630\\u0643\\u0631 \\u0627\\u0644\\u0642\\u0627\\u0639\\u062f\\u0629).\\\\n3. category = other \\u21d2 \\u0627\\u0644\\u0648\\u0635\\u0641 \\u0625\\u0644\\u0632\\u0627\\u0645\\u064a \\u0648\\u0645\\u0641\\u0635\\u0651\\u0644\\u060c \\u0648\\u0627\\u0644\\u062d\\u062f 500 \\u062f\\u0631\\u0647\\u0645.\\\\n4. \\u0623\\u064a \\u0645\\u0637\\u0627\\u0644\\u0628\\u0629 > 2000 \\u062f\\u0631\\u0647\\u0645 \\u21d2 \\u0623\\u062f\\u0631\\u062c \\u062a\\u062d\\u0630\\u064a\\u0631 \\u00ab\\u062a\\u062e\\u0636\\u0639 \\u0644\\u062a\\u062f\\u0642\\u064a\\u0642 \\u0625\\u0636\\u0627\\u0641\\u064a\\u00bb \\u0641\\u064a \\u0627\\u0644\\u0645\\u0639\\u0627\\u064a\\u0646\\u0629 \\u0648\\u0623\\u0636\\u0641 finance_audit \\u0625\\u0644\\u0649 \\u0633\\u0644\\u0633\\u0644\\u0629 \\u0627\\u0644\\u0627\\u0639\\u062a\\u0645\\u0627\\u062f.\\\\n5. **\\u062a\\u062d\\u0642\\u0651\\u0642 \\u062d\\u0633\\u0627\\u0628\\u064a \\u0625\\u0644\\u0632\\u0627\\u0645\\u064a:** \\u0644\\u0627 \\u062a\\u0642\\u0628\\u0644 \\u0645\\u0628\\u0644\\u063a\\u064b\\u0627 \\u063a\\u064a\\u0631 \\u0631\\u0642\\u0645\\u064a \\u0623\\u0648 \\u0633\\u0627\\u0644\\u0628\\u064b\\u0627\\u061b \\u0642\\u0631\\u0651\\u0628 \\u0644\\u0623\\u0642\\u0631\\u0628 \\u0641\\u0644\\u0633\\u064a\\u0646.\\\\n\\\\n## \\u062e\\u0637\\u0648\\u0627\\u062a \\u0627\\u0644\\u0625\\u062c\\u0631\\u0627\\u0621\\\\n1. get_employee_profile \\u062b\\u0645 get_expense_policy \\u0644\\u0644\\u0641\\u0626\\u0629.\\\\n2. \\u0627\\u062c\\u0645\\u0639 \\u0627\\u0644\\u062d\\u0642\\u0648\\u0644 \\u0627\\u0644\\u0646\\u0627\\u0642\\u0635\\u0629 \\u062a\\u062f\\u0631\\u064a\\u062c\\u064a\\u064b\\u0627 \\u0648\\u0637\\u0628\\u0651\\u0642 \\u0627\\u0644\\u0642\\u0648\\u0627\\u0639\\u062f \\u0628\\u0627\\u0644\\u062a\\u0631\\u062a\\u064a\\u0628.\\\\n3. \\u0627\\u0639\\u0631\\u0636 **\\u0628\\u0637\\u0627\\u0642\\u0629 \\u0645\\u0639\\u0627\\u064a\\u0646\\u0629**: \\u0627\\u0644\\u0641\\u0626\\u0629\\u060c \\u0627\\u0644\\u0645\\u0628\\u0644\\u063a\\u060c \\u0627\\u0644\\u062a\\u0627\\u0631\\u064a\\u062e\\u060c \\u0645\\u0631\\u062c\\u0639 \\u0627\\u0644\\u0625\\u064a\\u0635\\u0627\\u0644\\u060c \\u0633\\u0644\\u0633\\u0644\\u0629 \\u0627\\u0644\\u0627\\u0639\\u062a\\u0645\\u0627\\u062f (\\u0627\\u0644\\u0645\\u062f\\u064a\\u0631 \\u2190 \\u0627\\u0644\\u0645\\u0627\\u0644\\u064a\\u0629)\\u060c \\u0648\\u0623\\u064a \\u062a\\u062d\\u0630\\u064a\\u0631\\u0627\\u062a.\\\\n4. \\u0628\\u0639\\u062f \\u062a\\u0623\\u0643\\u064a\\u062f \\u0627\\u0644\\u0645\\u0648\\u0638\\u0641: submit_transaction.\\\\n\\\\n## \\u0627\\u0644\\u062a\\u0635\\u0639\\u064a\\u062f \\u0648\\u0627\\u0644\\u0627\\u0633\\u062a\\u062b\\u0646\\u0627\\u0621\\u0627\\u062a\\\\n- \\u062e\\u062f\\u0645\\u0629 \\u0627\\u0644\\u0633\\u064a\\u0627\\u0633\\u0629 \\u063a\\u064a\\u0631 \\u0645\\u062a\\u0627\\u062d\\u0629 \\u21d2 needs_attention\\u061b \\u0644\\u0627 \\u062a\\u062e\\u0645\\u0651\\u0646 \\u0627\\u0644\\u0633\\u0642\\u0648\\u0641 \\u0623\\u0628\\u062f\\u064b\\u0627.\\\\n- \\u0645\\u0648\\u0638\\u0641 \\u064a\\u0635\\u0631\\u0651 \\u0639\\u0644\\u0649 \\u0645\\u0628\\u0644\\u063a \\u0641\\u0648\\u0642 \\u0627\\u0644\\u0633\\u0642\\u0641 \\u21d2 \\u0644\\u0627 \\u062a\\u0631\\u0633\\u0644\\u061b \\u0627\\u0642\\u062a\\u0631\\u062d \\u062a\\u0642\\u062f\\u064a\\u0645 \\u0627\\u0644\\u062c\\u0632\\u0621 \\u0627\\u0644\\u0645\\u0648\\u0627\\u0641\\u0642 \\u0644\\u0644\\u0633\\u064a\\u0627\\u0633\\u0629 \\u0641\\u0642\\u0637.\\\\n\\\\n## \\u0645\\u0627 \\u0644\\u0627 \\u064a\\u062c\\u0648\\u0632\\\\n- \\u0644\\u0627 \\u062a\\u0639\\u062f\\u064a\\u0644 \\u0644\\u0644\\u0633\\u0642\\u0648\\u0641\\u060c \\u0644\\u0627 \\u062a\\u062c\\u0632\\u0626\\u0629 \\u0645\\u0637\\u0627\\u0644\\u0628\\u0629 \\u0648\\u0627\\u062d\\u062f\\u0629 \\u0644\\u0639\\u062f\\u0629 \\u0637\\u0644\\u0628\\u0627\\u062a \\u0644\\u0644\\u0627\\u0644\\u062a\\u0641\\u0627\\u0641 \\u0639\\u0644\\u0649 \\u0627\\u0644\\u0633\\u0642\\u0641 (\\u0627\\u0631\\u0641\\u0636 \\u0627\\u0644\\u0646\\u0645\\u0637 \\u0635\\u0631\\u0627\\u062d\\u0629\\u064b \\u0625\\u0630\\u0627 \\u0644\\u0627\\u062d\\u0638\\u062a\\u0647)\\u060c \\u0644\\u0627 \\u0645\\u0637\\u0627\\u0644\\u0628\\u0627\\u062a \\u0644\\u0645\\u0648\\u0638\\u0641 \\u0622\\u062e\\u0631.\\\\n\\\", \\\"created_by\\\": \\\"human\\\", \\\"updated_at\\\": \\\"2026-08-13T14:50:55\\\"}, {\\\"skill_id\\\": \\\"it-access-request\\\", \\\"version\\\": \\\"1.0.0\\\", \\\"status\\\": \\\"approved\\\", \\\"title_ar\\\": \\\"\\u0637\\u0644\\u0628 \\u0635\\u0644\\u0627\\u062d\\u064a\\u0629 \\u0646\\u0638\\u0627\\u0645\\\", \\\"title_en\\\": \\\"IT System Access Request\\\", \\\"keywords\\\": \\\"\\u0635\\u0644\\u0627\\u062d\\u064a\\u0629;\\u0646\\u0638\\u0627\\u0645;\\u0648\\u0635\\u0648\\u0644;access;system;permission;\\u062d\\u0633\\u0627\\u0628;\\u062f\\u062e\\u0648\\u0644;it\\\", \\\"profile_id\\\": \\\"it-officer\\\", \\\"allowed_services\\\": \\\"get_employee_profile;get_it_roles;get_system_catalog;submit_transaction\\\", \\\"approval_chain\\\": \\\"manager;it_security\\\", \\\"auto_execute\\\": \\\"false\\\", \\\"sla_hours\\\": \\\"24\\\", \\\"internal\\\": \\\"false\\\", \\\"body_md\\\": \\\"---\\\\nid: it-access-request\\\\nversion: 1.0.0\\\\nstatus: approved\\\\ntitle_ar: \\u0637\\u0644\\u0628 \\u0635\\u0644\\u0627\\u062d\\u064a\\u0629 \\u0646\\u0638\\u0627\\u0645\\\\ntitle_en: IT System Access Request\\\\nowner: IT Security (\\u0623\\u0645\\u0646 \\u0627\\u0644\\u0645\\u0639\\u0644\\u0648\\u0645\\u0627\\u062a)\\\\nprofile: it-officer\\\\nallowed_services: [get_employee_profile, get_it_roles, get_system_catalog, submit_transaction]\\\\napproval_chain: [manager, it_security]\\\\nauto_execute: false\\\\nsla_hours: 24\\\\n---\\\\n\\\\n# \\u0645\\u0647\\u0627\\u0631\\u0629: \\u0637\\u0644\\u0628 \\u0635\\u0644\\u0627\\u062d\\u064a\\u0629 \\u0646\\u0638\\u0627\\u0645\\\\n\\\\n## \\u0627\\u0644\\u063a\\u0631\\u0636\\\\n\\u0637\\u0644\\u0628 \\u0645\\u0646\\u062d \\u0623\\u0648 \\u062a\\u0631\\u0642\\u064a\\u0629 \\u0635\\u0644\\u0627\\u062d\\u064a\\u0629 \\u0639\\u0644\\u0649 \\u0646\\u0638\\u0627\\u0645 \\u0645\\u0624\\u0633\\u0633\\u064a\\u060c \\u0645\\u0639 \\u0641\\u0631\\u0636 \\u0645\\u0628\\u062f\\u0623 **\\u0627\\u0644\\u062d\\u062f \\u0627\\u0644\\u0623\\u062f\\u0646\\u0649 \\u0645\\u0646 \\u0627\\u0644\\u0635\\u0644\\u0627\\u062d\\u064a\\u0627\\u062a** \\u0648\\u0641\\u062d\\u0635 \\u0627\\u0644\\u0623\\u0647\\u0644\\u064a\\u0629 \\u0627\\u0644\\u0648\\u0638\\u064a\\u0641\\u064a\\u0629 \\u0642\\u0628\\u0644 \\u0648\\u0635\\u0648\\u0644 \\u0627\\u0644\\u0637\\u0644\\u0628 \\u0644\\u0633\\u0644\\u0633\\u0644\\u0629 \\u0627\\u0644\\u0627\\u0639\\u062a\\u0645\\u0627\\u062f \\u0627\\u0644\\u0623\\u0645\\u0646\\u064a\\u0629.\\\\n\\\\n## \\u0627\\u0644\\u062d\\u0642\\u0648\\u0644 \\u0627\\u0644\\u0645\\u0637\\u0644\\u0648\\u0628\\u0629\\\\n| \\u0627\\u0644\\u062d\\u0642\\u0644 | \\u0627\\u0644\\u0642\\u064a\\u0645 | \\u0645\\u0644\\u0627\\u062d\\u0638\\u0627\\u062a |\\\\n|---|---|---|\\\\n| system_id | \\u0645\\u0646 get_system_catalog | \\u0625\\u0646 \\u0630\\u0643\\u0631 \\u0627\\u0644\\u0645\\u0648\\u0638\\u0641 \\u0627\\u0633\\u0645\\u064b\\u0627 \\u062a\\u062c\\u0627\\u0631\\u064a\\u064b\\u0627 \\u0641\\u0637\\u0627\\u0628\\u0642\\u0647 \\u0645\\u0639 \\u0627\\u0644\\u062f\\u0644\\u064a\\u0644 \\u0648\\u0623\\u0643\\u0651\\u062f |\\\\n| access_level | read \\\\\\\\| write \\\\\\\\| admin | \\u0627\\u0634\\u0631\\u062d \\u0627\\u0644\\u0641\\u0631\\u0642 \\u0625\\u0630\\u0627 \\u062a\\u0631\\u062f\\u062f \\u0627\\u0644\\u0645\\u0648\\u0638\\u0641 |\\\\n| business_justification | \\u0646\\u0635 | \\u0625\\u0644\\u0632\\u0627\\u0645\\u064a \\u062f\\u0627\\u0626\\u0645\\u064b\\u0627\\u061b \\u0627\\u0631\\u0628\\u0637\\u0647 \\u0628\\u0645\\u0647\\u0645\\u0629 \\u0648\\u0638\\u064a\\u0641\\u064a\\u0629 \\u0645\\u062d\\u062f\\u062f\\u0629 |\\\\n| duration | permanent \\\\\\\\| temporary(end_date) | \\u0627\\u0644\\u0645\\u0624\\u0642\\u062a\\u0629 \\u062a\\u064f\\u0641\\u0636\\u064e\\u0651\\u0644 \\u0648\\u064a\\u0630\\u0643\\u0631 \\u0630\\u0644\\u0643 |\\\\n\\\\n## \\u0642\\u0648\\u0627\\u0639\\u062f \\u0627\\u0644\\u0623\\u0647\\u0644\\u064a\\u0629 \\u0648\\u0627\\u0644\\u0633\\u064a\\u0627\\u0633\\u0629\\\\n1. \\u0645\\u0646 get_system_catalog: \\u0644\\u0644\\u0646\\u0638\\u0627\\u0645 \\u0642\\u0627\\u0626\\u0645\\u0629 \\u0623\\u062f\\u0648\\u0627\\u0631 \\u0645\\u062e\\u0648\\u0651\\u0644\\u0629 (allowed_roles) \\u0648\\u062f\\u0631\\u062c\\u0629 \\u062d\\u0633\\u0627\\u0633\\u064a\\u0629 (normal / sensitive / critical).\\\\n2. \\u062f\\u0648\\u0631 \\u0627\\u0644\\u0645\\u0648\\u0638\\u0641 (\\u0645\\u0646 get_employee_profile) \\u062e\\u0627\\u0631\\u062c allowed_roles \\u21d2 **\\u0627\\u0631\\u0641\\u0636** \\u0645\\u0639 \\u0630\\u0643\\u0631 \\u0627\\u0644\\u0623\\u062f\\u0648\\u0627\\u0631 \\u0627\\u0644\\u0645\\u062e\\u0648\\u0651\\u0644\\u0629 \\u0646\\u0635\\u064b\\u0627\\u061b \\u0644\\u0627 \\u0627\\u0633\\u062a\\u062b\\u0646\\u0627\\u0621\\u0627\\u062a \\u0645\\u062d\\u0627\\u062f\\u062b\\u0629\\u064b.\\\\n3. access_level = admin \\u21d2 \\u0645\\u0628\\u0631\\u0631 \\u062a\\u0641\\u0635\\u064a\\u0644\\u064a + duration \\u0645\\u0624\\u0642\\u062a\\u0629 \\u0625\\u0644\\u0632\\u0627\\u0645\\u064a\\u0629 + \\u0625\\u0636\\u0627\\u0641\\u0629 ciso \\u0625\\u0644\\u0649 \\u0633\\u0644\\u0633\\u0644\\u0629 \\u0627\\u0644\\u0627\\u0639\\u062a\\u0645\\u0627\\u062f.\\\\n4. \\u0627\\u0644\\u0646\\u0638\\u0627\\u0645 critical \\u21d2 \\u062d\\u062a\\u0649 \\u0635\\u0644\\u0627\\u062d\\u064a\\u0629 \\u0627\\u0644\\u0642\\u0631\\u0627\\u0621\\u0629 \\u062a\\u0645\\u0631 \\u0639\\u0628\\u0631 it_security\\u060c \\u0648\\u0623\\u062f\\u0631\\u062c \\u062a\\u062d\\u0630\\u064a\\u0631 \\u0627\\u0644\\u062d\\u0633\\u0627\\u0633\\u064a\\u0629 \\u0641\\u064a \\u0627\\u0644\\u0645\\u0639\\u0627\\u064a\\u0646\\u0629.\\\\n5. \\u0627\\u0644\\u0645\\u0648\\u0638\\u0641 \\u064a\\u0645\\u0644\\u0643 \\u0627\\u0644\\u0635\\u0644\\u0627\\u062d\\u064a\\u0629 \\u0646\\u0641\\u0633\\u0647\\u0627 \\u0623\\u0648 \\u0623\\u0639\\u0644\\u0649 (\\u0645\\u0646 get_it_roles) \\u21d2 \\u0623\\u062e\\u0628\\u0631\\u0647 \\u0648\\u0644\\u0627 \\u062a\\u0646\\u0634\\u0626 \\u0637\\u0644\\u0628\\u064b\\u0627 \\u0645\\u0643\\u0631\\u0631\\u064b\\u0627.\\\\n6. \\u0637\\u0628\\u0651\\u0642 \\u062f\\u0627\\u0626\\u0645\\u064b\\u0627 \\u0627\\u0644\\u062d\\u062f \\u0627\\u0644\\u0623\\u062f\\u0646\\u0649: \\u0625\\u0646 \\u0643\\u0641\\u062a read \\u0644\\u0645\\u0628\\u0631\\u0631 \\u0627\\u0644\\u0645\\u0648\\u0638\\u0641 \\u0641\\u0627\\u0642\\u062a\\u0631\\u062d\\u0647\\u0627 \\u0628\\u062f\\u0644 write \\u0648\\u0627\\u0630\\u0643\\u0631 \\u0627\\u0644\\u0633\\u0628\\u0628.\\\\n\\\\n## \\u062e\\u0637\\u0648\\u0627\\u062a \\u0627\\u0644\\u0625\\u062c\\u0631\\u0627\\u0621\\\\n1. get_employee_profile \\u062b\\u0645 get_it_roles \\u0644\\u0644\\u0635\\u0644\\u0627\\u062d\\u064a\\u0627\\u062a \\u0627\\u0644\\u062d\\u0627\\u0644\\u064a\\u0629.\\\\n2. get_system_catalog \\u0644\\u0645\\u0637\\u0627\\u0628\\u0642\\u0629 \\u0627\\u0644\\u0646\\u0638\\u0627\\u0645 \\u0648\\u0642\\u0631\\u0627\\u0621\\u0629 \\u062d\\u0633\\u0627\\u0633\\u064a\\u062a\\u0647 \\u0648\\u0623\\u062f\\u0648\\u0627\\u0631\\u0647.\\\\n3. \\u0627\\u062c\\u0645\\u0639 \\u0627\\u0644\\u062d\\u0642\\u0648\\u0644 \\u0648\\u0637\\u0628\\u0651\\u0642 \\u0627\\u0644\\u0642\\u0648\\u0627\\u0639\\u062f \\u0623\\u0639\\u0644\\u0627\\u0647 \\u0628\\u0627\\u0644\\u062a\\u0631\\u062a\\u064a\\u0628.\\\\n4. \\u0627\\u0639\\u0631\\u0636 **\\u0628\\u0637\\u0627\\u0642\\u0629 \\u0645\\u0639\\u0627\\u064a\\u0646\\u0629**: \\u0627\\u0644\\u0646\\u0638\\u0627\\u0645\\u060c \\u0627\\u0644\\u0645\\u0633\\u062a\\u0648\\u0649\\u060c \\u0627\\u0644\\u0645\\u062f\\u0629\\u060c \\u0627\\u0644\\u0645\\u0628\\u0631\\u0631\\u060c \\u0633\\u0644\\u0633\\u0644\\u0629 \\u0627\\u0644\\u0627\\u0639\\u062a\\u0645\\u0627\\u062f \\u0627\\u0644\\u0643\\u0627\\u0645\\u0644\\u0629\\u060c \\u0648\\u062a\\u062d\\u0630\\u064a\\u0631 \\u0627\\u0644\\u062d\\u0633\\u0627\\u0633\\u064a\\u0629 \\u0625\\u0646 \\u0648\\u062c\\u062f.\\\\n5. \\u0628\\u0639\\u062f \\u062a\\u0623\\u0643\\u064a\\u062f \\u0627\\u0644\\u0645\\u0648\\u0638\\u0641: submit_transaction.\\\\n\\\\n## \\u0627\\u0644\\u062a\\u0635\\u0639\\u064a\\u062f \\u0648\\u0627\\u0644\\u0627\\u0633\\u062a\\u062b\\u0646\\u0627\\u0621\\u0627\\u062a\\\\n- \\u0637\\u0644\\u0628 \\u00ab\\u0645\\u0633\\u062a\\u0639\\u062c\\u0644 \\u062c\\u062f\\u064b\\u0627\\u00bb \\u0644\\u062a\\u062c\\u0627\\u0648\\u0632 \\u0627\\u0644\\u0633\\u0644\\u0633\\u0644\\u0629 \\u21d2 \\u0627\\u0631\\u0641\\u0636 \\u0627\\u0644\\u062a\\u062c\\u0627\\u0648\\u0632 \\u0648\\u0627\\u0634\\u0631\\u062d \\u0623\\u0646 \\u0627\\u0644\\u0633\\u0644\\u0633\\u0644\\u0629 \\u0642\\u0635\\u064a\\u0631\\u0629 (sla 24 \\u0633\\u0627\\u0639\\u0629).\\\\n- \\u0646\\u0638\\u0627\\u0645 \\u063a\\u064a\\u0631 \\u0645\\u0648\\u062c\\u0648\\u062f \\u0641\\u064a \\u0627\\u0644\\u062f\\u0644\\u064a\\u0644 \\u21d2 needs_attention \\u0644\\u0641\\u0631\\u064a\\u0642 \\u0627\\u0644\\u062a\\u0642\\u0646\\u064a\\u0629\\u061b \\u0644\\u0627 \\u062a\\u062e\\u062a\\u0631\\u0639 \\u0623\\u0646\\u0638\\u0645\\u0629.\\\\n\\\\n## \\u0645\\u0627 \\u0644\\u0627 \\u064a\\u062c\\u0648\\u0632\\\\n- \\u0644\\u0627 \\u0645\\u0646\\u062d \\u0641\\u0648\\u0631\\u064a \\u0644\\u0623\\u064a \\u0635\\u0644\\u0627\\u062d\\u064a\\u0629\\u060c \\u0644\\u0627 admin \\u062f\\u0627\\u0626\\u0645\\u0629\\u060c \\u0644\\u0627 \\u0637\\u0644\\u0628 \\u0646\\u064a\\u0627\\u0628\\u0629 \\u0639\\u0646 \\u0645\\u0648\\u0638\\u0641 \\u0622\\u062e\\u0631\\u060c \\u0648\\u0644\\u0627 \\u0642\\u0628\\u0648\\u0644 \\u0645\\u0628\\u0631\\u0631 \\u0639\\u0627\\u0645 (\\u00ab\\u0623\\u062d\\u062a\\u0627\\u062c\\u0647 \\u0644\\u0639\\u0645\\u0644\\u064a\\u00bb) \\u062f\\u0648\\u0646 \\u0645\\u0647\\u0645\\u0629 \\u0645\\u062d\\u062f\\u062f\\u0629.\\\\n\\\", \\\"created_by\\\": \\\"human\\\", \\\"updated_at\\\": \\\"2026-08-13T14:50:55\\\"}, {\\\"skill_id\\\": \\\"reflection\\\", \\\"version\\\": \\\"1.0.0\\\", \\\"status\\\": \\\"approved\\\", \\\"title_ar\\\": \\\"\\u0645\\u0631\\u0627\\u062c\\u0639\\u0629 \\u0645\\u0627 \\u0628\\u0639\\u062f \\u0627\\u0644\\u062f\\u0648\\u0631 (\\u0627\\u0644\\u062a\\u0639\\u0644\\u0651\\u0645)\\\", \\\"title_en\\\": \\\"Post-turn Reflection (Learning)\\\", \\\"keywords\\\": \\\"reflection;learning;\\u062a\\u0639\\u0644\\u0651\\u0645;\\u0645\\u0631\\u0627\\u062c\\u0639\\u0629\\\", \\\"profile_id\\\": \\\"general\\\", \\\"allowed_services\\\": \\\"read_memory;write_memory;propose_skill_patch\\\", \\\"approval_chain\\\": \\\"\\\", \\\"auto_execute\\\": \\\"true\\\", \\\"sla_hours\\\": \\\"1\\\", \\\"internal\\\": \\\"true\\\", \\\"body_md\\\": \\\"---\\\\nid: reflection\\\\nversion: 1.0.0\\\\nstatus: approved\\\\ntitle_ar: \\u0645\\u0631\\u0627\\u062c\\u0639\\u0629 \\u0645\\u0627 \\u0628\\u0639\\u062f \\u0627\\u0644\\u062f\\u0648\\u0631 (\\u0627\\u0644\\u062a\\u0639\\u0644\\u0651\\u0645)\\\\ntitle_en: Post-turn Reflection (Learning)\\\\nowner: Governance Office (\\u0645\\u0643\\u062a\\u0628 \\u0627\\u0644\\u062d\\u0648\\u0643\\u0645\\u0629)\\\\nprofile: general\\\\nallowed_services: [read_memory, write_memory, propose_skill_patch]\\\\napproval_chain: []\\\\nauto_execute: true\\\\nsla_hours: 1\\\\n---\\\\n\\\\n# \\u0645\\u0647\\u0627\\u0631\\u0629: \\u0645\\u0631\\u0627\\u062c\\u0639\\u0629 \\u0645\\u0627 \\u0628\\u0639\\u062f \\u0627\\u0644\\u062f\\u0648\\u0631 \\u2014 \\u0627\\u0644\\u062a\\u0639\\u0644\\u0651\\u0645 \\u0627\\u0644\\u0645\\u0624\\u0633\\u0633\\u064a\\\\n\\\\n> \\u062a\\u0639\\u0645\\u0644 \\u0647\\u0630\\u0647 \\u0627\\u0644\\u0645\\u0631\\u0627\\u062c\\u0639\\u0629 **\\u0628\\u0639\\u062f** \\u0623\\u0646 \\u064a\\u0643\\u0648\\u0646 \\u0627\\u0644\\u0645\\u0648\\u0638\\u0641 \\u0642\\u062f \\u062d\\u0635\\u0644 \\u0639\\u0644\\u0649 \\u0625\\u062c\\u0627\\u0628\\u062a\\u0647\\u060c \\u0641\\u064a \\u0645\\u0633\\u0627\\u0631 \\u0645\\u0646\\u0641\\u0635\\u0644 \\u0644\\u0627 \\u064a\\u0628\\u0637\\u0626 \\u0627\\u0644\\u062e\\u062f\\u0645\\u0629. \\u0645\\u0647\\u0645\\u062a\\u0647\\u0627 \\u0627\\u0644\\u0648\\u062d\\u064a\\u062f\\u0629: \\u0645\\u0627\\u0630\\u0627 \\u0643\\u0627\\u0646 \\u064a\\u0646\\u0628\\u063a\\u064a \\u0623\\u0646 \\u062a\\u062a\\u0639\\u0644\\u0651\\u0645\\u0647 \\u0627\\u0644\\u0645\\u0646\\u0638\\u0648\\u0645\\u0629 \\u0645\\u0646 \\u0647\\u0630\\u0647 \\u0627\\u0644\\u0645\\u0639\\u0627\\u0645\\u0644\\u0627\\u062a\\u061f\\\\n> **\\u0645\\u0631\\u0648\\u0631 \\u0628\\u0644\\u0627 \\u0623\\u064a \\u062a\\u062d\\u062f\\u064a\\u062b \\u0644\\u064a\\u0633 \\u0646\\u062a\\u064a\\u062c\\u0629 \\u0645\\u062d\\u0627\\u064a\\u062f\\u0629 \\u2014 \\u0628\\u0644 \\u0641\\u0631\\u0635\\u0629 \\u062a\\u0639\\u0644\\u0651\\u0645 \\u0636\\u0627\\u0626\\u0639\\u0629.** \\u0643\\u0646 \\u0641\\u0627\\u0639\\u0644\\u064b\\u0627: \\u0623\\u063a\\u0644\\u0628 \\u0627\\u0644\\u062c\\u0648\\u0644\\u0627\\u062a \\u062a\\u064f\\u0646\\u062a\\u062c \\u062a\\u062d\\u062f\\u064a\\u062b\\u064b\\u0627 \\u0648\\u0627\\u062d\\u062f\\u064b\\u0627 \\u0639\\u0644\\u0649 \\u0627\\u0644\\u0623\\u0642\\u0644 \\u0648\\u0644\\u0648 \\u0635\\u063a\\u064a\\u0631\\u064b\\u0627.\\\\n\\\\n## \\u0627\\u0644\\u0641\\u0635\\u0644 \\u0627\\u0644\\u062f\\u0644\\u0627\\u0644\\u064a \\u0628\\u064a\\u0646 \\u0627\\u0644\\u0630\\u0627\\u0643\\u0631\\u0629 \\u0648\\u0627\\u0644\\u0645\\u0647\\u0627\\u0631\\u0629 (\\u0642\\u0627\\u0639\\u062f\\u0629 \\u062d\\u0627\\u0643\\u0645\\u0629)\\\\n- **\\u0627\\u0644\\u0630\\u0627\\u0643\\u0631\\u0629** \\u062a\\u0642\\u0648\\u0644: \\u00ab\\u0645\\u0646 \\u0647\\u0648 \\u0627\\u0644\\u0645\\u0648\\u0638\\u0641\\u060c \\u0648\\u0645\\u0627 \\u0627\\u0644\\u0648\\u0636\\u0639 \\u0627\\u0644\\u0642\\u0627\\u0626\\u0645\\u00bb \\u2014 \\u0648\\u0642\\u0627\\u0626\\u0639 \\u062e\\u0628\\u0631\\u064a\\u0629 \\u062f\\u0627\\u0626\\u0645\\u0629.\\\\n- **\\u0627\\u0644\\u0645\\u0647\\u0627\\u0631\\u0629** \\u062a\\u0642\\u0648\\u0644: \\u00ab\\u0643\\u064a\\u0641 \\u064a\\u064f\\u0646\\u0641\\u064e\\u0651\\u0630 \\u0647\\u0630\\u0627 \\u0627\\u0644\\u0646\\u0648\\u0639 \\u0645\\u0646 \\u0627\\u0644\\u0625\\u062c\\u0631\\u0627\\u0621\\u0627\\u062a\\u00bb.\\\\n- \\u0625\\u0630\\u0627 \\u0627\\u0639\\u062a\\u0631\\u0636 \\u0627\\u0644\\u0645\\u0648\\u0638\\u0641 \\u0639\\u0644\\u0649 **\\u0637\\u0631\\u064a\\u0642\\u0629** \\u062a\\u0646\\u0641\\u064a\\u0630\\u0643 \\u0644\\u0644\\u0625\\u062c\\u0631\\u0627\\u0621\\u060c \\u0641\\u0627\\u0644\\u062a\\u0635\\u062d\\u064a\\u062d \\u064a\\u0630\\u0647\\u0628 \\u0625\\u0644\\u0649 **\\u0627\\u0644\\u0645\\u0647\\u0627\\u0631\\u0629** \\u0644\\u0627 \\u0625\\u0644\\u0649 \\u0627\\u0644\\u0630\\u0627\\u0643\\u0631\\u0629.\\\\n\\\\n## \\u0635\\u064a\\u0627\\u063a\\u0629 \\u0627\\u0644\\u0630\\u0627\\u0643\\u0631\\u0629\\\\n\\u0627\\u0643\\u062a\\u0628 \\u0627\\u0644\\u0630\\u0627\\u0643\\u0631\\u0629 **\\u062c\\u0645\\u0644\\u064b\\u0627 \\u062e\\u0628\\u0631\\u064a\\u0629** \\u0644\\u0627 \\u0623\\u0648\\u0627\\u0645\\u0631:\\\\n- \\u2705 \\u00ab\\u064a\\u0641\\u0636\\u0651\\u0644 \\u0627\\u0644\\u0645\\u0648\\u0638\\u0641 \\u0627\\u0644\\u0631\\u062f\\u0648\\u062f \\u0627\\u0644\\u0645\\u062e\\u062a\\u0635\\u0631\\u0629.\\u00bb\\\\n- \\u274c \\u00ab\\u0623\\u062c\\u0628 \\u062f\\u0627\\u0626\\u0645\\u064b\\u0627 \\u0628\\u0627\\u062e\\u062a\\u0635\\u0627\\u0631.\\u00bb\\\\n\\u0627\\u0644\\u0623\\u0648\\u0627\\u0645\\u0631 \\u062a\\u064f\\u0642\\u0631\\u0623 \\u0644\\u0627\\u062d\\u0642\\u064b\\u0627 \\u0643\\u062a\\u0639\\u0644\\u064a\\u0645\\u0627\\u062a \\u062f\\u0627\\u0626\\u0645\\u0629 \\u0641\\u062a\\u0646\\u062d\\u0631\\u0641 \\u0628\\u0633\\u0644\\u0648\\u0643 \\u0627\\u0644\\u0648\\u0643\\u064a\\u0644.\\\\n\\\\n## \\u062a\\u0631\\u062a\\u064a\\u0628 \\u0627\\u0644\\u0623\\u0641\\u0636\\u0644\\u064a\\u0629 \\u0644\\u0644\\u0625\\u062c\\u0631\\u0627\\u0621 (\\u0627\\u062e\\u062a\\u0631 \\u0627\\u0644\\u0623\\u0628\\u0643\\u0631 \\u0627\\u0644\\u0630\\u064a \\u064a\\u0646\\u0637\\u0628\\u0642)\\\\n1. **\\u062d\\u062f\\u0651\\u062b \\u0630\\u0627\\u0643\\u0631\\u0629 \\u0642\\u0627\\u0626\\u0645\\u0629** \\u0625\\u0646 \\u0643\\u0627\\u0646\\u062a \\u0627\\u0644\\u0648\\u0627\\u0642\\u0639\\u0629 \\u0627\\u0644\\u062c\\u062f\\u064a\\u062f\\u0629 \\u062a\\u0646\\u0642\\u0651\\u062d \\u0648\\u0627\\u0642\\u0639\\u0629 \\u0645\\u0648\\u062c\\u0648\\u062f\\u0629 (`write_memory` \\u0628\\u0640 action=replace).\\\\n2. **\\u0623\\u0636\\u0641 \\u0648\\u0627\\u0642\\u0639\\u0629 \\u062c\\u062f\\u064a\\u062f\\u0629** \\u0625\\u0646 \\u0643\\u0627\\u0646\\u062a \\u062f\\u0627\\u0626\\u0645\\u0629 \\u0648\\u0645\\u0641\\u064a\\u062f\\u0629 \\u0639\\u0628\\u0631 \\u0627\\u0644\\u062c\\u0644\\u0633\\u0627\\u062a (`write_memory` \\u0628\\u0640 action=add).\\\\n3. **\\u0627\\u0642\\u062a\\u0631\\u062d \\u062a\\u062d\\u0633\\u064a\\u0646\\u064b\\u0627 \\u0639\\u0644\\u0649 \\u0645\\u0647\\u0627\\u0631\\u0629** \\u0625\\u0646 \\u062a\\u0643\\u0631\\u0631 \\u0646\\u0645\\u0637 \\u062a\\u0634\\u063a\\u064a\\u0644\\u064a \\u064a\\u0633\\u062a\\u062d\\u0642 \\u0623\\u0646 \\u064a\\u0635\\u0628\\u062d \\u0642\\u0627\\u0639\\u062f\\u0629 (`propose_skill_patch`).\\\\n\\\\n## \\u062d\\u062f\\u0648\\u062f \\u0635\\u0644\\u0627\\u062d\\u064a\\u062a\\u0643 (\\u062e\\u0637 \\u0623\\u062d\\u0645\\u0631)\\\\n- \\u0644\\u0627 \\u062a\\u0645\\u0644\\u0643 \\u062a\\u0639\\u062f\\u064a\\u0644 \\u0646\\u0635 \\u0627\\u0644\\u0645\\u0647\\u0627\\u0631\\u0629 \\u0627\\u0644\\u0645\\u0639\\u062a\\u0645\\u062f\\u0629 \\u0625\\u0637\\u0644\\u0627\\u0642\\u064b\\u0627 \\u2014 \\u0623\\u0642\\u0635\\u0649 \\u0645\\u0627 \\u062a\\u0645\\u0644\\u0643\\u0647 \\u0647\\u0648 **\\u0627\\u0642\\u062a\\u0631\\u0627\\u062d** \\u064a\\u064f\\u0633\\u062c\\u064e\\u0651\\u0644 \\u0628\\u062d\\u0627\\u0644\\u0629 `pending` \\u0648\\u064a\\u0646\\u062a\\u0638\\u0631 \\u0627\\u0639\\u062a\\u0645\\u0627\\u062f \\u0645\\u0627\\u0644\\u0643 \\u0627\\u0644\\u0625\\u062c\\u0631\\u0627\\u0621.\\\\n- \\u0643\\u0644 \\u0627\\u0633\\u062a\\u062f\\u0639\\u0627\\u0621 \\u062a\\u0642\\u0648\\u0645 \\u0628\\u0647 \\u064a\\u0645\\u0631 \\u0628\\u0628\\u0648\\u0627\\u0628\\u0629 \\u0627\\u0644\\u062d\\u0648\\u0643\\u0645\\u0629 \\u0646\\u0641\\u0633\\u0647\\u0627 \\u0627\\u0644\\u062a\\u064a \\u062a\\u062d\\u0643\\u0645 \\u0648\\u0643\\u064a\\u0644 \\u0627\\u0644\\u062e\\u062f\\u0645\\u0629\\u060c \\u0648\\u0644\\u0627 \\u064a\\u064f\\u0633\\u0645\\u062d \\u0644\\u0643 \\u0625\\u0644\\u0627 \\u0628\\u0640: `read_memory`, `write_memory`, `propose_skill_patch`.\\\\n- \\u0627\\u0644\\u0630\\u0627\\u0643\\u0631\\u0629 \\u0645\\u062d\\u062f\\u0648\\u062f\\u0629 \\u0628\\u0640 2200 \\u062d\\u0631\\u0641 \\u0644\\u0643\\u0644 \\u0646\\u0637\\u0627\\u0642. \\u0639\\u0646\\u062f \\u0627\\u0644\\u0627\\u0645\\u062a\\u0644\\u0627\\u0621 \\u0633\\u064a\\u064f\\u0631\\u0641\\u0636 \\u0627\\u0644\\u0643\\u062a\\u0627\\u0628\\u0629 \\u0648\\u062a\\u064f\\u0633\\u0644\\u064e\\u0651\\u0645 \\u0644\\u0643 \\u0642\\u0627\\u0626\\u0645\\u0629 \\u0627\\u0644\\u0645\\u062f\\u062e\\u0644\\u0627\\u062a: **\\u0627\\u062f\\u0645\\u062c \\u0623\\u0648 \\u0627\\u062d\\u0630\\u0641 \\u062b\\u0645 \\u0623\\u0639\\u062f \\u0627\\u0644\\u0645\\u062d\\u0627\\u0648\\u0644\\u0629 \\u0641\\u064a \\u0627\\u0644\\u062f\\u0648\\u0631 \\u0646\\u0641\\u0633\\u0647.**\\\\n\\\\n## \\u0645\\u0627 \\u0644\\u0627 \\u064a\\u062c\\u0648\\u0632 \\u0627\\u0644\\u062a\\u0642\\u0627\\u0637\\u0647 \\u0625\\u0637\\u0644\\u0627\\u0642\\u064b\\u0627 (\\u0642\\u0627\\u0626\\u0645\\u0629 \\u0633\\u0644\\u0628\\u064a\\u0629)\\\\n\\u0647\\u0630\\u0647 \\u0627\\u0644\\u0623\\u0646\\u0645\\u0627\\u0637 \\u062a\\u062a\\u062d\\u0648\\u0644 \\u0625\\u0644\\u0649 \\u0642\\u064a\\u0648\\u062f \\u062f\\u0627\\u0626\\u0645\\u0629 \\u064a\\u0641\\u0631\\u0636\\u0647\\u0627 \\u0627\\u0644\\u0648\\u0643\\u064a\\u0644 \\u0639\\u0644\\u0649 \\u0646\\u0641\\u0633\\u0647 \\u0644\\u0627\\u062d\\u0642\\u064b\\u0627\\u060c \\u0648\\u062a\\u0636\\u0631 \\u0623\\u0643\\u062b\\u0631 \\u0645\\u0645\\u0627 \\u062a\\u0646\\u0641\\u0639:\\\\n- **\\u0623\\u0639\\u0637\\u0627\\u0644 \\u0645\\u0631\\u062a\\u0628\\u0637\\u0629 \\u0628\\u0627\\u0644\\u0628\\u064a\\u0626\\u0629** (\\u0627\\u0646\\u0642\\u0637\\u0627\\u0639 \\u0634\\u0628\\u0643\\u0629\\u060c \\u062a\\u062c\\u0627\\u0648\\u0632 \\u062d\\u0635\\u0629\\u060c \\u0645\\u0647\\u0644\\u0629 \\u0627\\u0646\\u062a\\u0647\\u062a) \\u2014 \\u0633\\u062a\\u062a\\u063a\\u064a\\u0631 \\u0627\\u0644\\u0628\\u064a\\u0626\\u0629 \\u0648\\u062a\\u0628\\u0642\\u0649 \\u0627\\u0644\\u0642\\u0627\\u0639\\u062f\\u0629.\\\\n- **\\u0623\\u062d\\u0643\\u0627\\u0645 \\u0633\\u0644\\u0628\\u064a\\u0629 \\u0639\\u0644\\u0649 \\u0627\\u0644\\u0623\\u062f\\u0648\\u0627\\u062a \\u0623\\u0648 \\u0627\\u0644\\u062e\\u062f\\u0645\\u0627\\u062a** (\\u00ab\\u062e\\u062f\\u0645\\u0629 \\u0643\\u0630\\u0627 \\u0644\\u0627 \\u062a\\u0639\\u0645\\u0644\\u00bb) \\u2014 \\u062a\\u062a\\u0635\\u0644\\u0651\\u0628 \\u0644\\u0627\\u062d\\u0642\\u064b\\u0627 \\u0625\\u0644\\u0649 \\u0631\\u0641\\u0636 \\u064a\\u0633\\u062a\\u0634\\u0647\\u062f \\u0628\\u0647 \\u0627\\u0644\\u0648\\u0643\\u064a\\u0644 \\u0636\\u062f \\u0646\\u0641\\u0633\\u0647 \\u0628\\u0639\\u062f \\u0634\\u0647\\u0648\\u0631 \\u0645\\u0646 \\u0625\\u0635\\u0644\\u0627\\u062d \\u0627\\u0644\\u0645\\u0634\\u0643\\u0644\\u0629 \\u0641\\u0639\\u0644\\u064b\\u0627.\\\\n- **\\u0623\\u062e\\u0637\\u0627\\u0621 \\u0639\\u0627\\u0628\\u0631\\u0629 \\u0627\\u0646\\u062a\\u0647\\u062a \\u0641\\u064a \\u0627\\u0644\\u062c\\u0644\\u0633\\u0629 \\u0646\\u0641\\u0633\\u0647\\u0627.**\\\\n- **\\u0633\\u0631\\u062f \\u0645\\u0639\\u0627\\u0645\\u0644\\u0629 \\u0648\\u0627\\u062d\\u062f\\u0629** \\u0628\\u062a\\u0641\\u0627\\u0635\\u064a\\u0644\\u0647\\u0627\\u061b \\u0627\\u0644\\u0630\\u0627\\u0643\\u0631\\u0629 \\u0644\\u064a\\u0633\\u062a \\u0633\\u062c\\u0644\\u064b\\u0627 \\u0644\\u0644\\u0645\\u0639\\u0627\\u0645\\u0644\\u0627\\u062a \\u2014 \\u0627\\u0644\\u0633\\u062c\\u0644 \\u0645\\u0648\\u062c\\u0648\\u062f \\u0623\\u0635\\u0644\\u064b\\u0627.\\\\n- **\\u0645\\u062d\\u0627\\u0648\\u0644\\u0627\\u062a \\u0644\\u0645 \\u062a\\u0646\\u062c\\u062d**: \\u0625\\u0646 \\u0627\\u0646\\u062a\\u0647\\u062a \\u0627\\u0644\\u062c\\u0644\\u0633\\u0629 \\u062f\\u0648\\u0646 \\u0637\\u0631\\u064a\\u0642\\u0629 \\u0639\\u0627\\u0645\\u0644\\u0629 \\u0645\\u0624\\u0643\\u062f\\u0629\\u060c \\u0641\\u0644\\u0627 \\u062a\\u0643\\u062a\\u0628\\u0647\\u0627 \\u0643\\u0623\\u0646\\u0647\\u0627 \\u00ab\\u0625\\u062c\\u0631\\u0627\\u0621 \\u0645\\u0648\\u062b\\u0648\\u0642\\u00bb.\\\\n- **\\u0623\\u0631\\u0642\\u0627\\u0645 \\u0645\\u0639\\u0627\\u0645\\u0644\\u0627\\u062a \\u0623\\u0648 \\u062a\\u0648\\u0627\\u0631\\u064a\\u062e \\u0633\\u062a\\u0635\\u0628\\u062d \\u0642\\u062f\\u064a\\u0645\\u0629 \\u062e\\u0644\\u0627\\u0644 \\u0623\\u0633\\u0628\\u0648\\u0639.**\\\\n\\\\n## \\u062e\\u0637\\u0648\\u0627\\u062a \\u0627\\u0644\\u0625\\u062c\\u0631\\u0627\\u0621\\\\n1. `read_memory` \\u0644\\u0642\\u0631\\u0627\\u0621\\u0629 \\u0627\\u0644\\u0630\\u0627\\u0643\\u0631\\u0629 \\u0627\\u0644\\u0642\\u0627\\u0626\\u0645\\u0629 \\u0642\\u0628\\u0644 \\u0623\\u064a \\u0643\\u062a\\u0627\\u0628\\u0629 (\\u062a\\u0641\\u0627\\u062f\\u064a\\u064b\\u0627 \\u0644\\u0644\\u062a\\u0643\\u0631\\u0627\\u0631).\\\\n2. \\u062d\\u0644\\u0651\\u0644 \\u0627\\u0644\\u0645\\u0639\\u0627\\u0645\\u0644\\u0627\\u062a \\u0648\\u0627\\u0644\\u0642\\u0631\\u0627\\u0631\\u0627\\u062a \\u0627\\u0644\\u0648\\u0627\\u0631\\u062f\\u0629 \\u0641\\u064a \\u0627\\u0644\\u062f\\u0641\\u0639\\u0629: \\u0645\\u0627 \\u0627\\u0644\\u0630\\u064a \\u062a\\u0643\\u0631\\u0631\\u061f \\u0645\\u0627 \\u0627\\u0644\\u0630\\u064a \\u0631\\u064f\\u0641\\u0636 \\u0648\\u0644\\u0645\\u0627\\u0630\\u0627\\u061f \\u0623\\u064a\\u0646 \\u062a\\u0639\\u062b\\u0651\\u0631 \\u0627\\u0644\\u0645\\u0648\\u0638\\u0641\\u061f\\\\n3. \\u0637\\u0628\\u0651\\u0642 \\u062a\\u0631\\u062a\\u064a\\u0628 \\u0627\\u0644\\u0623\\u0641\\u0636\\u0644\\u064a\\u0629 \\u0623\\u0639\\u0644\\u0627\\u0647\\u060c \\u0648\\u0627\\u0631\\u0641\\u0636 \\u0645\\u0627 \\u064a\\u0642\\u0639 \\u0641\\u064a \\u0627\\u0644\\u0642\\u0627\\u0626\\u0645\\u0629 \\u0627\\u0644\\u0633\\u0644\\u0628\\u064a\\u0629 \\u0635\\u0631\\u0627\\u062d\\u0629\\u064b.\\\\n4. \\u0623\\u0639\\u062f JSON \\u0641\\u0642\\u0637 \\u0628\\u0627\\u0644\\u0645\\u062e\\u0637\\u0637 \\u0627\\u0644\\u0645\\u0637\\u0644\\u0648\\u0628 \\u0645\\u0648\\u0636\\u062d\\u064b\\u0627 \\u0645\\u0627 \\u0643\\u062a\\u0628\\u062a\\u0647 \\u0648\\u0644\\u0645\\u0627\\u0630\\u0627.\\\\n\\\", \\\"created_by\\\": \\\"human\\\", \\\"updated_at\\\": \\\"2026-08-13T14:50:55\\\"}]\");\nreturn rows.map(r => ({ json: r }));"
       }
     },
     {
-      "id": "f6229e11-7fee-4546-935e-2d0a9b8a953e",
+      "id": "6dfbf634-ff85-4a63-8a49-28e633ec384f",
       "name": "Insert Skills",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -2962,7 +2962,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "65dc764a-a560-40be-8235-66976dbaf6a1",
+      "id": "e131d573-b094-4a52-89c5-2b6c9153ca08",
       "name": "Create Profiles",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -2992,7 +2992,7 @@
       "executeOnce": true
     },
     {
-      "id": "3b2dc1df-7ebf-4a34-816d-9e8ee621d4ef",
+      "id": "7b7298c6-a356-4f1e-a9f6-a21f29743dd1",
       "name": "Clear Profiles",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -3013,7 +3013,7 @@
       "executeOnce": true
     },
     {
-      "id": "ec2564dd-7f31-4b4f-9d4e-e8ea7e281cfb",
+      "id": "7945d927-c711-4169-81ae-ae7b42058c95",
       "name": "Seed Profiles",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -3026,7 +3026,7 @@
       }
     },
     {
-      "id": "f64c6570-f80c-44b4-80df-c42340a8f17c",
+      "id": "c9813f31-2ed9-4f27-8271-5197e6595ff5",
       "name": "Insert Profiles",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -3056,8 +3056,8 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "a9f6b9ce-afa2-4c82-8d80-6e5388ee6ded",
-      "name": "Note 80b55e78",
+      "id": "95fd7d0a-2319-457e-a067-745f8063ad22",
+      "name": "Note a5a88f8c",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
@@ -3072,8 +3072,8 @@
       }
     },
     {
-      "id": "1daaf7dc-be9b-46e2-9a39-14253e59ed6b",
-      "name": "Note 5a9ab886",
+      "id": "cbe365b3-5991-4f1d-880b-db1de4abc6ca",
+      "name": "Note ae484998",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
@@ -3088,7 +3088,7 @@
       }
     },
     {
-      "id": "938eed58-fb31-4674-a7fd-22540b494792",
+      "id": "000ccf62-d74f-46e0-a1ce-59057a0a7407",
       "name": "Daily",
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
@@ -3108,7 +3108,7 @@
       }
     },
     {
-      "id": "ce74f8fa-cfc8-4c05-9279-061550bf0850",
+      "id": "43b6c817-b25f-4a2c-bb94-215e74043651",
       "name": "Reflect Manually",
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
@@ -3119,7 +3119,7 @@
       "parameters": {}
     },
     {
-      "id": "8f662250-58cb-4105-95c5-6e7de106e020",
+      "id": "41964ad1-c1ab-4cae-8f14-12cd8c279cfc",
       "name": "Reflect Webhook",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
@@ -3133,10 +3133,10 @@
         "responseMode": "responseNode",
         "options": {}
       },
-      "webhookId": "591f11f5-bae0-4eee-ad7f-fc75ca19a626"
+      "webhookId": "fc45c128-249e-4a4a-917e-f88dc93699dd"
     },
     {
-      "id": "3952b261-a624-46a6-b9b3-8abcda6dc39d",
+      "id": "7df813c5-f620-4024-b24d-0ad3ec527ae0",
       "name": "Respond Reflect",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.2,
@@ -3164,7 +3164,7 @@
       }
     },
     {
-      "id": "6b936e88-8302-47d5-a555-88968e13ad61",
+      "id": "48fc7db0-1fb7-43e4-9ec6-cd669d4cfc7b",
       "name": "Read All (reflect)",
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
@@ -3197,7 +3197,7 @@
       }
     },
     {
-      "id": "e35f4432-d85c-48ad-8c94-e4f4a4eb0dc9",
+      "id": "cbffe511-5ab0-461b-8bd9-8d110552213f",
       "name": "Gather Batch",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -3210,7 +3210,7 @@
       }
     },
     {
-      "id": "af69a14d-b291-4cdd-87b3-145de10ddcc1",
+      "id": "1cf32980-9a4c-408f-a4ae-a34f52abffce",
       "name": "Anything To Learn?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
@@ -3242,7 +3242,7 @@
       }
     },
     {
-      "id": "21e16bac-cc29-428d-ae2b-8eaf857df3d7",
+      "id": "d17a0845-38d0-40f0-b91c-9df2cbf350a6",
       "name": "Nothing New ✓",
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
@@ -3253,7 +3253,7 @@
       "parameters": {}
     },
     {
-      "id": "d44d5cfd-41a2-4a14-a0d7-749d533b0881",
+      "id": "79cece9e-d572-4358-8cd8-ea483f81995c",
       "name": "Load Reflection Charter",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -3282,7 +3282,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "028c5ce4-8ccd-4563-8b38-b7add0adbf46",
+      "id": "de12692f-071f-4b2a-af87-4d688e2cf4ca",
       "name": "Pick Charter",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -3295,7 +3295,7 @@
       }
     },
     {
-      "id": "6646d2b2-3c49-405d-807d-a72c84879ec9",
+      "id": "84158512-c7a7-4e53-8160-6e59c0263657",
       "name": "Reflection Agent",
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 2.2,
@@ -3318,7 +3318,7 @@
       "waitBetweenTries": 15000
     },
     {
-      "id": "f0596d0d-7264-43fb-bf82-64710827500b",
+      "id": "2e16c9b6-6e00-4147-8d7e-1b5db507fe7d",
       "name": "Gemini Chat Model (reflect)",
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1,
@@ -3340,7 +3340,7 @@
       }
     },
     {
-      "id": "513ef977-c60e-4105-a2dd-16473002eeb1",
+      "id": "69467015-2642-4ac7-afff-8216167b0d11",
       "name": "Reflection Output",
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "typeVersion": 1.2,
@@ -3354,7 +3354,7 @@
       }
     },
     {
-      "id": "626dedc6-93b8-4f1f-ae8b-5443017487df",
+      "id": "8d87e4fa-7334-4387-80cf-d91db20becad",
       "name": "call_service (learning)",
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
@@ -3435,7 +3435,7 @@
       }
     },
     {
-      "id": "5b1aa124-00a5-4f07-8547-80e537b64db9",
+      "id": "37994d70-f999-4452-8c62-d7f27866bb78",
       "name": "Log Reflection",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -3448,7 +3448,7 @@
       }
     },
     {
-      "id": "92fd707c-6397-4ec4-a615-8e71d0865177",
+      "id": "19201be8-535b-47d2-ab85-dc14eac189d5",
       "name": "Append Reflection Log",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -3478,8 +3478,8 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "42b21d32-77f1-4ab1-9589-a111c1a2d213",
-      "name": "Note 4f1a605b",
+      "id": "3965f561-4373-428e-9c13-f5b3ae72ee18",
+      "name": "Note c8e42112",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
@@ -3494,8 +3494,8 @@
       }
     },
     {
-      "id": "85070a05-0774-4160-9364-53be865bbdeb",
-      "name": "Note 039a99de",
+      "id": "b89ae275-849b-4483-b41e-8f8370a2aa44",
+      "name": "Note 90d94d6c",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
@@ -3510,7 +3510,7 @@
       }
     },
     {
-      "id": "b86f91c3-0485-4416-846f-ec4eec85cbf9",
+      "id": "51510859-60f2-40f9-8a16-63fcc0a99c3a",
       "name": "POST Patch",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
@@ -3524,10 +3524,10 @@
         "responseMode": "responseNode",
         "options": {}
       },
-      "webhookId": "f36da4e8-395a-43ca-81ca-c01b15d3f1b3"
+      "webhookId": "6777c685-70cf-441a-9dea-d5b1062961d6"
     },
     {
-      "id": "64882a5f-46c2-47a0-837c-4f9501186180",
+      "id": "f941286c-b6f0-484a-8858-dae0440dd41a",
       "name": "Read SkillPatches (review)",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -3556,7 +3556,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "0a7ca905-502e-4316-9763-458b7d7ab5f2",
+      "id": "87f92b46-65a3-4006-8f23-a9e63b0ba2f2",
       "name": "Apply Patch Decision",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -3569,7 +3569,7 @@
       }
     },
     {
-      "id": "a796ad25-a4d4-4bdd-8dce-cfb2e9ad4bad",
+      "id": "12c1abfa-6c2d-4751-acce-1d8aa3da1560",
       "name": "Decision OK?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
@@ -3602,7 +3602,7 @@
       }
     },
     {
-      "id": "52a35b9b-d120-4ca7-a9c8-f1345ad03d75",
+      "id": "ff088585-c1a1-4622-9cca-2de75239a0ea",
       "name": "Respond Patch Error",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.2,
@@ -3630,7 +3630,7 @@
       }
     },
     {
-      "id": "8f677fa2-e40d-4090-a411-9f0769bfbf16",
+      "id": "05bb6b19-a067-4811-98b7-0c8fbb5f5474",
       "name": "Emit Patch Update",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -3643,7 +3643,7 @@
       }
     },
     {
-      "id": "339f107e-4079-4f2f-a665-54ee1611fd56",
+      "id": "06b25852-f588-4523-b694-e6b0000ecbd2",
       "name": "Save Patch Decision",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -3683,7 +3683,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "3dda3ed1-04d0-42cd-a297-61f6f7f25c79",
+      "id": "38104ff6-184d-481a-9faa-9782fc121ea6",
       "name": "Read Skills (apply)",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -3712,7 +3712,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "e4c2062a-3dad-4d71-b329-59f6b6b8cdbc",
+      "id": "dbee7e05-61e0-44dd-8f22-8396f1b83a45",
       "name": "Apply To Skill",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -3726,7 +3726,7 @@
       "alwaysOutputData": true
     },
     {
-      "id": "e4916827-4c18-4121-ac6b-4f0a0d3f91cd",
+      "id": "a7e1d588-4a72-4937-9396-0b6ee0fd66b0",
       "name": "Save Improved Skill",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -3766,7 +3766,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "1e9a2197-5006-4240-a8a0-e4872f4ef05a",
+      "id": "ead4d0bc-8480-40ee-9d5f-b80f05fbb7c9",
       "name": "Respond Patch",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.2,
@@ -3794,8 +3794,8 @@
       }
     },
     {
-      "id": "a9ed4b7e-c820-450e-be5b-3b953cd91d89",
-      "name": "Note 5883d826",
+      "id": "6e6086d3-f8a0-4749-ab90-c0946aba710d",
+      "name": "Note fa09a77b",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
@@ -3810,8 +3810,8 @@
       }
     },
     {
-      "id": "44c1a3bf-8e2f-4abe-80bc-e522e73b0014",
-      "name": "Note 31713429",
+      "id": "c075e7b3-2dc3-4879-b8b6-9fb531c747e4",
+      "name": "Note 97237d96",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [

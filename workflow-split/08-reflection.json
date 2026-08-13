@@ -2,7 +2,7 @@
   "name": "مُنجِز — 08 Reflection (learning pass)",
   "nodes": [
     {
-      "id": "fb17ef7b-4171-4b89-9ca5-387f0f7f225d",
+      "id": "fb645a19-fd91-4fa5-a950-893ea6245ef2",
       "name": "Daily",
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
@@ -22,7 +22,7 @@
       }
     },
     {
-      "id": "3f6f110f-68bc-4f32-a1fb-9f7dbf1f766a",
+      "id": "ae77e9f2-151c-44be-a397-006e22bfa388",
       "name": "Reflect Manually",
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
@@ -33,7 +33,7 @@
       "parameters": {}
     },
     {
-      "id": "46845dbf-6bab-41af-b457-c7d8f6e027bc",
+      "id": "6ad32589-9ecb-4f16-b09e-026d855e3a3a",
       "name": "Reflect Webhook",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
@@ -47,10 +47,10 @@
         "responseMode": "responseNode",
         "options": {}
       },
-      "webhookId": "1cd68499-8f07-411d-919d-4f022211b579"
+      "webhookId": "f6e38581-82b8-4c62-856d-c405456217e5"
     },
     {
-      "id": "61f5ece1-9349-4ce9-9d55-ff7938ed746c",
+      "id": "e7b4955d-fec3-4f92-81ff-ac202344be5d",
       "name": "Respond Reflect",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.2,
@@ -78,7 +78,7 @@
       }
     },
     {
-      "id": "961e1246-1771-4b06-9828-15ad744643aa",
+      "id": "9dbd5dc9-ed60-403b-8293-843f891d17d1",
       "name": "Read All (reflect)",
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
@@ -111,7 +111,7 @@
       }
     },
     {
-      "id": "ee3eb0ad-586e-46bf-8ce9-545774bf8b18",
+      "id": "0e627827-8495-4421-aa92-82e8009af1d3",
       "name": "Gather Batch",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -124,7 +124,7 @@
       }
     },
     {
-      "id": "2238522f-8450-4667-bb28-ec8e1a74d87c",
+      "id": "27c4d60b-d20f-4b9f-9ef9-dcc1261ebec4",
       "name": "Anything To Learn?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
@@ -156,7 +156,7 @@
       }
     },
     {
-      "id": "4ef6d405-2635-4ed8-8d48-e96e34e15999",
+      "id": "4e06bdd6-e2d8-4e71-9181-c54988634a91",
       "name": "Nothing New ✓",
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
@@ -167,7 +167,7 @@
       "parameters": {}
     },
     {
-      "id": "736e73eb-fe5b-471f-b89b-17a6018a5c14",
+      "id": "5600d7e9-3265-4661-890c-7b1be1341ea4",
       "name": "Load Reflection Charter",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -196,7 +196,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "76e1f3f7-9c01-4b84-9cdb-4bb63e5f6e78",
+      "id": "3dc13e8f-41f7-4636-8dbb-7e85a89d3cef",
       "name": "Pick Charter",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -209,7 +209,7 @@
       }
     },
     {
-      "id": "c8cb51a7-34d8-4b3f-b05a-a6e15df849e4",
+      "id": "1d9e86dc-b186-4d7a-89d1-02ba4c888a86",
       "name": "Reflection Agent",
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 2.2,
@@ -232,7 +232,7 @@
       "waitBetweenTries": 15000
     },
     {
-      "id": "fa1b74af-0a10-4378-8696-95802753b9fe",
+      "id": "317af924-cee3-48bd-b494-d517e22d5958",
       "name": "Gemini Chat Model (reflect)",
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1,
@@ -254,7 +254,7 @@
       }
     },
     {
-      "id": "0ada5695-7a33-44b2-87e4-0612c285f2ef",
+      "id": "1f6cd33d-82e4-4286-87ee-8b980e879979",
       "name": "Reflection Output",
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "typeVersion": 1.2,
@@ -268,7 +268,7 @@
       }
     },
     {
-      "id": "129cec31-a76a-4cea-8903-e6e543b761f7",
+      "id": "94417a42-ebd9-4847-8cbe-03d184c3a14c",
       "name": "call_service (learning)",
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
@@ -349,7 +349,7 @@
       }
     },
     {
-      "id": "3c5d7e87-8be5-493b-9824-63606f49432e",
+      "id": "967425e0-9c4d-43f7-90aa-248192d2eac0",
       "name": "Log Reflection",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -362,7 +362,7 @@
       }
     },
     {
-      "id": "8772e785-cdbb-434a-89ab-d9b155696eb2",
+      "id": "e34ef306-e3fe-4f04-adb9-7548ca4574ae",
       "name": "Append Reflection Log",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -392,8 +392,8 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "60249722-057f-48e2-bebb-bd8ca91672b8",
-      "name": "Note 45416b7e",
+      "id": "04bbcf6b-5c89-4e53-8916-a9e63f79064b",
+      "name": "Note f33f3484",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [

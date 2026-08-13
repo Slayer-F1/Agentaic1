@@ -2,7 +2,7 @@
   "name": "مُنجِز — 02 Service Gateway (sub)",
   "nodes": [
     {
-      "id": "06513c88-7166-4d44-9e25-671338d5c46b",
+      "id": "7f1bc826-695d-4b1a-b304-edc4961a46b2",
       "name": "Gateway Input",
       "type": "n8n-nodes-base.executeWorkflowTrigger",
       "typeVersion": 1.1,
@@ -39,7 +39,7 @@
       }
     },
     {
-      "id": "6e383e59-14c8-4873-8f65-f699899a5b72",
+      "id": "fcb96a69-9cbf-4178-9a0e-29a5087b5623",
       "name": "Load Skills (gate)",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -68,7 +68,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "fbc01136-acd2-4c4a-a693-0e6e090152c0",
+      "id": "01096cd8-f6fc-4829-83fa-7d987608c0bc",
       "name": "Gate Check",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -81,7 +81,7 @@
       }
     },
     {
-      "id": "736c388f-e985-48c2-96e2-28d5ef74aa00",
+      "id": "993013c0-3a35-4746-a90c-e93b991d244e",
       "name": "Denied?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
@@ -114,7 +114,7 @@
       }
     },
     {
-      "id": "843d8c92-9f3d-471e-9a44-ad2d9aaac7c4",
+      "id": "55c8abb8-4830-494a-96b6-879a5887796c",
       "name": "Denied Result",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -127,7 +127,7 @@
       }
     },
     {
-      "id": "cff124ec-3acd-4efe-89d6-478c6c10c5e3",
+      "id": "1c0f9de9-6297-40d7-bd5c-d583bd19a093",
       "name": "Service Switch",
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
@@ -399,7 +399,7 @@
       }
     },
     {
-      "id": "77e5f7c2-bf30-4d7c-8a26-5d9bd4397102",
+      "id": "5de15119-24b9-4aee-87f2-822d697a45a4",
       "name": "svc: not_implemented",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -412,7 +412,7 @@
       }
     },
     {
-      "id": "291774e4-8390-4ad9-9e68-9355365cf2b8",
+      "id": "d34e5ea2-a334-4d3e-a080-c9609cec7a9e",
       "name": "Read Employees (profile)",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -441,7 +441,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "83968452-d7bf-49c2-a9c6-0d0dad5df1b9",
+      "id": "12e75158-115a-43f1-a653-6dc948ff5590",
       "name": "svc: get_employee_profile",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -454,7 +454,7 @@
       }
     },
     {
-      "id": "0d77337e-9c7f-40a1-8570-7a71cac05f75",
+      "id": "b2152ca6-8862-4df5-a95a-49dd0e65c416",
       "name": "Read LeaveBalances (svc)",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -483,7 +483,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "164d0258-0cf1-41fe-8485-bc02b9d21f5f",
+      "id": "827ec710-be15-42bc-972e-fcdbe90136db",
       "name": "svc: get_leave_balance",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -496,7 +496,7 @@
       }
     },
     {
-      "id": "0cbad0c8-8d81-45f5-8e90-0fd7acc92752",
+      "id": "ab4bb80e-c808-4f7e-95f1-783f95773c9d",
       "name": "Read Employees (salary)",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -525,7 +525,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "240609c6-c4f5-4154-9f92-f9a56f6a655a",
+      "id": "5ba84f35-9515-450a-a859-2fa718cd871b",
       "name": "Read Transactions (salary)",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -554,7 +554,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "2ef527f7-1c47-4c9f-9aa6-f7627a87f7dc",
+      "id": "9ab6090f-1419-44f9-8abd-ef7bc198946a",
       "name": "svc: get_salary_record",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -567,7 +567,7 @@
       }
     },
     {
-      "id": "b66f9b4d-d7eb-4df4-936d-854feb1b39e1",
+      "id": "ee2a0724-3390-4cc6-bf8e-1a2926866105",
       "name": "Read Transactions (policy)",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -596,7 +596,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "b6c48426-9f69-4bdc-897c-7ea2159864e6",
+      "id": "e30956b9-fabe-4508-a9e9-53100b0e1f68",
       "name": "Read ExpensePolicy (svc)",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -625,7 +625,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "dbbd81f3-3fe0-4aa0-a2ce-9c89994b2e97",
+      "id": "60c131fb-b494-4650-a79d-4544b330e5bb",
       "name": "svc: get_expense_policy",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -638,7 +638,7 @@
       }
     },
     {
-      "id": "15671303-417b-4317-83ea-c7d79d63b348",
+      "id": "0457223a-8d80-4915-869e-2d8620b12f84",
       "name": "Read Employees (roles)",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -667,7 +667,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "94c6e459-ce2b-4030-9474-11d9f87f0a56",
+      "id": "0131e92f-e57c-49f5-9593-ec429d9a1548",
       "name": "svc: get_it_roles",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -680,7 +680,7 @@
       }
     },
     {
-      "id": "6912e70c-97e8-4573-94e5-49d148258dd9",
+      "id": "cb43afb8-cf7b-4a0c-8e53-3aac48c1d288",
       "name": "Read SystemCatalog (svc)",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -709,7 +709,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "aa04ca03-d3ab-420e-8c8b-9f95107b76e5",
+      "id": "e9e02d37-a890-4fec-b902-76eeefcce314",
       "name": "svc: get_system_catalog",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -722,7 +722,7 @@
       }
     },
     {
-      "id": "3551f6e4-fa87-4f56-9ba1-7ec41a8f4a9e",
+      "id": "1c5854f1-fc4a-4c65-bf3b-2fd79c93d4b0",
       "name": "Read Employees (overlap)",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -751,7 +751,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "515f6289-0159-4f67-90f8-593ce8c52276",
+      "id": "2c68288c-9ca1-47a3-8c23-74ddaa0bc61b",
       "name": "Read Transactions (overlap)",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -780,7 +780,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "9f989f7a-b1b7-448b-8cfd-1b25e406c22f",
+      "id": "30bbe9bb-7262-46bd-be7c-751189b5d788",
       "name": "svc: check_leave_overlap",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -793,7 +793,7 @@
       }
     },
     {
-      "id": "5c9de6f7-6555-4339-8819-7ddc0bf60141",
+      "id": "a3be2940-7f89-4284-8c18-2487b12f7a82",
       "name": "Read Memory (svc)",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -822,7 +822,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "d5d83025-317e-48d3-ad7e-07cc98383e31",
+      "id": "b3836400-a158-443e-8afb-470a7090a23f",
       "name": "svc: read_memory",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -835,7 +835,7 @@
       }
     },
     {
-      "id": "bd6213f2-a695-4ddd-95cd-f81ae510dfe3",
+      "id": "552e0449-81e2-43b2-8a47-49a92fdde4d2",
       "name": "Read Memory (write)",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -864,7 +864,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "08fe1efe-12aa-4754-96d1-0ef3e2232905",
+      "id": "b79b5efa-51c4-4777-95d3-4931774cfea5",
       "name": "svc: write_memory",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -877,7 +877,7 @@
       }
     },
     {
-      "id": "3ef06236-209e-41f5-8bf6-b446b196589c",
+      "id": "cc62c123-9573-4fbd-b1bd-de6063f66ee9",
       "name": "Read SkillPatches (svc)",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -906,7 +906,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "ccc534a7-e9b2-43a2-ba72-ce053ea8591c",
+      "id": "1a5260e6-f829-4527-8769-6dd85969b2be",
       "name": "svc: propose_skill_patch",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -919,7 +919,7 @@
       }
     },
     {
-      "id": "fc6c1876-5745-426c-835f-c2c97d0e3078",
+      "id": "d10ef844-5735-426a-a69c-c3f66bf92e5c",
       "name": "Read Employees (submit)",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -948,7 +948,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "3f0214e3-eed4-451a-bf14-b9e45cc6438b",
+      "id": "3e173426-3cea-4bda-a7fc-5f3277def1fe",
       "name": "svc: submit_transaction",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -961,7 +961,7 @@
       }
     },
     {
-      "id": "827e714e-452f-4d2f-9fe6-74fd8a36542f",
+      "id": "57e424aa-41fe-4ff8-a071-a75e83623162",
       "name": "Emit Memory Row",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -975,7 +975,7 @@
       "alwaysOutputData": true
     },
     {
-      "id": "e548e512-ec64-4017-a7be-e4cdf69277de",
+      "id": "dced7693-ea89-487b-b61a-72e0bf8f0585",
       "name": "Save Memory",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -1015,7 +1015,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "caa1586e-ad65-425c-95bd-ae952a843907",
+      "id": "2ec515c5-22ee-4eec-8696-b1287e87149e",
       "name": "Carry Memory Result",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1028,7 +1028,7 @@
       }
     },
     {
-      "id": "b39426a6-52d3-4db6-9921-8d276a5ac943",
+      "id": "c0b8cc59-09ef-4d73-82f2-2825786aa33b",
       "name": "Emit Patch Row",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1042,7 +1042,7 @@
       "alwaysOutputData": true
     },
     {
-      "id": "4f30c0ca-66ac-4c30-9c29-11a4b55dcc83",
+      "id": "be6668ef-b3b0-45d0-b5e5-381c3bc14e0d",
       "name": "Save Skill Patch",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -1072,7 +1072,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "7f22f012-0829-4174-811c-214c13ffba27",
+      "id": "bbb6b901-7c22-4244-93a4-3553b8262fb4",
       "name": "Carry Patch Result",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1085,7 +1085,7 @@
       }
     },
     {
-      "id": "362b4642-bc00-4288-bf60-9cc451ac1c98",
+      "id": "ae595025-c628-4503-88cf-1d679bf02d8b",
       "name": "Emit Txn Row",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1098,7 +1098,7 @@
       }
     },
     {
-      "id": "9ca83ef7-8acd-4eda-a86a-dea34830343d",
+      "id": "2d0c8df6-aa23-49eb-90fd-11d08b38c117",
       "name": "Append Transaction",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -1128,7 +1128,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "e64f5381-76ce-4956-a408-ecc91d7967ec",
+      "id": "c8e148f9-8d10-4640-a76f-1bf6c8698878",
       "name": "Carry Submit Result",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1141,7 +1141,7 @@
       }
     },
     {
-      "id": "a2dfac7c-e9a5-4e58-81d4-a02e5af2bc5b",
+      "id": "01842489-18bb-49c1-9b69-2804503fe2ed",
       "name": "Build Audit Row",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1150,11 +1150,11 @@
         60
       ],
       "parameters": {
-        "jsCode": "const j = $json;\nreturn [{ json: {\n  ts: new Date().toISOString(), session_id: j.session_id || '',\n  employee_id: j.employee_id || '', skill_id: j.skill_id || '',\n  service: j.service || '', request_json: JSON.stringify(j.payload || {}),\n  result_summary: (j.result && j.result.error) ? ('DENIED/ERROR: ' + j.result.error)\n    : ('OK ' + JSON.stringify(j.result || {}).slice(0, 160)),\n} }];\n"
+        "jsCode": "const j = $json;\nreturn [{ json: {\n  ts: new Date().toISOString(), session_id: j.session_id || '',\n  employee_id: j.employee_id || '', skill_id: j.skill_id || '',\n  service: j.service || '', request_json: JSON.stringify(j.payload || {}),\n  result_summary: (j.result && j.result.error) ? ((j.result.error === 'SERVICE_DENIED_BY_GOVERNANCE' ? 'DENIED: ' : 'ERROR: ') + j.result.error)\n    : ('OK ' + JSON.stringify(j.result || {}).slice(0, 160)),\n} }];\n"
       }
     },
     {
-      "id": "1598920a-f8bb-4ebe-8cc1-2e9acaad86cf",
+      "id": "5b7e20a7-ae02-44b8-ab85-94c014336594",
       "name": "Append AuditLog",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -1184,7 +1184,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "2f49eca6-c42a-4fe6-95d8-7cfbebf06e84",
+      "id": "cf481553-6a18-4d36-a761-43d8d2afbe56",
       "name": "Return Result",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1197,8 +1197,8 @@
       }
     },
     {
-      "id": "b3469e23-e7f2-4a3e-b23e-5b76d45027a5",
-      "name": "Note 14b38bbe",
+      "id": "2020268b-1bda-4909-8ba7-8580ef490080",
+      "name": "Note 7657be2b",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [

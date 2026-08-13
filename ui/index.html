@@ -292,7 +292,7 @@ const AR={appTitle:"مُنجِز",appSub:"بوابة الخدمات الذاتي
  approve:"اعتماد",reject:"رفض",noteOpt:"ملاحظة (اختياري)",decided:"سُجّل قرارك ✓",
  noPending:"لا معاملات بانتظار قرارك حاليًا",noTxns:"لا طلبات بعد — ابدأ من المحادثة",
  mineHint:"يُحدَّث مباشرة من سجل المعاملات",apprHint:"المعاملات التي تنتظر قرارك بصفتك الحالية",
- skillsReg:"سجل المهارات (حي من GitHub)",skillsHint:"كل مهارة = ملف SKILL.md مُعتمد بإصدار — تعديلها يمر عبر git",
+ skillsReg:"سجل المهارات (حيّ داخل n8n)",skillsHint:"كل مهارة معتمدة بإصدار — يقترح الوكيل تحسينًا، ويعتمده مالك الإجراء، فيُكتب في المهارة ويرتفع الإصدار",
  auditTitle:"سجل التدقيق",auditHint:"كل استدعاء خدمة يمر عبر بوابة الحوكمة ويُسجَّل — بما فيه المرفوض",
  chaseOk:"انطلق حارس الإنجاز",resetOk:"أُعيدت التهيئة",cert:"شهادة",instant:"فوري",
  internalTag:"داخلية",
@@ -320,7 +320,7 @@ const EN={appTitle:"Munjiz",appSub:"Skill-governed self-service portal — demo 
  approve:"Approve",reject:"Reject",noteOpt:"Note (optional)",decided:"Decision recorded ✓",
  noPending:"Nothing awaiting your decision",noTxns:"No requests yet — start from Chat",
  mineHint:"Live from the transactions registry",apprHint:"Transactions awaiting your decision in your current persona",
- skillsReg:"Skill registry (live from GitHub)",skillsHint:"Every skill is a versioned, approved SKILL.md — changes go through git",
+ skillsReg:"Skill registry (live in n8n)",skillsHint:"Every skill is versioned and approved — the agent proposes, the owner approves, the rule is written in and the version bumps",
  auditTitle:"Audit log",auditHint:"Every service call passes the governance gateway and is logged — including denials",
  chaseOk:"SLA chaser fired",resetOk:"Demo re-armed",cert:"Certificate",instant:"instant",
  internalTag:"internal",
@@ -612,7 +612,7 @@ function renderGov(){
   <div class="row hint">${T.chain}: ${(s.approval_chain||[]).map(esc).join(" ← ")||T.instant}</div></div>`).join("");
  const tbl=$("#auditTbl");
  tbl.innerHTML=`<thead><tr>${T.thAudit.map(h=>`<th>${h}</th>`).join("")}</tr></thead><tbody>`+
-  (S.data?.audit||[]).map(a=>{const denied=String(a.result_summary||"").startsWith("DENIED");
+  (S.data?.audit||[]).map(a=>{const denied=String(a.result_summary||"").startsWith("DENIED:");
    return `<tr><td class="num">${esc(String(a.ts).slice(5,16).replace("T"," "))}</td>
     <td>${esc(a.skill_id)}</td><td><span class="tag ${denied?"":"svc"}">${esc(a.service)}</span></td>
     <td class="${denied?"":"hint"}">${denied?`<span class="status denied">${esc(a.result_summary)}</span>`:esc(String(a.result_summary).slice(0,90))}</td></tr>`;}).join("")+"</tbody>";

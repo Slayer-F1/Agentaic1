@@ -2,7 +2,7 @@
   "name": "مُنجِز — 05 Dashboard API",
   "nodes": [
     {
-      "id": "ab3fbe27-dad8-4da0-9e15-ec4cd3377bad",
+      "id": "27be02b2-5703-4fa5-b637-2ac50b5e77c2",
       "name": "GET State",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
@@ -16,10 +16,10 @@
         "responseMode": "responseNode",
         "options": {}
       },
-      "webhookId": "1f8c1d3a-7378-4ea4-ba79-dc0872b1c5fc"
+      "webhookId": "9ae87dc0-801d-48b0-a268-0f0eeed923ec"
     },
     {
-      "id": "eaae7105-c60e-4267-939b-6092d403e89e",
+      "id": "8458a78e-953d-4b6c-890f-e92d29af8390",
       "name": "Dashboard Start",
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
@@ -30,7 +30,7 @@
       "parameters": {}
     },
     {
-      "id": "5a623c07-1e0b-4683-aa7a-2d4cf627c90e",
+      "id": "5b45f4d1-1393-476f-9bfd-34ee85bbe8c7",
       "name": "Read All (dash)",
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
@@ -63,7 +63,7 @@
       }
     },
     {
-      "id": "98eab915-097d-4a8f-8b26-fbe4344eaf1e",
+      "id": "e8a8bbba-5e9c-4fa4-bcc5-dd9556361daf",
       "name": "Assemble Dashboard",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -76,7 +76,7 @@
       }
     },
     {
-      "id": "94b8f8bb-cfa2-4b6b-b54c-f5642e5eb781",
+      "id": "2fe846eb-ee81-4f4e-b664-bcf732d58277",
       "name": "Respond State",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.2,
@@ -104,8 +104,8 @@
       }
     },
     {
-      "id": "3bc31b4b-bfd2-4bad-8e48-f636182dcc0c",
-      "name": "Note dadacd0c",
+      "id": "157f1647-73be-40ca-b08b-52312a181cc2",
+      "name": "Note f9832a4a",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
