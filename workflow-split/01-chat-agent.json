@@ -2,7 +2,7 @@
   "name": "مُنجِز — 01 Chat Agent",
   "nodes": [
     {
-      "id": "79497a32-6fd2-4a6e-8b5a-2f20cfe723d4",
+      "id": "adc0957c-b3a2-4cd0-982e-2163b8977de4",
       "name": "Chat Webhook",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
@@ -16,10 +16,10 @@
         "responseMode": "responseNode",
         "options": {}
       },
-      "webhookId": "b80e993c-3898-4419-802b-020223f863d1"
+      "webhookId": "7069dcff-1f81-43c1-bdc1-e4d3d326441e"
     },
     {
-      "id": "395dea19-48b8-4cef-b484-d703f256cfe2",
+      "id": "b1441ac1-316a-43e2-83c9-6e3532b1a5a0",
       "name": "Load Skills",
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
@@ -52,7 +52,7 @@
       }
     },
     {
-      "id": "73d4fb37-6393-494c-b0e0-6fcdadac7652",
+      "id": "166bb812-2a3c-4f80-a50d-7626901947e4",
       "name": "Prepare Router",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -65,7 +65,7 @@
       }
     },
     {
-      "id": "c9143699-3fe8-4a2f-a066-de8c2da809d8",
+      "id": "6985a2f3-5ff7-448f-ae7d-6ba213b4bbcd",
       "name": "Has Active Skill?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
@@ -98,7 +98,7 @@
       }
     },
     {
-      "id": "692bf4d7-b81b-4ddb-8840-59e4727ceea7",
+      "id": "c259326d-4733-4629-ae3d-692fe4ea48d9",
       "name": "Gemini: Route Intent",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -129,7 +129,7 @@
       "waitBetweenTries": 15000
     },
     {
-      "id": "4e362135-706b-4e82-8ba5-d36b28e548ba",
+      "id": "e5a8c895-c69b-49a1-ab68-4299c5267c4b",
       "name": "Parse Route",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -142,7 +142,7 @@
       }
     },
     {
-      "id": "16ab3f0e-b4af-4354-a930-8dc4a4e8dd64",
+      "id": "1a9c94a4-d37f-4723-94e7-edacd3ba2e5d",
       "name": "Pick Skill",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -155,7 +155,7 @@
       }
     },
     {
-      "id": "750fcbdc-97a0-4492-8da7-75a35de500ad",
+      "id": "04611677-79ee-4612-bde7-4f801145b377",
       "name": "Matched?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
@@ -188,7 +188,7 @@
       }
     },
     {
-      "id": "4e0d3faa-c245-48b3-8aab-bebb0c4efc1b",
+      "id": "3a04bb92-17bd-4f40-978b-80d4ce283829",
       "name": "Respond: Services List",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.2,
@@ -216,7 +216,7 @@
       }
     },
     {
-      "id": "43fbd833-84a3-41ad-9a34-d422db0c8c40",
+      "id": "6d3e0ef9-1fea-4efe-b884-aa81c8584020",
       "name": "Skill Body",
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
@@ -227,7 +227,7 @@
       "parameters": {}
     },
     {
-      "id": "a4c1b2a1-703b-4f93-95e6-74bf3b0b6504",
+      "id": "5f3c802b-f412-41b7-ab2a-f9a3c55fac91",
       "name": "Load Profiles",
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
@@ -260,7 +260,7 @@
       }
     },
     {
-      "id": "d29d320d-11cb-42dc-8714-5c3e18f81fe9",
+      "id": "7a7dc8b2-c7aa-4107-801a-ad02f800e4ae",
       "name": "Read Employees Ctx",
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
@@ -293,7 +293,7 @@
       }
     },
     {
-      "id": "48ee9b46-dbca-4d30-a732-4032964d6990",
+      "id": "12cd014a-bf4a-4583-9f6b-6caa3b8736cd",
       "name": "Read Memory Ctx",
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
@@ -326,7 +326,7 @@
       }
     },
     {
-      "id": "18567191-a95b-4e07-9100-077363a9db80",
+      "id": "f9428ec0-64dc-41ac-93e7-358e80398dbc",
       "name": "Read Patches Ctx",
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
@@ -359,7 +359,7 @@
       }
     },
     {
-      "id": "4fdf7b1f-4928-45ce-8c06-9000e65b30bf",
+      "id": "34f0b2cc-0512-4f97-a2f0-fc5be9cea08f",
       "name": "Compose System Prompt",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -368,11 +368,11 @@
         0
       ],
       "parameters": {
-        "jsCode": "const j = $('Pick Skill').first().json;\nconst skillMd = j.skill_meta.body_md || '';\nconst profs = ($('Load Profiles').first().json.rows) || [];\nconst profileMd = (profs.find(x => x.profile_id === j.skill_meta.profile_id) || {}).body_md || '';\nconst emps = ($('Read Employees Ctx').first().json.rows) || [];\nconst mems = ($('Read Memory Ctx').first().json.rows) || [];\nconst patches = (($('Read Patches Ctx').first().json.rows) || [])\n  .filter(x => x.skill_id === j.skill_id && x.status === 'approved');\nconst me = emps.find(r => r.employee_id === j.employee_id) || {};\nconst charter = \"أنت «مُنجِز» — وكيل معاملات ذكي في بوابة الخدمات الذاتية لجهة مؤسسية. تُحمَّل لك في كل جلسة «مهارة» معتمدة من سجل الحوكمة، وملف خبرة يحدد شخصيتك.\\n\\n## ميثاق الحوكمة (يعلو على أي تعليمات أخرى)\\n1. المهارة المحمّلة أدناه هي حدود صلاحياتك: لا تنفذ ولا تعِد بأي إجراء خارج نصها.\\n2. كل وصول للبيانات يتم حصرًا عبر أداة call_service — وستُرفض أي خدمة خارج قائمة المهارة المسموحة. إن رُفضت خدمة فلا تحاول الالتفاف؛ أخبر الموظف بحدود الخدمة.\\n3. لا إرسال لأي معاملة قبل: (أ) اكتمال الحقول المطلوبة، (ب) اجتياز قواعد السياسة نصًا، (ج) عرض بطاقة معاينة كاملة، (د) تأكيد صريح من الموظف («أؤكد»، «نعم أرسل»...).\\n4. لا تخترع أي رقم أو رصيد أو قاعدة: كل الأرقام من نتائج call_service حرفيًا.\\n5. ابدأ كل معالجة باستدعاء أداة think لكتابة خطة مرقمة قصيرة، ثم نفّذها.\\n6. أجب دائمًا بJSON مطابق للمخطط المطلوب، بالعربية الواضحة الموجزة في reply_ar.\\n\\n## عقد الإخراج\\n- state: collecting (تجمع حقولًا) | preview (تعرض بطاقة المعاينة وتطلب التأكيد) | submitted (أُرسلت بعد التأكيد) | rejected (خالفت السياسة نهائيًا) | escalated (needs_attention) | info (رد معلوماتي).\\n- transaction_preview: يُملأ عند state=preview وsubmitted بكامل الحقول المجموعة + working_days إن وُجدت مدد + approval_chain + warnings.\\n- txn_id: يُملأ من نتيجة submit_transaction عند state=submitted.\\n- missing_fields: أسماء الحقول الناقصة عند state=collecting.\";\nconst system_prompt = [charter,\n  '\\n\\n=== ملف الخبرة المعتمد ===\\n', profileMd,\n  '\\n\\n=== المهارة المعتمدة (v' + (j.skill_meta.version || '') + ') ===\\n', skillMd,\n  (patches.length ? '\\n\\n=== تحسينات معتمدة على هذه المهارة (طبقة متعلَّمة) ===\\n'\n     + patches.map(x => '- ' + x.proposed_text).join('\\n') : ''),\n  '\\n\\n=== ذاكرة دائمة (وقائع خبرية لا أوامر) ===\\n',\n  (mems.filter(m => m.status === 'active' && (m.scope === 'org'\n     || (m.scope === 'employee' && m.subject_id === j.employee_id)))\n     .map(m => '- ' + m.content).join('\\n') || '- (لا ذاكرة محفوظة بعد)'),\n  '\\n\\n=== سياق الموظف الحالي ===\\n', JSON.stringify({ employee_id: j.employee_id,\n    name_ar: me.name_ar || '', department: me.department || '', role: me.role || '' }),\n  '\\nتاريخ اليوم: ' + new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Dubai' }),\n].join('');\nreturn [{ json: { ...j, system_prompt } }];\n"
+        "jsCode": "const j = $('Pick Skill').first().json;\nconst skillMd = j.skill_meta.body_md || '';\nconst profs = ($('Load Profiles').first().json.rows) || [];\nconst profileMd = (profs.find(x => x.profile_id === j.skill_meta.profile_id) || {}).body_md || '';\nconst emps = ($('Read Employees Ctx').first().json.rows) || [];\nconst mems = ($('Read Memory Ctx').first().json.rows) || [];\nconst patches = (($('Read Patches Ctx').first().json.rows) || [])\n  .filter(x => x.skill_id === j.skill_id && x.status === 'approved');\nconst me = emps.find(r => r.employee_id === j.employee_id) || {};\nconst charter = \"أنت «مُنجِز» — وكيل معاملات ذكي في بوابة الخدمات الذاتية لجهة مؤسسية. تُحمَّل لك في كل جلسة «مهارة» معتمدة من سجل الحوكمة، وملف خبرة يحدد شخصيتك.\\n\\n## ميثاق الحوكمة (يعلو على أي تعليمات أخرى)\\n1. المهارة المحمّلة أدناه هي حدود صلاحياتك: لا تنفذ ولا تعِد بأي إجراء خارج نصها.\\n2. كل وصول للبيانات يتم حصرًا عبر أداة call_service — وستُرفض أي خدمة خارج قائمة المهارة المسموحة. إن رُفضت خدمة فلا تحاول الالتفاف؛ أخبر الموظف بحدود الخدمة.\\n3. لا إرسال لأي معاملة قبل: (أ) اكتمال الحقول المطلوبة، (ب) اجتياز قواعد السياسة نصًا، (ج) عرض بطاقة معاينة كاملة، (د) تأكيد صريح من الموظف («أؤكد»، «نعم أرسل»...).\\n4. لا تخترع أي رقم أو رصيد أو قاعدة: كل الأرقام من نتائج call_service حرفيًا.\\n5. ابدأ كل معالجة باستدعاء أداة think لكتابة خطة مرقمة قصيرة، ثم نفّذها.\\n6. أجب دائمًا بJSON مطابق للمخطط المطلوب، بالعربية الواضحة الموجزة في reply_ar.\\n\\n## عقد الإخراج\\n- state: collecting (تجمع حقولًا) | preview (تعرض بطاقة المعاينة وتطلب التأكيد) | submitted (أُرسلت بعد التأكيد) | rejected (خالفت السياسة نهائيًا) | escalated (needs_attention) | info (رد معلوماتي).\\n- transaction_preview: يُملأ عند state=preview وsubmitted بكامل الحقول المجموعة + working_days إن وُجدت مدد + approval_chain + warnings.\\n- txn_id: يُملأ من نتيجة submit_transaction عند state=submitted.\\n- missing_fields: أسماء الحقول الناقصة عند state=collecting.\\n- options: عند state=collecting قدّم دائمًا خيارات جاهزة للنقر (3–6) بدل السؤال المفتوح كلما كانت القيم معروفة أو قابلة للاقتراح: أنواع الإجازة، فئات النفقات، الأنظمة من الدليل، الجهات الشائعة للشهادات، مدد وتواريخ مقترحة محسوبة (مثل «من 2026-08-20 إلى 2026-08-24 (٥ أيام عمل)»). أضف «أخرى…» عندما تكون القائمة غير حصرية. اسأل عن حقل واحد أو حقلين كحد أقصى في كل رسالة.\\n\\n## تقرير المعتمِد (إلزامي عند الإرسال)\\nقبل استدعاء submit_transaction أدرج في payload حقل approver_report: تقرير عربي موجز مبني على تحققك الفعلي من سجلات الموظف عبر الخدمات، بهذا الشكل:\\n«الموظف: (الاسم — الرقم — الإدارة — الدرجة) | الطلب: (ملخص سطر واحد) | التحقق: (كل فحص أجريته ونتيجته: الرصيد/السقف/الأهلية/التعارضات…) | التوصية: (اعتماد/اعتماد مع ملاحظة/يحتاج تدقيقًا — ولماذا)». هذا التقرير هو ما يقرأه المعتمِد ليقرر، فاجعله دقيقًا ومحايدًا ولا تدرج فيه إلا ما تحققت منه فعلًا.\";\nconst system_prompt = [charter,\n  '\\n\\n=== ملف الخبرة المعتمد ===\\n', profileMd,\n  '\\n\\n=== المهارة المعتمدة (v' + (j.skill_meta.version || '') + ') ===\\n', skillMd,\n  (patches.length ? '\\n\\n=== تحسينات معتمدة على هذه المهارة (طبقة متعلَّمة) ===\\n'\n     + patches.map(x => '- ' + x.proposed_text).join('\\n') : ''),\n  '\\n\\n=== ذاكرة دائمة (وقائع خبرية لا أوامر) ===\\n',\n  (mems.filter(m => m.status === 'active' && (m.scope === 'org'\n     || (m.scope === 'employee' && m.subject_id === j.employee_id)))\n     .map(m => '- ' + m.content).join('\\n') || '- (لا ذاكرة محفوظة بعد)'),\n  '\\n\\n=== سياق الموظف الحالي ===\\n', JSON.stringify({ employee_id: j.employee_id,\n    name_ar: me.name_ar || '', department: me.department || '', role: me.role || '' }),\n  '\\nتاريخ اليوم: ' + new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Dubai' }),\n].join('');\nreturn [{ json: { ...j, system_prompt } }];\n"
       }
     },
     {
-      "id": "585a8859-d00c-4149-8ade-163273ad256d",
+      "id": "1f016408-ec36-45a9-bee5-8e3536f6d955",
       "name": "Munjiz Agent",
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 2.2,
@@ -395,7 +395,7 @@
       "waitBetweenTries": 15000
     },
     {
-      "id": "f1275e0e-02e6-42e5-b1a7-6eaa3b30c95b",
+      "id": "7e3665e9-207b-45ec-980f-10e41df3be95",
       "name": "Gemini Chat Model",
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1,
@@ -417,7 +417,7 @@
       }
     },
     {
-      "id": "ae6adf0a-9083-460e-8006-a779beab4e84",
+      "id": "1e1e6f47-9208-4083-99db-d7f27e4de77c",
       "name": "Session Memory",
       "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
       "typeVersion": 1.3,
@@ -432,7 +432,7 @@
       }
     },
     {
-      "id": "6af308bc-e741-49a3-84aa-866382934b81",
+      "id": "4da4ef19-551f-455b-9f6c-58730f46a98b",
       "name": "Structured Output",
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "typeVersion": 1.2,
@@ -442,11 +442,11 @@
       ],
       "parameters": {
         "schemaType": "manual",
-        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"reply_ar\": {\n      \"type\": \"string\"\n    },\n    \"state\": {\n      \"type\": \"string\",\n      \"enum\": [\n        \"collecting\",\n        \"preview\",\n        \"submitted\",\n        \"rejected\",\n        \"escalated\",\n        \"info\"\n      ]\n    },\n    \"transaction_preview\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"fields\": {\n          \"type\": \"object\"\n        },\n        \"working_days\": {\n          \"type\": \"number\"\n        },\n        \"amount_aed\": {\n          \"type\": \"number\"\n        },\n        \"approval_chain\": {\n          \"type\": \"array\",\n          \"items\": {\n            \"type\": \"string\"\n          }\n        },\n        \"warnings\": {\n          \"type\": \"array\",\n          \"items\": {\n            \"type\": \"string\"\n          }\n        }\n      }\n    },\n    \"txn_id\": {\n      \"type\": \"string\"\n    },\n    \"missing_fields\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"string\"\n      }\n    }\n  },\n  \"required\": [\n    \"reply_ar\",\n    \"state\"\n  ]\n}"
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"reply_ar\": {\n      \"type\": \"string\"\n    },\n    \"state\": {\n      \"type\": \"string\",\n      \"enum\": [\n        \"collecting\",\n        \"preview\",\n        \"submitted\",\n        \"rejected\",\n        \"escalated\",\n        \"info\"\n      ]\n    },\n    \"transaction_preview\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"fields\": {\n          \"type\": \"object\"\n        },\n        \"working_days\": {\n          \"type\": \"number\"\n        },\n        \"amount_aed\": {\n          \"type\": \"number\"\n        },\n        \"approval_chain\": {\n          \"type\": \"array\",\n          \"items\": {\n            \"type\": \"string\"\n          }\n        },\n        \"warnings\": {\n          \"type\": \"array\",\n          \"items\": {\n            \"type\": \"string\"\n          }\n        }\n      }\n    },\n    \"txn_id\": {\n      \"type\": \"string\"\n    },\n    \"missing_fields\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"string\"\n      }\n    },\n    \"options\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"string\"\n      },\n      \"description\": \"خيارات جاهزة للنقر يعرضها التطبيق للموظف للسؤال الحالي\"\n    }\n  },\n  \"required\": [\n    \"reply_ar\",\n    \"state\"\n  ]\n}"
       }
     },
     {
-      "id": "77692ea7-9c40-4c4f-a5c0-758fcaee1418",
+      "id": "1ad7ee59-068e-4c6c-877e-f0280930973e",
       "name": "think",
       "type": "@n8n/n8n-nodes-langchain.toolThink",
       "typeVersion": 1,
@@ -457,7 +457,7 @@
       "parameters": {}
     },
     {
-      "id": "3d99c169-0ca5-4ce7-b3cc-09c74fad93d9",
+      "id": "dd62f2ab-bbaf-46a1-a4ea-a818ed2096a0",
       "name": "call_service",
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
@@ -538,7 +538,7 @@
       }
     },
     {
-      "id": "7bcccc60-5873-4d62-b2f0-9e1c22371882",
+      "id": "378d84e6-e137-410b-a33b-31a52fa67240",
       "name": "Deterministic Cross-Check",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -547,11 +547,11 @@
         0
       ],
       "parameters": {
-        "jsCode": "function workingDays(startISO, endISO) {\n  const s = new Date(startISO + 'T12:00:00Z'), e = new Date(endISO + 'T12:00:00Z');\n  if (isNaN(s) || isNaN(e) || e < s) return null;\n  let n = 0; const d = new Date(s);\n  while (d <= e) { const w = d.getUTCDay(); if (w !== 6 && w !== 0) n++; d.setUTCDate(d.getUTCDate() + 1); }\n  return n;\n}\nconst j = $json.output || {};\nconst ctx = $('Compose System Prompt').first().json;\nconst prior = $('Compose System Prompt').first().json._rechecked === true || $json._rechecked === true;\nlet needs_recheck = false; const notes = [];\nconst p = j.transaction_preview;\nif (p && ['preview', 'submitted'].includes(j.state) && ctx.skill_id === 'leave-request' && p.fields) {\n  const det = workingDays(p.fields.start_date, p.fields.end_date);\n  if (det !== null && p.working_days != null && +p.working_days !== det && !prior) {\n    needs_recheck = true; notes.push('working_days يجب أن تكون ' + det);\n  }\n  if (prior && det !== null) p.working_days = det;\n}\nif (p && p.amount_aed != null) p.amount_aed = Math.round(+p.amount_aed * 100) / 100;\nreturn [{ json: {\n  reply_ar: j.reply_ar || '', state: j.state || 'info',\n  transaction_preview: p || null, txn_id: j.txn_id || null,\n  missing_fields: j.missing_fields || [],\n  skill_id: ctx.skill_id, session_id: ctx.session_id,\n  needs_recheck, recheck_notes: notes, _rechecked: prior,\n} }];\n"
+        "jsCode": "function workingDays(startISO, endISO) {\n  const s = new Date(startISO + 'T12:00:00Z'), e = new Date(endISO + 'T12:00:00Z');\n  if (isNaN(s) || isNaN(e) || e < s) return null;\n  let n = 0; const d = new Date(s);\n  while (d <= e) { const w = d.getUTCDay(); if (w !== 6 && w !== 0) n++; d.setUTCDate(d.getUTCDate() + 1); }\n  return n;\n}\nconst j = $json.output || {};\nconst ctx = $('Compose System Prompt').first().json;\nconst prior = $('Compose System Prompt').first().json._rechecked === true || $json._rechecked === true;\nlet needs_recheck = false; const notes = [];\nconst p = j.transaction_preview;\nif (p && ['preview', 'submitted'].includes(j.state) && ctx.skill_id === 'leave-request' && p.fields) {\n  const det = workingDays(p.fields.start_date, p.fields.end_date);\n  if (det !== null && p.working_days != null && +p.working_days !== det && !prior) {\n    needs_recheck = true; notes.push('working_days يجب أن تكون ' + det);\n  }\n  if (prior && det !== null) p.working_days = det;\n}\nif (p && p.amount_aed != null) p.amount_aed = Math.round(+p.amount_aed * 100) / 100;\nreturn [{ json: {\n  reply_ar: j.reply_ar || '', state: j.state || 'info',\n  transaction_preview: p || null, txn_id: j.txn_id || null,\n  missing_fields: j.missing_fields || [],\n  options: Array.isArray(j.options) ? j.options.slice(0, 8) : [],\n  skill_id: ctx.skill_id, session_id: ctx.session_id,\n  needs_recheck, recheck_notes: notes, _rechecked: prior,\n} }];\n"
       }
     },
     {
-      "id": "ec9f8dbf-84d5-4162-8fa4-90b9980c292a",
+      "id": "75e818a9-204c-4d64-ac77-ded545170420",
       "name": "Needs Re-reason?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
@@ -584,7 +584,7 @@
       }
     },
     {
-      "id": "85f737a8-760b-4587-a242-4b2afb43f75a",
+      "id": "21a5dbee-54e6-4ee6-8ff5-7833de74e836",
       "name": "Build Re-reason",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -597,7 +597,7 @@
       }
     },
     {
-      "id": "c9fafc07-10fa-41e7-b399-699223d788d6",
+      "id": "1e12f572-57a7-441d-b6b3-504678758d69",
       "name": "Gemini: Re-reason",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -628,7 +628,7 @@
       "waitBetweenTries": 15000
     },
     {
-      "id": "88e2ad0e-c449-4acb-972c-4bc28df76dec",
+      "id": "48b8aa20-e6ee-48ed-86df-7c26bbe9806d",
       "name": "Parse Re-reason",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -641,7 +641,7 @@
       }
     },
     {
-      "id": "7bc823e5-2a24-4883-8208-8bd4d7ee865f",
+      "id": "e1e533b4-c0c3-48c1-ba2e-1cf4df09573e",
       "name": "Merge Re-reason",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -650,11 +650,11 @@
         -220
       ],
       "parameters": {
-        "jsCode": "const prev = $('Deterministic Cross-Check').first().json;\nconst fixed = $json.gemini_ok ? $json.gemini_json : {\n  reply_ar: prev.reply_ar, state: prev.state, transaction_preview: prev.transaction_preview,\n  txn_id: prev.txn_id, missing_fields: prev.missing_fields };\nreturn [{ json: { output: fixed, _rechecked: true } }];\n"
+        "jsCode": "const prev = $('Deterministic Cross-Check').first().json;\nconst fixed = $json.gemini_ok ? $json.gemini_json : {\n  reply_ar: prev.reply_ar, state: prev.state, transaction_preview: prev.transaction_preview,\n  txn_id: prev.txn_id, missing_fields: prev.missing_fields, options: prev.options };\nreturn [{ json: { output: fixed, _rechecked: true } }];\n"
       }
     },
     {
-      "id": "d5916100-5475-4db7-9c37-9edfaf37e9d3",
+      "id": "1f7afc7a-ce60-4bc8-8683-f09782f4afcd",
       "name": "Respond Chat",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.2,
@@ -664,7 +664,7 @@
       ],
       "parameters": {
         "respondWith": "json",
-        "responseBody": "={{ { \"reply\": $json.reply_ar, \"state\": $json.state, \"preview\": $json.transaction_preview, \"txn_id\": $json.txn_id, \"missing_fields\": $json.missing_fields, \"skill_id\": $json.skill_id, \"session_id\": $json.session_id } }}",
+        "responseBody": "={{ { \"reply\": $json.reply_ar, \"state\": $json.state, \"preview\": $json.transaction_preview, \"txn_id\": $json.txn_id, \"missing_fields\": $json.missing_fields, \"options\": $json.options, \"skill_id\": $json.skill_id, \"session_id\": $json.session_id } }}",
         "options": {
           "responseHeaders": {
             "entries": [
@@ -682,8 +682,8 @@
       }
     },
     {
-      "id": "8b6a39f5-f799-474f-a7e7-dfa1dc03c1bc",
-      "name": "Note 27b8fe67",
+      "id": "78c0949a-0fb9-4352-b069-363c2536a5cd",
+      "name": "Note 96a93793",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [

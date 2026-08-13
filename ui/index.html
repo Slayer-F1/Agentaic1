@@ -164,6 +164,48 @@ table.data{width:100%;border-collapse:collapse;font-size:var(--fs-1)}
 .decide-btns{display:flex;gap:8px}
 .empty-block{padding:40px;text-align:center;color:var(--ink-3);font-size:var(--fs-1)}
 
+
+/* ---------- overhaul: chips, cards, reports, certificate ---------- */
+.opt-chips{display:flex;gap:8px;flex-wrap:wrap;align-self:flex-end;max-width:80%}
+.opt-chip{border:1.5px solid var(--brand);color:var(--brand);background:var(--surface);
+  border-radius:99px;padding:6px 16px;font-size:var(--fs-1);font-weight:600;cursor:pointer;
+  transition:background .12s,color .12s}
+.opt-chip:hover{background:var(--brand);color:var(--brand-ink)}
+.sec{margin-bottom:28px}
+.sec>h2{font-size:var(--fs-4);margin-bottom:4px}
+.sec>.sub{font-size:var(--fs-0);color:var(--ink-3);margin-bottom:14px}
+.req-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 18px;margin-bottom:14px}
+.req-card .head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+.req-card .head b{font-size:var(--fs-3)}
+.req-card .head .num{color:var(--ink-3);font-size:var(--fs-0)}
+.req-card .meta{display:flex;gap:14px;flex-wrap:wrap;font-size:var(--fs-1);color:var(--ink-2);margin:6px 0}
+.req-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(420px,1fr));gap:14px}
+.report-box{background:var(--brand-soft);border:1px solid var(--brand);border-radius:10px;
+  padding:12px 16px;margin:10px 0;font-size:var(--fs-1);line-height:1.9}
+.report-box .rt{font-weight:700;color:var(--brand);font-size:var(--fs-0);margin-bottom:6px;
+  display:flex;align-items:center;gap:6px}
+.report-box .seg{display:block;padding:2px 0}
+.report-box .seg b{color:var(--brand)}
+.kv{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+.kv span{background:var(--surface-2);border-radius:7px;padding:2px 10px;font-size:var(--fs-0);color:var(--ink-2)}
+.act-row{display:flex;gap:10px;align-items:center;margin-top:12px;flex-wrap:wrap}
+.note-inp{flex:1;min-width:180px;font-size:var(--fs-1)}
+.cert-btn{display:inline-flex;align-items:center;gap:8px;background:var(--gold-soft);color:var(--gold);
+  border:1.5px solid var(--gold);border-radius:9px;padding:8px 16px;font-weight:700;font-size:var(--fs-1)}
+.cert-btn:hover{background:var(--gold);color:#fff}
+.meter{height:8px;background:var(--surface-2);border-radius:99px;overflow:hidden;margin-top:6px}
+.meter i{display:block;height:100%;background:var(--brand);border-radius:99px}
+.learn-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-bottom:18px}
+.learn-strip .kpi b{font-size:var(--fs-4)}
+.patch-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 16px;margin-bottom:12px}
+.patch-card.pending{border-color:var(--amber)}
+.patch-card .quote{border-inline-start:3px solid var(--brand);padding:6px 12px;margin:8px 0;
+  background:var(--brand-soft);border-radius:6px;font-size:var(--fs-1)}
+.empty-note{padding:22px;text-align:center;color:var(--ink-3);font-size:var(--fs-1);
+  background:var(--surface);border:1px dashed var(--line);border-radius:var(--radius)}
+
 dialog{margin:auto;background:var(--surface);color:var(--ink);border:1px solid var(--line);
   border-radius:14px;padding:0;width:min(480px,92vw);z-index:var(--z-dialog)}
 dialog::backdrop{background:oklch(0.2 0.02 180/.4)}
@@ -229,13 +271,13 @@ dialog .dlg-f{padding:14px 20px;border-top:1px solid var(--line);display:flex;ga
   <section class="view" id="view-mine">
     <div class="kpis" id="mineKpis"></div>
     <div class="sec-h"><h2 data-i18n="vMine">طلباتي</h2><span class="hint" id="mineHint"></span></div>
-    <div class="tbl-wrap"><table class="data" id="mineTbl"></table></div>
+    <div id="mineTbl"></div>
     <div id="certBox" style="margin-top:20px"></div>
   </section>
 
   <section class="view" id="view-approvals">
     <div class="sec-h"><h2 data-i18n="vApprovals">الاعتمادات</h2><span class="hint" data-i18n="apprHint">المعاملات التي تنتظر قرارك بصفتك الحالية</span></div>
-    <div class="tbl-wrap"><table class="data" id="apprTbl"></table></div>
+    <div id="apprTbl"></div>
   </section>
 
   <section class="view" id="view-gov">
@@ -295,7 +337,7 @@ const AR={appTitle:"مُنجِز",appSub:"بوابة الخدمات الذاتي
  skillsReg:"سجل المهارات (حيّ داخل n8n)",skillsHint:"كل مهارة معتمدة بإصدار — يقترح الوكيل تحسينًا، ويعتمده مالك الإجراء، فيُكتب في المهارة ويرتفع الإصدار",
  auditTitle:"سجل التدقيق",auditHint:"كل استدعاء خدمة يمر عبر بوابة الحوكمة ويُسجَّل — بما فيه المرفوض",
  chaseOk:"انطلق حارس الإنجاز",resetOk:"أُعيدت التهيئة",cert:"شهادة",instant:"فوري",
- internalTag:"داخلية",
+ downloadPdf:"تنزيل الشهادة (PDF)",reportTitle:"تقرير الوكيل للمعتمِد",otherOpt:"أخرى…",notePh:"ملاحظة القرار (اختياري)",age:"منذ",patchesTitle:"مقترحات تحسين المهارات",patchApprove:"اعتماد التحسين",patchReject:"رفض",patchPending:"بانتظار الاعتماد",patchDone:"معتمد",patchRejected:"مرفوض",memTitle:"الذاكرة المؤسسية",memUsage:"استخدام الذاكرة",noReport:"لا تقرير مرفق — التفاصيل أدناه",certFooter:"وثيقة تجريبية — بيانات وهمية لأغراض العرض",patchOk:"سُجّل قرار التحسين ✓", internalTag:"داخلية",
  emptyBody:(w)=>`تعذّر إكمال الطلب: لم يُرجِع مسار العمل (${w}) أي رد. الغالب أن بيانات اعتماد Gemini غير مضافة في n8n — راجع Executions في n8n.`,
  badBody:(w)=>`رد غير مفهوم من مسار العمل (${w}).`,
  confirmMsg:"أؤكد الإرسال",cancelMsg:"إلغاء الطلب",newTitle:"محادثة جديدة",
@@ -323,7 +365,7 @@ const EN={appTitle:"Munjiz",appSub:"Skill-governed self-service portal — demo 
  skillsReg:"Skill registry (live in n8n)",skillsHint:"Every skill is versioned and approved — the agent proposes, the owner approves, the rule is written in and the version bumps",
  auditTitle:"Audit log",auditHint:"Every service call passes the governance gateway and is logged — including denials",
  chaseOk:"SLA chaser fired",resetOk:"Demo re-armed",cert:"Certificate",instant:"instant",
- internalTag:"internal",
+ downloadPdf:"Download certificate (PDF)",reportTitle:"Agent report for the approver",otherOpt:"Other…",notePh:"Decision note (optional)",age:"since",patchesTitle:"Skill improvement proposals",patchApprove:"Approve improvement",patchReject:"Reject",patchPending:"awaiting approval",patchDone:"approved",patchRejected:"rejected",memTitle:"Institutional memory",memUsage:"Memory usage",noReport:"No report attached — details below",certFooter:"Demo document — fictional data for presentation",patchOk:"Improvement decision recorded ✓", internalTag:"internal",
  emptyBody:(w)=>`Request could not complete: the workflow (${w}) returned no body. Usually the Gemini credential is missing in n8n — check Executions there.`,
  badBody:(w)=>`Unreadable response from the workflow (${w}).`,
  confirmMsg:"I confirm, submit it",cancelMsg:"Cancel the request",newTitle:"New conversation",
@@ -372,7 +414,7 @@ function demoData(){
   transactions:[
    {txn_id:"TXN-SEED-CHASE",ts:d(-1),employee_id:"EMP-1004",employee_name:"راشد الكتبي (تجريبي)",
     skill_id:"expense-claim",type_ar:"مطالبة نفقات / بدلات",
-    payload_json:JSON.stringify({category:"training",amount_aed:850,description:"رسوم ورشة تدريبية معتمدة",receipt_ref:"RCPT-7741"}),
+    payload_json:JSON.stringify({category:"training",amount_aed:850,description:"رسوم ورشة تدريبية معتمدة",receipt_ref:"RCPT-7741",approver_report:"الموظف: راشد الكتبي (تجريبي) — EMP-1004 — الاتصال المؤسسي — G8 | الطلب: استرداد 850 درهمًا رسوم ورشة تدريبية | التحقق: الفئة training سقفها 2000 درهم والمصروف السابق 0؛ الإيصال RCPT-7741 مرفق؛ التاريخ ضمن المهلة | التوصية: اعتماد — مستوفٍ لجميع الشروط"}),
     status:"awaiting_manager",approval_chain:"manager;finance",chain_pos:0,current_approver:"manager",
     decision_note:"",output_ref:"",sla_hours:24,updated_at:d(-1)},
    {txn_id:"TXN-SEED-CERT",ts:d(-9),employee_id:"EMP-1006",employee_name:"خالد الهاملي (تجريبي)",
@@ -401,7 +443,7 @@ function demoChat(msg){
  if(S.demoFlow==="info"){return {reply:T.demoNote+"\nهذه الخدمة تعمل كاملة عند الربط بـ n8n — في وضع العرض المحلي جرّب «طلب إجازة» أو «شهادة راتب».",state:"info",skill_id:"",session_id:S.session};}
  S.demoStep++;
  if(S.demoFlow==="cert"){
-  if(S.demoStep===1)return {reply:`${T.demoNote}\nأهلًا ${first}! حمّلتُ مهارة «شهادة راتب» (v1.1.0). إلى أي جهة تُوجَّه الشهادة؟ وهل تريدها بالراتب أم شهادة عمل فقط؟`,state:"collecting",missing_fields:["certificate_type","addressed_to"],skill_id:"salary-certificate",session_id:S.session};
+  if(S.demoStep===1)return {reply:`${T.demoNote}\nأهلًا ${first}! حمّلتُ مهارة «شهادة راتب» (v1.1.0). إلى أي جهة تُوجَّه الشهادة؟`,state:"collecting",missing_fields:["certificate_type","addressed_to"],options:["بنك أبوظبي الأول (تجريبي)","بنك الإمارات دبي الوطني (تجريبي)","سفارة / قنصلية","لمن يهمه الأمر","أخرى…"],skill_id:"salary-certificate",session_id:S.session};
   if(S.demoStep===2)return {reply:"هذه معاينة الشهادة — أكّد للإصدار الفوري (لا تحتاج اعتمادًا).",state:"preview",
    preview:{fields:{certificate_type:"salary",addressed_to:"البنك (تجريبي)",language:"ar"},approval_chain:[],warnings:[]},
    skill_id:"salary-certificate",session_id:S.session};
@@ -418,7 +460,7 @@ function demoChat(msg){
  if(S.demoStep>3){return {reply:T.demoNote+"\nاكتمل سيناريو العرض — ابدأ محادثة جديدة بزر ＋.",state:"info",skill_id:"",session_id:S.session};}
  const bal=(S.data.balances||[]).find(b=>b.employee_id===S.who);
  const rem=bal?bal.annual_total-bal.annual_used:8;
- if(S.demoStep===1) return {reply:`${T.demoNote}\nأهلًا ${first}! حمّلتُ مهارة «طلب إجازة» (v1.2.0). رصيدك السنوي المتبقي ${rem} أيام. ما نوع الإجازة وتاريخا البداية والنهاية؟`,state:"collecting",missing_fields:["leave_type","start_date","end_date"],skill_id:"leave-request",session_id:S.session};
+ if(S.demoStep===1) return {reply:`${T.demoNote}\nأهلًا ${first}! حمّلتُ مهارة «طلب إجازة» (v1.2.0). رصيدك السنوي المتبقي ${rem} أيام. ما نوع الإجازة؟`,state:"collecting",missing_fields:["leave_type","start_date","end_date"],options:["سنوية","مرضية","طارئة"],skill_id:"leave-request",session_id:S.session};
  if(S.demoStep===2){const s=new Date(Date.now()+7*864e5).toISOString().slice(0,10),e=new Date(Date.now()+11*864e5).toISOString().slice(0,10);
   return {reply:"تحقق: زميلك سالم النقبي في إجازة معتمدة تتقاطع مع المدة نفسها — أُدرج تحذير. هذه بطاقة المعاينة، أكّد للإرسال.",state:"preview",
    preview:{fields:{leave_type:"annual",start_date:s,end_date:e,reason:"إجازة عائلية"},working_days:3,approval_chain:["manager"],
@@ -493,13 +535,20 @@ function renderChat(){
   if(m.pending)return `<div class="msg agent pending"><span class="typing"><i></i><i></i><i></i></span></div>`;
   let html=`<div class="msg agent">${esc(m.text)}</div>`;
   if(m.preview)html+=previewCard(m.preview,i);
-  if(m.missing&&m.missing.length)html+=`<div class="chips-row">${m.missing.map(f=>`<span class="tag">${esc(f)}</span>`).join("")}</div>`;
+  /* tap-to-answer choices: only live on the latest agent message */
+  if(i===S.chat.length-1&&Array.isArray(m.options)&&m.options.length)
+   html+=`<div class="opt-chips">${m.options.map(o=>`<button class="opt-chip" data-opt="${esc(o)}">${esc(o)}</button>`).join("")}</div>`;
   if(m.state)html+=`<div class="state-chip">${esc(m.state)}${m.skill?" · "+esc(m.skill):""}</div>`;
   return html;}).join("");
  log.scrollTop=log.scrollHeight;
+ $$(".opt-chip",log).forEach(b=>b.addEventListener("click",()=>{
+  const v=b.dataset.opt;
+  if(v===T.otherOpt||/أخرى|Other/.test(v)){$("#chatInput").focus();return;}
+  sendChat(v);}));
  $$(".preview-card .btn.primary",log).forEach(b=>b.addEventListener("click",()=>confirmPreview()));
  $$(".preview-card .btn.ghost",log).forEach(b=>b.addEventListener("click",()=>sendChat(T.cancelMsg)));
 }
+
 function previewCard(p,idx){
  const rows=Object.entries(p.fields||{}).map(([k,v])=>`<tr><td>${esc(k)}</td><td>${esc(v)}</td></tr>`).join("");
  const wd=p.working_days!=null?`<tr><td>${T.days}</td><td class="num">${esc(p.working_days)}</td></tr>`:"";
@@ -525,7 +574,7 @@ async function sendChat(text){
   S.chat.pop();
   if(r.skill_id)S.activeSkill=r.skill_id;
   pushMsg({role:"agent",text:r.reply||"—",state:r.state,skill:r.skill_id,
-   preview:r.preview||null,missing:r.missing_fields||[]});
+   preview:r.preview||null,missing:r.missing_fields||[],options:r.options||[]});
   if(r.state==="submitted"){toast(T.submitted(r.txn_id||""));S.activeSkill="";fetchState(true);}
  }catch(e){S.chat.pop();pushMsg({role:"agent",text:"⚠ "+e});}
  S.busy=false;
@@ -538,6 +587,62 @@ function welcome(){
 }
 
 /* ---------------- other views ---------------- */
+
+function openCertificate(t){
+ let pl={};try{pl=JSON.parse(t.payload_json||"{}");}catch(e){}
+ const emp=(S.data?.employees||[]).find(e=>e.employee_id===t.employee_id)||{};
+ const body=pl.certificate_text||("تشهد الهيئة الاتحادية للخدمات المشتركة (تجريبي) بأن "+(t.employee_name||"الموظف")
+   +" يعمل لدينا وما زال على رأس عمله حتى تاريخه. أُصدرت هذه الشهادة بناءً على طلبه دون أدنى مسؤولية على الهيئة تجاه الغير.");
+ const to=pl.addressed_to||"لمن يهمه الأمر";
+ const date=String(t.updated_at||t.ts||"").slice(0,10);
+ const w=window.open("","_blank","width=800,height=1000");
+ w.document.write(`<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8">
+<title>${esc(t.output_ref||"شهادة")}</title><style>
+@page{size:A4;margin:0}*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"IBM Plex Sans Arabic","Segoe UI",serif;background:#eee;display:flex;justify-content:center;padding:20px}
+.page{width:210mm;min-height:280mm;background:#fff;padding:24mm 22mm;position:relative;direction:rtl;color:#15221e}
+@media print{body{background:#fff;padding:0}.page{box-shadow:none}}
+header{display:flex;justify-content:space-between;align-items:center;border-bottom:3px double #14532d;padding-bottom:14px}
+.ent .ar{font-size:22px;font-weight:700;color:#14532d}.ent .en{font-size:12px;color:#666;letter-spacing:.05em}
+.hcrest{width:74px;height:74px}
+.meta{display:flex;justify-content:space-between;font-size:15px;margin-top:16px;color:#333}
+h1{text-align:center;font-size:24px;margin:26px 0 6px;color:#14532d}
+.to{text-align:center;font-size:16px;color:#555;margin-bottom:22px}
+.body{font-size:18px;line-height:2.3;text-align:justify}
+.sig{margin-top:44px;display:flex;justify-content:space-between;align-items:flex-end}
+.sig .side{font-size:15px;text-align:center}.sig .line{border-top:1.5px solid #333;margin-top:36px;padding-top:6px;width:200px}
+.seal{width:150px;height:150px;transform:rotate(-8deg);opacity:.92}
+.wm{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
+.wm span{font-size:52px;color:rgba(20,83,45,.07);transform:rotate(-30deg);font-weight:700;white-space:nowrap}
+footer{position:absolute;bottom:12mm;left:22mm;right:22mm;border-top:1px solid #bbb;padding-top:8px;
+  font-size:11px;color:#888;text-align:center}
+</style></head><body><div class="page">
+<div class="wm"><span>نسخة تجريبية — DEMO</span></div>
+<header>
+<svg class="hcrest" viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="none" stroke="#14532d" stroke-width="3.5"/><path d="M50 24 L57 41 L76 43 L62 55 L66 73 L50 64 L34 73 L38 55 L24 43 L43 41 Z" fill="#b8860b"/></svg>
+<div class="ent"><div class="ar">الهيئة الاتحادية للخدمات المشتركة (تجريبي)</div><div class="en">FEDERAL SHARED SERVICES AUTHORITY — DEMO</div></div>
+<svg class="hcrest" viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="none" stroke="#14532d" stroke-width="3.5"/><path d="M50 24 L57 41 L76 43 L62 55 L66 73 L50 64 L34 73 L38 55 L24 43 L43 41 Z" fill="#b8860b"/></svg>
+</header>
+<div class="meta"><div>الرقم: ${esc(t.output_ref||"—")}</div><div>التاريخ: ${esc(date)}</div></div>
+<h1>${pl.certificate_type==="employment"?"شهادة عمل":"شهادة راتب"}</h1>
+<div class="to">إلى: ${esc(to)}</div>
+<div class="body">${esc(body)}</div>
+<div class="sig">
+<div class="side"><div class="line">مدير إدارة الموارد البشرية</div></div>
+<svg class="seal" viewBox="0 0 200 200">
+<circle cx="100" cy="100" r="92" fill="none" stroke="#14532d" stroke-width="4"/>
+<circle cx="100" cy="100" r="70" fill="none" stroke="#14532d" stroke-width="1.5"/>
+<path id="sp" d="M 100,100 m -81,0 a 81,81 0 1,1 162,0 a 81,81 0 1,1 -162,0" fill="none"/>
+<text font-size="13.5" fill="#14532d" font-weight="bold"><textPath href="#sp" startOffset="2%">الهيئة الاتحادية للخدمات المشتركة ★ FEDERAL SHARED SERVICES AUTHORITY ★ DEMO ★</textPath></text>
+<path d="M100 58 L112 88 L144 91 L120 112 L127 143 L100 127 L73 143 L80 112 L56 91 L88 88 Z" fill="#14532d" opacity=".85"/>
+<text x="100" y="170" text-anchor="middle" font-size="11" fill="#14532d">${esc(t.output_ref||"")}</text>
+</svg>
+</div>
+<footer>${esc(T.certFooter)} — ${esc(t.txn_id||"")}</footer>
+</div><script>setTimeout(()=>window.print(),400);<\/script></body></html>`);
+ w.document.close();
+}
+
 function stLabel(st){
  if(st==="executed")return `<span class="status executed">${T.stMap.executed}</span>`;
  if(st==="rejected")return `<span class="status rejected">${T.stMap.rejected}</span>`;
@@ -560,19 +665,26 @@ function renderMine(){
   <div class="kpi"><b class="num">${mine.filter(t=>t.status==="executed").length}</b><span>${T.kDone}</span></div>
   <div class="kpi gold"><b class="num">${mine.filter(t=>t.status==="executed").length*25}</b><span>${T.kSaved}</span></div>`;
  $("#mineHint").textContent=T.mineHint;
- const tbl=$("#mineTbl");
- if(!mine.length){tbl.innerHTML=`<tr><td class="empty-block">${T.noTxns}</td></tr>`;$("#certBox").innerHTML="";return;}
- tbl.innerHTML=`<thead><tr>${T.thTxn.map(h=>`<th>${h}</th>`).join("")}</tr></thead><tbody>`+
-  mine.map(t=>`<tr><td class="num">${esc(t.txn_id)}${t.output_ref?` <span class="tag svc">${esc(t.output_ref)}</span>`:""}</td>
-   <td>${esc(t.type_ar)}</td><td class="num">${esc(String(t.ts).slice(0,10))}</td>
-   <td>${stLabel(t.status)}</td><td>${chainTimeline(t)}</td></tr>`).join("")+"</tbody>";
- const cert=mine.find(t=>t.skill_id==="salary-certificate"&&t.status==="executed");
- let certHtml="";
- if(cert){try{const pl=JSON.parse(cert.payload_json||"{}");
-  if(pl.certificate_text)certHtml=`<div class="cert"><span class="stamp">${esc(cert.output_ref)}</span>
-   <h3 style="margin-bottom:10px">${T.cert}</h3>${esc(pl.certificate_text)}</div>`;}catch(e){}}
- $("#certBox").innerHTML=certHtml;
+ const box=$("#mineTbl");
+ if(!mine.length){box.innerHTML=`<div class="empty-note">${T.noTxns}</div>`;$("#certBox").innerHTML="";return;}
+ box.innerHTML=`<div class="req-grid">`+mine.map(t=>{
+  let pl={};try{pl=JSON.parse(t.payload_json||"{}");}catch(e){}
+  const fields=Object.entries(pl).filter(([kk])=>!kk.startsWith("_")&&!["certificate_text","approver_report"].includes(kk))
+   .slice(0,5).map(([kk,v])=>`<span>${esc(kk)}: ${esc(String(v).slice(0,40))}</span>`).join("");
+  const cert=(t.skill_id==="salary-certificate"&&t.status==="executed");
+  return `<div class="req-card">
+   <div class="head"><b>${esc(t.type_ar)}</b><span class="num">${esc(t.txn_id)}</span>
+    ${t.output_ref?`<span class="tag svc num">${esc(t.output_ref)}</span>`:""}</div>
+   <div class="meta"><span class="num">${esc(String(t.ts).slice(0,10))}</span>${stLabel(t.status)}</div>
+   ${chainTimeline(t)}
+   <div class="kv">${fields}</div>
+   ${cert?`<div class="act-row"><button class="cert-btn" data-cert="${esc(t.txn_id)}">🏛 ${T.downloadPdf}</button></div>`:""}
+  </div>`;}).join("")+`</div>`;
+ $$("[data-cert]",box).forEach(b=>b.addEventListener("click",()=>{
+  const t=mine.find(x=>x.txn_id===b.dataset.cert); if(t)openCertificate(t);}));
+ $("#certBox").innerHTML="";
 }
+
 function renderApprovals(){
  const me=(S.data?.employees||[]).find(e=>e.employee_id===S.who)||{};
  const emps=S.data?.employees||[];
@@ -580,36 +692,82 @@ function renderApprovals(){
   if(!String(t.status).startsWith("awaiting_"))return false;
   const stage=t.current_approver;
   const owner=emps.find(e=>e.employee_id===t.employee_id)||{};
-  // manager stage: ONLY the employee's own manager; other stages: by role
   return stage==="manager"?owner.manager_id===S.who:me.role===stage;});
- const tbl=$("#apprTbl");
- if(!pend.length){tbl.innerHTML=`<tr><td class="empty-block">${T.noPending}</td></tr>`;return;}
- tbl.innerHTML=`<thead><tr>${T.thAppr.map(h=>`<th>${h}</th>`).join("")}</tr></thead><tbody>`+
-  pend.map(t=>{let pl={};try{pl=JSON.parse(t.payload_json||"{}");}catch(e){}
-   const age=Math.round((Date.now()-new Date(t.ts).getTime())/36e5);
-   const det=Object.entries(pl).filter(([k])=>!k.startsWith("_")&&k!=="certificate_text")
-    .slice(0,4).map(([k,v])=>`${esc(k)}: ${esc(v)}`).join(" · ");
-   return `<tr><td class="num">${esc(t.txn_id)}</td><td>${esc(t.type_ar)}</td>
-    <td>${esc(t.employee_name)}</td><td class="hint">${det}</td>
-    <td class="num">${age}h</td>
-    <td><div class="decide-btns">
-      <button class="btn primary" data-txn="${esc(t.txn_id)}" data-d="approve">${T.approve}</button>
-      <button class="btn ghost" data-txn="${esc(t.txn_id)}" data-d="reject">${T.reject}</button>
-    </div></td></tr>`;}).join("")+"</tbody>";
- $$("button[data-txn]",tbl).forEach(b=>b.addEventListener("click",async()=>{
-  try{const r=await post("/munjiz/decide",{txn_id:b.dataset.txn,approver_id:S.who,decision:b.dataset.d,note:""});
+ const box=$("#apprTbl");
+ if(!pend.length){box.innerHTML=`<div class="empty-note">${T.noPending}</div>`;return;}
+ box.innerHTML=pend.map(t=>{
+  let pl={};try{pl=JSON.parse(t.payload_json||"{}");}catch(e){}
+  const owner=emps.find(e=>e.employee_id===t.employee_id)||{};
+  const age=Math.round((Date.now()-new Date(t.ts).getTime())/36e5);
+  const report=pl.approver_report||"";
+  const segs=report?report.split("|").map(x=>{
+    const m=x.split(":");const h=m.shift();
+    return `<span class="seg"><b>${esc(h.trim())}:</b> ${esc(m.join(":").trim())}</span>`;}).join(""):"";
+  const details=Object.entries(pl).filter(([kk])=>!kk.startsWith("_")&&!["approver_report","certificate_text"].includes(kk))
+   .map(([kk,v])=>`<span>${esc(kk)}: ${esc(String(v).slice(0,50))}</span>`).join("");
+  return `<div class="req-card">
+   <div class="head"><b>${esc(t.type_ar)}</b><span class="num">${esc(t.txn_id)}</span>
+    <span class="tag">${T.age} <span class="num">${age}h</span></span>${stLabel(t.status)}</div>
+   <div class="meta"><span>👤 ${esc(t.employee_name)}</span>
+    <span>${esc(owner.department||"")}</span><span class="num">${esc(t.employee_id)}</span></div>
+   ${report?`<div class="report-box"><div class="rt">⚖️ ${T.reportTitle}</div>${segs}</div>`
+          :`<div class="hint">${T.noReport}</div>`}
+   <div class="kv">${details}</div>
+   <div class="act-row">
+    <input class="note-inp" data-note="${esc(t.txn_id)}" placeholder="${T.notePh}">
+    <button class="btn primary" data-txn="${esc(t.txn_id)}" data-d="approve">${T.approve}</button>
+    <button class="btn ghost" data-txn="${esc(t.txn_id)}" data-d="reject">${T.reject}</button>
+   </div></div>`;}).join("");
+ $$("button[data-txn]",box).forEach(b=>b.addEventListener("click",async()=>{
+  const note=($(`.note-inp[data-note="${b.dataset.txn}"]`,box)||{}).value||"";
+  try{const r=await post("/munjiz/decide",{txn_id:b.dataset.txn,approver_id:S.who,decision:b.dataset.d,note});
    if(r&&r.ok===false){toast(r.error||"رفض الخادم العملية","err");}else{toast(T.decided);}
    fetchState(true);}catch(e){toast(String(e),"err");}}));
 }
+
 function renderGov(){
  const grid=$("#skillGrid");
- grid.innerHTML=(S.data?.skills||[]).map(s=>`<div class="skill-card${s.internal?" internal":""}">
-  <h4>${esc(S.lang==="ar"?s.title_ar:s.title_en)} <span class="ver num">v${esc(s.version)}</span></h4>
-  <div class="row"><span class="tag">${esc(s.id)}</span><span class="tag">${esc(s.status)}</span>
-   ${s.internal?`<span class="tag svc">${T.internalTag}</span>`:""}
-   <span class="tag">SLA ${esc(s.sla_hours)}h</span></div>
-  <div class="row">${(s.allowed_services||[]).map(x=>`<span class="tag svc">${esc(x)}</span>`).join("")}</div>
-  <div class="row hint">${T.chain}: ${(s.approval_chain||[]).map(esc).join(" ← ")||T.instant}</div></div>`).join("");
+ const L=S.data?.learning||{};
+ const pct=Math.min(100,Math.round((L.memory_chars||0)/(L.memory_budget||2200)*100));
+ const mems=S.data?.memory||[];
+ const patches=S.data?.patches||[];
+ /* learning strip + pending proposals live above the registry: the evolving part first */
+ grid.innerHTML=`
+  <div class="sec" style="grid-column:1/-1">
+   <div class="learn-strip">
+    <div class="kpi"><b class="num">${L.memory_entries||0}</b><span>${T.memTitle}</span>
+     <div class="meter"><i style="width:${pct}%"></i></div>
+     <span class="num" style="font-size:.7rem">${L.memory_chars||0}/${L.memory_budget||2200} · ${T.memUsage}</span></div>
+    <div class="kpi"><b class="num">${L.pending_patches||0}</b><span>${T.patchPending}</span></div>
+    <div class="kpi"><b class="num">${L.approved_patches||0}</b><span>${T.patchDone}</span></div>
+   </div>
+   <h2 style="font-size:var(--fs-3);margin-bottom:8px">${T.patchesTitle}</h2>
+   ${patches.length?patches.map(x=>{
+    const pending=x.status==="pending";
+    return `<div class="patch-card ${pending?"pending":""}">
+     <div class="head" style="display:flex;gap:10px;align-items:baseline;flex-wrap:wrap">
+      <b>${esc(x.skill_id)}</b><span class="num" style="color:var(--ink-3);font-size:.75rem">${esc(x.patch_id)}</span>
+      <span class="status ${pending?"awaiting":x.status==="approved"?"executed":"rejected"}">
+       ${pending?T.patchPending:x.status==="approved"?T.patchDone:T.patchRejected}</span></div>
+     <div class="quote">${esc(x.proposed_text)}</div>
+     <div class="hint">${esc(x.rationale||"")}</div>
+     ${pending?`<div class="act-row">
+       <button class="btn primary" data-patch="${esc(x.patch_id)}" data-pd="approve">${T.patchApprove}</button>
+       <button class="btn ghost" data-patch="${esc(x.patch_id)}" data-pd="reject">${T.patchReject}</button></div>`
+      :`<div class="hint">${esc(x.reviewed_by||"")} ${esc(String(x.updated_at).slice(0,10))}</div>`}
+    </div>`;}).join(""):`<div class="empty-note">—</div>`}
+  </div>`
+  +(S.data?.skills||[]).map(sk=>`<div class="skill-card${sk.internal?" internal":""}">
+  <h4>${esc(S.lang==="ar"?sk.title_ar:sk.title_en)} <span class="ver num">v${esc(sk.version)}</span></h4>
+  <div class="row"><span class="tag">${esc(sk.id)}</span><span class="tag">${esc(sk.status)}</span>
+   ${sk.internal?`<span class="tag svc">${T.internalTag}</span>`:""}
+   <span class="tag">SLA ${esc(sk.sla_hours)}h</span></div>
+  <div class="row">${(sk.allowed_services||[]).map(x=>`<span class="tag svc">${esc(x)}</span>`).join("")}</div>
+  <div class="row hint">${T.chain}: ${(sk.approval_chain||[]).map(esc).join(" ← ")||T.instant}</div></div>`).join("");
+ $$("button[data-patch]",grid).forEach(b=>b.addEventListener("click",async()=>{
+  try{const r=await post("/munjiz/patch",{patch_id:b.dataset.patch,decision:b.dataset.pd,reviewer:S.who,note:""});
+   if(r&&r.ok===false){toast(r.error||"رفض الخادم","err");}else{toast(T.patchOk);}
+   fetchState(true);}catch(e){toast(String(e),"err");}}));
  const tbl=$("#auditTbl");
  tbl.innerHTML=`<thead><tr>${T.thAudit.map(h=>`<th>${h}</th>`).join("")}</tr></thead><tbody>`+
   (S.data?.audit||[]).map(a=>{const denied=String(a.result_summary||"").startsWith("DENIED:");
@@ -617,6 +775,7 @@ function renderGov(){
     <td>${esc(a.skill_id)}</td><td><span class="tag ${denied?"":"svc"}">${esc(a.service)}</span></td>
     <td class="${denied?"":"hint"}">${denied?`<span class="status denied">${esc(a.result_summary)}</span>`:esc(String(a.result_summary).slice(0,90))}</td></tr>`;}).join("")+"</tbody>";
 }
+
 function renderSide(){
  /* internal skills (e.g. the reflection charter) are governed and appear under
     Governance, but they are not services an employee can request. */

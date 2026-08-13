@@ -717,7 +717,12 @@ CHARTER = """أنت «مُنجِز» — وكيل معاملات ذكي في ب�
 - state: collecting (تجمع حقولًا) | preview (تعرض بطاقة المعاينة وتطلب التأكيد) | submitted (أُرسلت بعد التأكيد) | rejected (خالفت السياسة نهائيًا) | escalated (needs_attention) | info (رد معلوماتي).
 - transaction_preview: يُملأ عند state=preview وsubmitted بكامل الحقول المجموعة + working_days إن وُجدت مدد + approval_chain + warnings.
 - txn_id: يُملأ من نتيجة submit_transaction عند state=submitted.
-- missing_fields: أسماء الحقول الناقصة عند state=collecting."""
+- missing_fields: أسماء الحقول الناقصة عند state=collecting.
+- options: عند state=collecting قدّم دائمًا خيارات جاهزة للنقر (3–6) بدل السؤال المفتوح كلما كانت القيم معروفة أو قابلة للاقتراح: أنواع الإجازة، فئات النفقات، الأنظمة من الدليل، الجهات الشائعة للشهادات، مدد وتواريخ مقترحة محسوبة (مثل «من 2026-08-20 إلى 2026-08-24 (٥ أيام عمل)»). أضف «أخرى…» عندما تكون القائمة غير حصرية. اسأل عن حقل واحد أو حقلين كحد أقصى في كل رسالة.
+
+## تقرير المعتمِد (إلزامي عند الإرسال)
+قبل استدعاء submit_transaction أدرج في payload حقل approver_report: تقرير عربي موجز مبني على تحققك الفعلي من سجلات الموظف عبر الخدمات، بهذا الشكل:
+«الموظف: (الاسم — الرقم — الإدارة — الدرجة) | الطلب: (ملخص سطر واحد) | التحقق: (كل فحص أجريته ونتيجته: الرصيد/السقف/الأهلية/التعارضات…) | التوصية: (اعتماد/اعتماد مع ملاحظة/يحتاج تدقيقًا — ولماذا)». هذا التقرير هو ما يقرأه المعتمِد ليقرر، فاجعله دقيقًا ومحايدًا ولا تدرج فيه إلا ما تحققت منه فعلًا."""
 
 # NOTE: no JSON-Schema type unions ("type": ["x","null"]) anywhere in these
 # schemas - Gemini function-calling rejects them with a 400. Optional fields are
@@ -735,6 +740,8 @@ AGENT_OUT_SCHEMA = {
                                                "warnings": {"type": "array", "items": {"type": "string"}}}},
         "txn_id": {"type": "string"},
         "missing_fields": {"type": "array", "items": {"type": "string"}},
+        "options": {"type": "array", "items": {"type": "string"},
+                    "description": "خيارات جاهزة للنقر يعرضها التطبيق للموظف للسؤال الحالي"},
     },
     "required": ["reply_ar", "state"],
 }
@@ -826,6 +833,7 @@ CROSS_CHECK_JS = (
     "  reply_ar: j.reply_ar || '', state: j.state || 'info',\n"
     "  transaction_preview: p || null, txn_id: j.txn_id || null,\n"
     "  missing_fields: j.missing_fields || [],\n"
+    "  options: Array.isArray(j.options) ? j.options.slice(0, 8) : [],\n"
     "  skill_id: ctx.skill_id, session_id: ctx.session_id,\n"
     "  needs_recheck, recheck_notes: notes, _rechecked: prior,\n"
     "} }];\n"
@@ -944,7 +952,7 @@ def build_agent():
         "const prev = $('Deterministic Cross-Check').first().json;\n"
         "const fixed = $json.gemini_ok ? $json.gemini_json : {\n"
         "  reply_ar: prev.reply_ar, state: prev.state, transaction_preview: prev.transaction_preview,\n"
-        "  txn_id: prev.txn_id, missing_fields: prev.missing_fields };\n"
+        "  txn_id: prev.txn_id, missing_fields: prev.missing_fields, options: prev.options };\n"
         "return [{ json: { output: fixed, _rechecked: true } }];\n"
     ), (1900, -220)))
     wf.link(needs, rr, output=0)
@@ -954,7 +962,7 @@ def build_agent():
     wf.link(rr_merge, cross)
 
     resp = wf.add(respond("Respond Chat",
-        '={{ { "reply": $json.reply_ar, "state": $json.state, "preview": $json.transaction_preview, "txn_id": $json.txn_id, "missing_fields": $json.missing_fields, "skill_id": $json.skill_id, "session_id": $json.session_id } }}',
+        '={{ { "reply": $json.reply_ar, "state": $json.state, "preview": $json.transaction_preview, "txn_id": $json.txn_id, "missing_fields": $json.missing_fields, "options": $json.options, "skill_id": $json.skill_id, "session_id": $json.session_id } }}',
         (1460, 60)))
     wf.link(needs, resp, output=1)
 
