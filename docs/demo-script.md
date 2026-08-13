@@ -1,65 +1,66 @@
 # سيناريو العرض الحي (٨ دقائق) — Live Demo Script
 ## مُنجِز (Munjiz)
 
-**Stage:** projector on the portal (AR) · tab 2: n8n canvas + Executions · tab 3: GitHub repo (skills folder) · `POST /munjiz/reset` fired 30 min before · personas: أحمد (موظف)، مريم (مديرة).
+**Stage:** projector on the portal (AR) · tab 2: n8n canvas of `مُنجِز — Main` + Executions · personas ready in the switcher: أحمد (موظف)، نورة (مديرة راشد)، خالد (مالية) · `POST /munjiz/reset` fired 30 min before · quota hygiene: fresh Gemini key, no rehearsals on the demo key that day.
 
 ### [0:00–0:40] الافتتاحية
 
-> «كم إجراءً اعتياديًا في جهتكم؟ خمسون؟ مئة؟ أتمتة كلٍّ منها اليوم تعني بناء نظام لكل إجراء — فلا يُؤتمت إلا أكبرها. مُنجِز وكيل واحد يتقنها كلها، لأن كل إجراء عنده ملفُ مهارةٍ محوكم.»
+> «كم إجراءً اعتياديًا في جهتكم؟ خمسون؟ مئة؟ أتمتة كلٍّ منها اليوم تعني بناء نظام لكل إجراء — فلا يُؤتمت إلا أكبرها، وما يُبنى لا يتعلم من تشغيله شيئًا. مُنجِز وكيل واحد يتقنها كلها لأن كل إجراء عنده مهارةٌ محوكمة — ويتحسن كل أسبوع لأن له ذاكرة ومراجعًا.»
 
-Show the governance view: 4 skill cards, versions, allowlists — «هذه ليست وثائق؛ هذه هي الصلاحيات المنفَّذة.»
+Show **الحوكمة**: skill cards with versions, the learning strip (memory meter, proposal counts). «هذه ليست وثائق؛ هذه الصلاحيات المنفَّذة وعدّادات التعلّم.»
 
-### [0:40–2:30] المعاملة الأولى — إجازة أحمد
+### [0:40–2:30] المعاملة الأولى — إجازة أحمد، بخيارات لا أسئلة
 
-As أحمد, type: «أريد إجازة الأسبوع القادم». Narrate what judges see live:
-- the router picks **leave-request v1.2.0** and the agent introduces itself with the HR persona;
-- it fetched his balance itself (8 days left), asks one focused question;
-- give dates → it **warns about سالم's approved overlapping leave** (it read the team's registry — memory across runs);
-- the preview card: fields, working days (weekend skipped — invite judges to count), approval chain;
-- click تأكيد → submitted. Switch persona to مريم → الاعتمادات → approve → back as أحمد: balance dropped.
+As أحمد, type: «أريد إجازة». Narrate what judges see:
+- the router picks **leave-request** and the agent replies with **tap-to-answer chips**: سنوية / مرضية / طارئة — tap سنوية;
+- it offers **computed date ranges** («من … إلى … — ٥ أيام عمل») — tap one;
+- it already knows his remaining balance (it fetched it itself) and — memory beat — asks to confirm dates **بالتقويم الميلادي**: *«لم يخبره أحدٌ اليوم بذلك — الذاكرة المؤسسية تسجل أن أحمد يفضّل هذا».*
+- the preview card: fields, working days (weekend skipped — invite judges to count), approval chain → **تأكيد**.
 
-> «لم يفتح نموذجًا، لم يعرف قاعدة واحدة مسبقًا — والطلب وصل مديره سليمًا من أول مرة.»
+Switch persona to نورة? No — أحمد's manager is مريم: switch to **مريم** → **الاعتمادات** → the request card leads with **تقرير الوكيل للمعتمِد**: الموظف — الطلب — التحقق (الرصيد، التعارضات) — التوصية. Approve with a note. Back as أحمد: balance dropped.
 
-### [2:30–3:40] الشهادة الفورية + برهان الحوكمة
+> «الموظف لم يفتح نموذجًا، والمديرة لم تقرأ نموذجًا خامًا — قرأت تقرير تحققٍ جاهزًا وقررت في ثوانٍ.»
 
-As أحمد: «أحتاج شهادة راتب للبنك» → preview → confirm → **CERT number + certificate renders** (auto-execute, chain = فوري).
+### [2:30–3:40] الشهادة الفورية + PDF المختوم + برهان الحوكمة
+
+As أحمد: «أحتاج شهادة راتب» → chips for the addressee (بنوك تجريبية، سفارة، لمن يهمه الأمر، أخرى…) → preview → confirm → executed instantly with a CERT number. Open **طلباتي** → **تنزيل الشهادة (PDF)** → the sealed, watermarked A4 opens print-ready. *«شهادة رسمية بختم الجهة — والعلامة المائية "تجريبي" لأن بياناتنا كلها وهمية».*
+
 Then the governance money-shot — in the same certificate chat ask: «بالمناسبة كم رصيد إجازتي؟»
 
-> The gateway REFUSES: this skill's allowlist has no get_leave_balance. Open الحوكمة → the red DENIED row in the audit log.
-> «الوكيل نفسه لا يستطيع تجاوز مهارته. الحوكمة كود يُنفَّذ، لا سياسة تُنسى.»
+> The gateway REFUSES — this skill's allowlist has no get_leave_balance. Open **الحوكمة** → the red **DENIED** row. «الوكيل نفسه لا يستطيع تجاوز مهارته. ولاحظوا: الأخطاء العادية تظهر ERROR — الشارة الحمراء للرفض الحوكمي حصرًا.»
 
-### [3:40–5:00] الإضافة الحية — the killer beat
+### [3:40–5:10] التعلّم المحوكم — the killer beat
 
-> «أهم سؤال في الأتمتة: كم يكلف الإجراء التالي؟ عندنا: ملف واحد.»
+> «أهم سؤال في أي نظام ذكاء اصطناعي حكومي: هل يتعلم؟ ومن يملك قرار التعلّم؟»
 
-In the GitHub tab: copy `parking-permit.skill.md` into `skills/`, paste its block into `skills-index.json`, commit & push **on camera**. Back in the portal: «أريد تصريح موقف» → the agent handles the brand-new procedure — collects plate/month, previews, submits.
+1. Fire the reflection pass (`POST /munjiz/reflect` button or webhook). It reads the recent transactions **after the employees were served**, writes a declarative memory fact, and **proposes** a skill improvement — nothing changes yet.
+2. Open **الحوكمة**: the proposal card sits **pending** with the agent's rationale. «الوكيل يقترح فقط — لا يملك خدمة تكتب في المهارات أصلًا؛ البوابة تمنعه.»
+3. As the procedure's owner, tap **اعتماد التحسين** → the skill card's **version bumps on screen** (e.g. expense-claim 1.0.2 → 1.0.3). Open the skill: the approved rule is written into its body with the patch id, the approver, and the date.
 
-> «أضفنا إجراءً حكوميًا كاملًا في تسعين ثانية، ولم نلمس n8n إطلاقًا. هكذا تصل الأتمتة إلى كل الإجراءات لا كبيرها فقط.»
+> «اقترح النظام تحسين إجرائه من تشغيله الفعلي، واعتمده مالك الإجراء بنقرة، فارتفع الإصدار — تحسّن حقيقي، وقرار بشري بالكامل، وأثر مُدقَّق.»
 
-### [5:00–5:50] حارس الإنجاز
+### [5:10–6:00] حارس الإنجاز
 
-الإعدادات → «تشغيل حارس الإنجاز» («يعمل كل ٥ دقائق وحده — أطلقه الآن كي لا ننتظر»). The 30-hour-old claim of راشد triggers: the model chooses remind/escalate with a written justification → email + audit rows appear.
+Fire the sweep (فحص المواعيد button). The stale seeded claim triggers: the model **chooses** remind/escalate with a written justification → audit rows land. «لا معاملة تعلق في درج أحد — والجدولة تعمل وحدها؛ أطلقتها يدويًا كي لا ننتظر.»
 
-> «لا معاملة تعلق في درج أحد. الوكيل يطارد الاعتمادات بنفسه.»
+### [6:00–7:15] فحص اللجنة — داخل n8n
 
-### [5:50–7:00] فحص اللجنة — داخل n8n
+Open the leave execution in n8n: the think plan, the sequence of call_service choices, the deterministic working-day cross-check, the composed system prompt showing the skill body + the **learned layer** + memory. Show the credentials manager: one key, nowhere else. Show the Skills data table: `created_by: human`, versions.
 
-Open the leave execution: the think-tool plan, the sequence of call_service choices (the model decided which services and when), the deterministic working-day cross-check node, the dynamic system prompt assembled from GitHub (show the fetched SKILL.md content in the execution data), credentials manager (key lives only there).
+> «المهارة من جدول محوكم، القرار من النموذج، البوابة تسجل كل شيء — ولا مفتاح خارج مدير بيانات الاعتماد.»
 
-> «كتاب المهارة يأتي من git بمراجعة وإصدار؛ القرار يأتي من النموذج؛ والبوابة تسجل كل شيء.»
+### [7:15–8:00] الخاتمة
 
-### [7:00–8:00] الخاتمة
+> «إجراء اعتيادي: من نموذج يُرفض بعد أيام إلى محادثة بخيارات جاهزة. المعتمِد: من نموذج خام إلى تقرير تحققٍ مُعدّ. النظام: من أتمتةٍ تتقادم إلى منظومة تقترح تحسين نفسها ويعتمدها الإنسان. مُنجِز ليس روبوت محادثة — إنه موظف خدمات يتقن كل إجراء، ويتعلم تحت الحوكمة.»
 
-> «إجراء اعتيادي: من نموذج يُرفض بعد أيام إلى محادثة دقيقتين لا تقبل المخالفة أصلًا. كلفة أتمتة الإجراء الجديد: ملف markdown واحد. وكل استدعاء بيانات — حتى المرفوض — مسجّل بمسوّغه. مُنجِز ليس روبوت محادثة؛ إنه موظف خدمات يتقن كل إجراء لأن كل إجراء كتب له كتابه.»
-
-Invite a judge: pick any persona and try a request — or ask the certificate agent for something outside its skill and watch governance say no.
+Invite a judge: pick any persona, try a request, or ask the certificate agent for something outside its skill and watch governance say no.
 
 ## Contingencies
 
 | Risk | Response |
 |---|---|
-| GitHub raw cache lag on the live-add (~1 min) | Push the skill BEFORE walking on stage as backup; if the live push lags, narrate the governance story over the portal's skill registry until it lands. |
-| Gemini 429 | Retries with backoff — narrate as self-correction. Fresh key for demo day. |
-| Router mismatch on an odd phrasing | Rephrase naturally («أريد إجازة سنوية») — or click the service card in the sidebar (it pre-fills the request). |
-| Network death | n8n + portal are local; hotspot backup; a cached successful execution open in tab 4. |
-| Overrun | The chaser beat is skippable (mention it over the audit view); rehearse to 7:30. |
+| Gemini free-tier 429 | The binding constraint. **Enable billing on the AI Studio project before demo day** (stays free at this volume) or bring a fresh key; never rehearse on the demo key the same day. Retries with backoff are narratable self-correction. |
+| Router mismatch on odd phrasing | Tap the service card in the sidebar (pre-fills the request), or rephrase naturally. |
+| A beat stalls | The reflection and sweep beats are independently skippable; the approval + certificate + denial trio is the core. Rehearse to 7:30. |
+| Network death | Everything is localhost except Gemini itself — hotspot fallback; a cached successful execution open in tab 3. |
+| Projector font too small | The portal is legible at 125% browser zoom without breaking layout. |

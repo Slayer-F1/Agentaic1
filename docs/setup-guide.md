@@ -11,7 +11,7 @@ Two paths: **Docker (recommended, ~5 min)** or manual. One credential total: a f
 
 - **Docker Desktop** running.
 - A free Gemini API key: <https://aistudio.google.com/apikey>. That is the **only** credential the system needs — there is no Google Sheet, no OAuth client and no Gmail account. The datastore is n8n's own **Data Tables**.
-- **This repo must stay public** — n8n fetches `registry/skills-index.json` and `skills/*.md` from raw.githubusercontent.com at runtime. If you fork it private, add a GitHub credential to the five "Fetch …" HTTP nodes (four in `01-main`, one in `02-service-gateway`).
+- No external services and no network dependency at runtime: the skill library, profiles, memory and all records live in **n8n data tables**, seeded by `07 Provision & Seed` (`POST /munjiz/reset`). The repo is the authored source, not a runtime dependency.
 
 ## A1. Start the stack
 
@@ -86,7 +86,10 @@ The n8n data (workflows + encrypted credentials) lives in the `munjiz_n8n_data` 
 3. As أحمد: «أحتاج شهادة راتب للبنك» → preview → confirm → the certificate renders with a CERT number (auto-execute, no approval chain).
 4. **Governance proof:** inside a certificate conversation ask «كم رصيد إجازتي؟» → the gateway refuses `get_leave_balance` for that skill → a red DENIED row appears under **الحوكمة**.
 5. **الإعدادات → تشغيل حارس الإنجاز** → the seeded 30-hour-old claim is picked up and the model's remind/escalate decision lands in the audit log.
-6. **Live-add rehearsal:** copy `docs/demo-extras/parking-permit.skill.md` into `skills/`, append its JSON block to `registry/skills-index.json`, commit and push → within a minute «أريد تصريح موقف» works, with no n8n change at all.
+6. **Learning loop:** fire `POST /munjiz/reflect` (or wait for its schedule) → a memory fact appears in the Governance learning strip and a skill-improvement proposal lands **pending** → approve it there → the skill's **version bumps** and the rule is written into its body.
+7. **Certificate PDF:** in طلباتي open the executed certificate → **تنزيل الشهادة (PDF)** → sealed, watermarked A4 opens print-ready.
+8. **Dynamic chips:** every collection question arrives with tap-to-answer options («سنوية/مرضية/طارئة», common addressees, computed date ranges).
+9. **Live-add:** adding a procedure = one row in the `Skills` table (or a skill .md + rebuild + `deploy.py`) — no workflow changes.
 
 # Troubleshooting
 

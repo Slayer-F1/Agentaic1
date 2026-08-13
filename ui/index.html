@@ -24,7 +24,7 @@
   --gold-soft:oklch(0.95 0.04 90);
   --red:oklch(0.5 0.19 27);
   --red-soft:oklch(0.94 0.035 27);
-  --amber:oklch(0.55 0.13 75);
+  --amber:oklch(0.5 0.13 72); /* darkened: small bold text on light surfaces needs >=4.5:1 */
   --amber-soft:oklch(0.95 0.05 85);
   --ok:oklch(0.46 0.11 160);
   --ok-soft:oklch(0.93 0.04 160);
@@ -48,7 +48,8 @@ h1,h2,h3{font-weight:600;line-height:1.35;text-wrap:balance}
 
 /* ---------- header ---------- */
 header.top{background:var(--brand);color:var(--brand-ink);padding:10px 20px;display:flex;
-  align-items:center;gap:18px;flex:none;z-index:var(--z-sticky)}
+  align-items:center;gap:14px 18px;flex:none;z-index:var(--z-sticky);flex-wrap:wrap}
+@media (max-width:900px){header.top{padding:8px 12px}.brand .t2{display:none}}
 .brand{display:flex;align-items:center;gap:12px}
 .brand svg{width:36px;height:36px}
 .brand .t1{font-size:var(--fs-4);font-weight:700}
@@ -106,7 +107,10 @@ main{flex:1;min-height:0;display:flex;justify-content:center;overflow:hidden}
 .preview-card .warn{color:var(--amber);padding:8px 16px;font-size:var(--fs-1)}
 .preview-card .chain{padding:8px 16px;font-size:var(--fs-0);color:var(--ink-2)}
 .preview-card .actions{display:flex;gap:10px;padding:12px 16px;border-top:1px solid var(--line-soft)}
-.btn{padding:9px 18px;border-radius:9px;font-weight:600;font-size:var(--fs-1)}
+.btn{padding:10px 18px;min-height:42px;border-radius:9px;font-weight:600;font-size:var(--fs-1);
+  display:inline-flex;align-items:center;justify-content:center;gap:7px}
+.btn:disabled,.opt-chip:disabled,.cert-btn:disabled{opacity:.55;cursor:progress}
+.ic{flex:none;vertical-align:-3px}
 .btn.primary{background:var(--brand);color:var(--brand-ink)}
 .btn.primary:hover{filter:brightness(1.12)}
 .btn.ghost{border:1px solid var(--line);color:var(--ink-2)}
@@ -168,8 +172,8 @@ table.data{width:100%;border-collapse:collapse;font-size:var(--fs-1)}
 /* ---------- overhaul: chips, cards, reports, certificate ---------- */
 .opt-chips{display:flex;gap:8px;flex-wrap:wrap;align-self:flex-end;max-width:80%}
 .opt-chip{border:1.5px solid var(--brand);color:var(--brand);background:var(--surface);
-  border-radius:99px;padding:6px 16px;font-size:var(--fs-1);font-weight:600;cursor:pointer;
-  transition:background .12s,color .12s}
+  border-radius:99px;padding:10px 18px;min-height:44px;font-size:var(--fs-1);font-weight:600;cursor:pointer;
+  display:inline-flex;align-items:center;transition:background .12s,color .12s}
 .opt-chip:hover{background:var(--brand);color:var(--brand-ink)}
 .sec{margin-bottom:28px}
 .sec>h2{font-size:var(--fs-4);margin-bottom:4px}
@@ -256,7 +260,7 @@ dialog .dlg-f{padding:14px 20px;border-top:1px solid var(--line);display:flex;ga
         <form class="composer" id="composer">
           <input id="chatInput" data-i18n-ph="chatPh" placeholder="اكتب طلبك… مثل: أريد إجازة الأسبوع القادم" autocomplete="off">
           <button class="btn primary" type="submit" data-i18n="send">إرسال</button>
-          <button class="btn ghost" type="button" id="btnNew" data-i18n="newSession" data-i18n-title="newTitle" title="محادثة جديدة">＋</button>
+          <button class="btn ghost" type="button" id="btnNew" data-i18n-title="newTitle" title="محادثة جديدة" aria-label="محادثة جديدة">＋</button>
         </form>
       </div>
       <aside class="chat-side">
@@ -304,12 +308,22 @@ dialog .dlg-f{padding:14px 20px;border-top:1px solid var(--line);display:flex;ga
   </div>
 </dialog>
 
-<div id="toasts"></div>
+<div id="toasts" aria-live="polite"></div>
 
 <!-- optional: served by the docker portal, absent when opened as a file -->
 <script src="config.js" onerror="void 0"></script>
 <script>
 "use strict";
+/* one icon family: 24px viewBox, stroke 1.75, inherits currentColor */
+const IC={
+ download:'<path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/>',
+ report:'<path d="M9 5h6M9 3h6a1 1 0 011 1v2a1 1 0 01-1 1H9a1 1 0 01-1-1V4a1 1 0 011-1z"/><path d="M9 14l2 2 4-5"/><path d="M17 5h2a2 2 0 012 2v13a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2"/>',
+ leaf:'<path d="M11 20A7 7 0 0 1 4 13c0-4 3-8 9-9 4.5-.75 7 1 7 1s.5 8-4 12a7.7 7.7 0 0 1-5 3z"/><path d="M4 21c3-3 5.5-5.5 9-9"/>',
+ pulse:'<path d="M3 12h4l2-6 4 12 2-6h6"/>',
+ spark:'<path d="M12 3l1.9 5.7L19.6 10l-5.7 1.9L12 17.6l-1.9-5.7L4.4 10l5.7-1.3z"/>',
+ shield:'<path d="M12 3l7 3v5c0 4.5-3 8.5-7 10-4-1.5-7-5.5-7-10V6z"/><path d="M9 12l2 2 4-4"/>',
+};
+function ic(n,sz){return `<svg class="ic" width="${sz||18}" height="${sz||18}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[n]||""}</svg>`;}
 const $=(s,e=document)=>e.querySelector(s), $$=(s,e=document)=>[...e.querySelectorAll(s)];
 /* Each poll runs a real n8n workflow, so keep it modest and pause when hidden. */
 const POLL_MS=10000;
@@ -544,6 +558,7 @@ function renderChat(){
  $$(".opt-chip",log).forEach(b=>b.addEventListener("click",()=>{
   const v=b.dataset.opt;
   if(v===T.otherOpt||/أخرى|Other/.test(v)){$("#chatInput").focus();return;}
+  $$(".opt-chip",log).forEach(x=>x.disabled=true); // answered: freeze the choice set
   sendChat(v);}));
  $$(".preview-card .btn.primary",log).forEach(b=>b.addEventListener("click",()=>confirmPreview()));
  $$(".preview-card .btn.ghost",log).forEach(b=>b.addEventListener("click",()=>sendChat(T.cancelMsg)));
@@ -678,7 +693,7 @@ function renderMine(){
    <div class="meta"><span class="num">${esc(String(t.ts).slice(0,10))}</span>${stLabel(t.status)}</div>
    ${chainTimeline(t)}
    <div class="kv">${fields}</div>
-   ${cert?`<div class="act-row"><button class="cert-btn" data-cert="${esc(t.txn_id)}">🏛 ${T.downloadPdf}</button></div>`:""}
+   ${cert?`<div class="act-row"><button class="cert-btn" data-cert="${esc(t.txn_id)}">${ic("download")} ${T.downloadPdf}</button></div>`:""}
   </div>`;}).join("")+`</div>`;
  $$("[data-cert]",box).forEach(b=>b.addEventListener("click",()=>{
   const t=mine.find(x=>x.txn_id===b.dataset.cert); if(t)openCertificate(t);}));
@@ -710,7 +725,7 @@ function renderApprovals(){
     <span class="tag">${T.age} <span class="num">${age}h</span></span>${stLabel(t.status)}</div>
    <div class="meta"><span>👤 ${esc(t.employee_name)}</span>
     <span>${esc(owner.department||"")}</span><span class="num">${esc(t.employee_id)}</span></div>
-   ${report?`<div class="report-box"><div class="rt">⚖️ ${T.reportTitle}</div>${segs}</div>`
+   ${report?`<div class="report-box"><div class="rt">${ic("report",15)} ${T.reportTitle}</div>${segs}</div>`
           :`<div class="hint">${T.noReport}</div>`}
    <div class="kv">${details}</div>
    <div class="act-row">
@@ -720,9 +735,10 @@ function renderApprovals(){
    </div></div>`;}).join("");
  $$("button[data-txn]",box).forEach(b=>b.addEventListener("click",async()=>{
   const note=($(`.note-inp[data-note="${b.dataset.txn}"]`,box)||{}).value||"";
+  b.disabled=true; // one decision per click: no double-submit while the request is in flight
   try{const r=await post("/munjiz/decide",{txn_id:b.dataset.txn,approver_id:S.who,decision:b.dataset.d,note});
    if(r&&r.ok===false){toast(r.error||"رفض الخادم العملية","err");}else{toast(T.decided);}
-   fetchState(true);}catch(e){toast(String(e),"err");}}));
+   fetchState(true);}catch(e){toast(String(e),"err");}finally{b.disabled=false;}}));
 }
 
 function renderGov(){
@@ -765,9 +781,10 @@ function renderGov(){
   <div class="row">${(sk.allowed_services||[]).map(x=>`<span class="tag svc">${esc(x)}</span>`).join("")}</div>
   <div class="row hint">${T.chain}: ${(sk.approval_chain||[]).map(esc).join(" ← ")||T.instant}</div></div>`).join("");
  $$("button[data-patch]",grid).forEach(b=>b.addEventListener("click",async()=>{
+  b.disabled=true;
   try{const r=await post("/munjiz/patch",{patch_id:b.dataset.patch,decision:b.dataset.pd,reviewer:S.who,note:""});
    if(r&&r.ok===false){toast(r.error||"رفض الخادم","err");}else{toast(T.patchOk);}
-   fetchState(true);}catch(e){toast(String(e),"err");}}));
+   fetchState(true);}catch(e){toast(String(e),"err");}finally{b.disabled=false;}}));
  const tbl=$("#auditTbl");
  tbl.innerHTML=`<thead><tr>${T.thAudit.map(h=>`<th>${h}</th>`).join("")}</tr></thead><tbody>`+
   (S.data?.audit||[]).map(a=>{const denied=String(a.result_summary||"").startsWith("DENIED:");
@@ -786,8 +803,7 @@ function renderSide(){
   $("#chatInput").value=S.lang==="ar"?("أريد: "+s.title_ar):("I need: "+s.title_en);
   $("#chatInput").focus();}));
  const b=(S.data?.balances||[]).find(x=>x.employee_id===S.who);
- $("#balBox").innerHTML=b?`<div class="num">🌴 ${b.annual_total-b.annual_used}/${b.annual_total} ${S.lang==="ar"?"سنوية":"annual"}
-  · 🤒 ${b.sick_total-b.sick_used}/${b.sick_total} ${S.lang==="ar"?"مرضية":"sick"}</div>`:"—";
+ $("#balBox").innerHTML=b?`<div class="num" style="display:flex;gap:12px;align-items:center"><span style="display:inline-flex;gap:5px;align-items:center;color:var(--ok)">${ic("leaf",15)} ${b.annual_total-b.annual_used}/${b.annual_total} ${S.lang==="ar"?"سنوية":"annual"}</span><span style="display:inline-flex;gap:5px;align-items:center;color:var(--amber)">${ic("pulse",15)} ${b.sick_total-b.sick_used}/${b.sick_total} ${S.lang==="ar"?"مرضية":"sick"}</span></div>`:"—";
 }
 function renderWho(){
  const sel=$("#who");
