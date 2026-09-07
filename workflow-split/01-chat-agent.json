@@ -2,7 +2,7 @@
   "name": "مُنجِز — 01 Chat Agent",
   "nodes": [
     {
-      "id": "adc0957c-b3a2-4cd0-982e-2163b8977de4",
+      "id": "58360370-f9d1-5a15-8e9d-39b6d79afcb3",
       "name": "Chat Webhook",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
@@ -16,10 +16,10 @@
         "responseMode": "responseNode",
         "options": {}
       },
-      "webhookId": "7069dcff-1f81-43c1-bdc1-e4d3d326441e"
+      "webhookId": "ee5fe670-5c28-5e9a-976f-8a853148e0b4"
     },
     {
-      "id": "b1441ac1-316a-43e2-83c9-6e3532b1a5a0",
+      "id": "182a9ae4-0550-5f66-a5b1-3eb54d0cf330",
       "name": "Load Skills",
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
@@ -52,7 +52,7 @@
       }
     },
     {
-      "id": "166bb812-2a3c-4f80-a50d-7626901947e4",
+      "id": "75bedc59-4791-5ab7-bd2e-fdca010700ef",
       "name": "Prepare Router",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -65,7 +65,7 @@
       }
     },
     {
-      "id": "6985a2f3-5ff7-448f-ae7d-6ba213b4bbcd",
+      "id": "4545534a-51bd-5916-b22c-446d018f16f0",
       "name": "Has Active Skill?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
@@ -98,7 +98,7 @@
       }
     },
     {
-      "id": "c259326d-4733-4629-ae3d-692fe4ea48d9",
+      "id": "affaf106-f887-5ba5-92a3-97f99c0375c2",
       "name": "Gemini: Route Intent",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -129,7 +129,7 @@
       "waitBetweenTries": 15000
     },
     {
-      "id": "e5a8c895-c69b-49a1-ab68-4299c5267c4b",
+      "id": "dfe573ea-b3ea-52aa-9221-a6c951a55cde",
       "name": "Parse Route",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -142,7 +142,7 @@
       }
     },
     {
-      "id": "1a9c94a4-d37f-4723-94e7-edacd3ba2e5d",
+      "id": "d1e3b308-755d-5698-ae98-b05c1d028426",
       "name": "Pick Skill",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -155,7 +155,7 @@
       }
     },
     {
-      "id": "04611677-79ee-4612-bde7-4f801145b377",
+      "id": "c82b7f48-4dc2-5a2d-bcb9-66f797a6ac3c",
       "name": "Matched?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
@@ -188,7 +188,7 @@
       }
     },
     {
-      "id": "3a04bb92-17bd-4f40-978b-80d4ce283829",
+      "id": "63d12ddd-988d-5780-85a4-9c755036134c",
       "name": "Respond: Services List",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.2,
@@ -216,7 +216,7 @@
       }
     },
     {
-      "id": "6d3e0ef9-1fea-4efe-b884-aa81c8584020",
+      "id": "46a337ee-8f6d-57a1-b037-5c9bb68cf003",
       "name": "Skill Body",
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
@@ -227,7 +227,7 @@
       "parameters": {}
     },
     {
-      "id": "5f3c802b-f412-41b7-ab2a-f9a3c55fac91",
+      "id": "206a25b6-2348-52b3-86cb-31e795b812d3",
       "name": "Load Profiles",
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
@@ -260,7 +260,7 @@
       }
     },
     {
-      "id": "7a7dc8b2-c7aa-4107-801a-ad02f800e4ae",
+      "id": "354ca4a1-8436-534e-8159-16dfd0193288",
       "name": "Read Employees Ctx",
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
@@ -293,7 +293,7 @@
       }
     },
     {
-      "id": "12cd014a-bf4a-4583-9f6b-6caa3b8736cd",
+      "id": "b73a7a3e-5026-5af1-a559-087517c0420b",
       "name": "Read Memory Ctx",
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
@@ -326,7 +326,7 @@
       }
     },
     {
-      "id": "f9428ec0-64dc-41ac-93e7-358e80398dbc",
+      "id": "03b8afec-7322-5336-9c1d-b54795f87d06",
       "name": "Read Patches Ctx",
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
@@ -359,7 +359,7 @@
       }
     },
     {
-      "id": "34f0b2cc-0512-4f97-a2f0-fc5be9cea08f",
+      "id": "53eb02a3-9486-5492-a6b9-1a1037ed0b2a",
       "name": "Compose System Prompt",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -372,7 +372,7 @@
       }
     },
     {
-      "id": "1f016408-ec36-45a9-bee5-8e3536f6d955",
+      "id": "b4810ad2-8c0c-5516-a944-a2b835396b05",
       "name": "Munjiz Agent",
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 2.2,
@@ -395,7 +395,7 @@
       "waitBetweenTries": 15000
     },
     {
-      "id": "7e3665e9-207b-45ec-980f-10e41df3be95",
+      "id": "fff418d0-37bd-5561-9397-c856b092b693",
       "name": "Gemini Chat Model",
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1,
@@ -417,7 +417,7 @@
       }
     },
     {
-      "id": "1e1e6f47-9208-4083-99db-d7f27e4de77c",
+      "id": "cd123fd7-a276-5555-bf0e-25edc5d9a8bd",
       "name": "Session Memory",
       "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
       "typeVersion": 1.3,
@@ -432,7 +432,7 @@
       }
     },
     {
-      "id": "4da4ef19-551f-455b-9f6c-58730f46a98b",
+      "id": "5cf89cbb-5e58-575e-b34c-b5b6e33e06d7",
       "name": "Structured Output",
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "typeVersion": 1.2,
@@ -446,7 +446,7 @@
       }
     },
     {
-      "id": "1ad7ee59-068e-4c6c-877e-f0280930973e",
+      "id": "ffb78837-8d48-5899-acb4-4782766bdf45",
       "name": "think",
       "type": "@n8n/n8n-nodes-langchain.toolThink",
       "typeVersion": 1,
@@ -457,7 +457,7 @@
       "parameters": {}
     },
     {
-      "id": "dd62f2ab-bbaf-46a1-a4ea-a818ed2096a0",
+      "id": "c4aeea95-ccee-55d1-8606-c09f33157563",
       "name": "call_service",
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
@@ -538,7 +538,7 @@
       }
     },
     {
-      "id": "378d84e6-e137-410b-a33b-31a52fa67240",
+      "id": "5b6fc475-65aa-5979-b393-dc349798e66d",
       "name": "Deterministic Cross-Check",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -551,7 +551,7 @@
       }
     },
     {
-      "id": "75e818a9-204c-4d64-ac77-ded545170420",
+      "id": "14bc205b-7693-5deb-9687-b16452013a36",
       "name": "Needs Re-reason?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
@@ -584,7 +584,7 @@
       }
     },
     {
-      "id": "21a5dbee-54e6-4ee6-8ff5-7833de74e836",
+      "id": "78710814-20b7-5702-b5b2-825a95005848",
       "name": "Build Re-reason",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -593,11 +593,11 @@
         -220
       ],
       "parameters": {
-        "jsCode": "const j = $json;\nconst prompt = ['راجع ردك: المدقق الحتمي وجد خطأً حسابيًا.', j.recheck_notes.join('؛ '),\n  'ردك السابق:', JSON.stringify({ reply_ar: j.reply_ar, state: j.state,\n    transaction_preview: j.transaction_preview, missing_fields: j.missing_fields }),\n  'صحّح الأرقام وأعد JSON بنفس المخطط تمامًا دون أي نص آخر.'].join('\\n');\nreturn [{ json: { ...j, geminiBody: { contents: [{ role: 'user', parts: [{ text: prompt }] }],\n  generationConfig: { temperature: 0, response_mime_type: 'application/json' } } } }];\n"
+        "jsCode": "const j = $json;\nconst prompt = ['راجع ردك: المدقق الحتمي وجد خطأً حسابيًا.', j.recheck_notes.join('؛ '),\n  'ردك السابق:', JSON.stringify({ reply_ar: j.reply_ar, state: j.state,\n    transaction_preview: j.transaction_preview, txn_id: j.txn_id,\n    missing_fields: j.missing_fields, options: j.options }),\n  'صحّح الأرقام وأعد JSON بنفس المخطط تمامًا دون أي نص آخر.'].join('\\n');\nreturn [{ json: { ...j, geminiBody: { contents: [{ role: 'user', parts: [{ text: prompt }] }],\n  generationConfig: { temperature: 0, response_mime_type: 'application/json' } } } }];\n"
       }
     },
     {
-      "id": "1e12f572-57a7-441d-b6b3-504678758d69",
+      "id": "890cb094-5b26-5efb-9d6e-e07c06d5c7c9",
       "name": "Gemini: Re-reason",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -628,7 +628,7 @@
       "waitBetweenTries": 15000
     },
     {
-      "id": "48b8aa20-e6ee-48ed-86df-7c26bbe9806d",
+      "id": "6931e611-d39f-56c9-865b-40619933fd0a",
       "name": "Parse Re-reason",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -641,7 +641,7 @@
       }
     },
     {
-      "id": "e1e533b4-c0c3-48c1-ba2e-1cf4df09573e",
+      "id": "a1a33a08-7ad8-5577-b516-7d1ae9a48896",
       "name": "Merge Re-reason",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -650,11 +650,11 @@
         -220
       ],
       "parameters": {
-        "jsCode": "const prev = $('Deterministic Cross-Check').first().json;\nconst fixed = $json.gemini_ok ? $json.gemini_json : {\n  reply_ar: prev.reply_ar, state: prev.state, transaction_preview: prev.transaction_preview,\n  txn_id: prev.txn_id, missing_fields: prev.missing_fields, options: prev.options };\nreturn [{ json: { output: fixed, _rechecked: true } }];\n"
+        "jsCode": "const prev = $('Deterministic Cross-Check').first().json;\n// Merge ONTO the previous answer rather than replacing it: the re-reason call\n// runs without a response schema, so any field the model drops (txn_id after a\n// submit, the collecting options) is inherited instead of silently lost.\nconst fixed = { ...prev, ...($json.gemini_ok ? $json.gemini_json : {}) };\nreturn [{ json: { output: fixed, _rechecked: true } }];\n"
       }
     },
     {
-      "id": "1f7afc7a-ce60-4bc8-8683-f09782f4afcd",
+      "id": "fcdea523-30e6-50fd-9ef4-2c79382250d7",
       "name": "Respond Chat",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.2,
@@ -682,8 +682,8 @@
       }
     },
     {
-      "id": "78c0949a-0fb9-4352-b069-363c2536a5cd",
-      "name": "Note 96a93793",
+      "id": "6577cc8b-8df9-56c7-83e3-c3f1ba1cf962",
+      "name": "Note da2ac2ec",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
@@ -691,7 +691,7 @@
         -380
       ],
       "parameters": {
-        "content": "## مُنجِز — Chat Agent (criteria ①②③④⑤⑥)\n④ webhook trigger from the portal. ⑤ router picks the SKILL at runtime; the whole system prompt is composed dynamically from GitHub (governed SKILL.md + PROFILE.md). ① one governed tool (call_service) — the model chooses WHICH service per step. ② think-tool plan first. ③ session memory + registry sheets. ⑥ deterministic working-day cross-check forces a re-reason pass on mismatch.",
+        "content": "## مُنجِز — Chat Agent (criteria ①②③④⑤⑥)\n④ webhook trigger from the portal. ⑤ router picks the SKILL at runtime; the whole system prompt is composed dynamically from the Skills and Profiles data tables (governed SKILL.md + PROFILE.md bodies) — no network call. ① one governed tool (call_service) — the model chooses WHICH service per step. ② think-tool plan first. ③ session memory + registry sheets. ⑥ deterministic working-day cross-check forces a re-reason pass on mismatch.",
         "width": 700,
         "height": 240,
         "color": 4

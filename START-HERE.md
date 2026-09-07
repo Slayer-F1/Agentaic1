@@ -12,14 +12,13 @@ Everything you need is in this folder. **5 steps, ~10 minutes, one credential.**
 ## The 5 steps
 
 ```bash
-cd docker
-docker compose up -d
+docker compose -f docker/docker-compose.yml up -d
 ```
 
 1. ⬆ starts **n8n** (http://localhost:5678) and the **portal** (http://localhost:8080). If a port is taken, copy `docker/.env.example` to `docker/.env` and change it — everything adapts.
 2. Open **http://localhost:5678** → create the n8n **owner account** (any email + password — it's local).
 3. n8n → **Credentials → Add** → search **"Google Gemini(PaLM) Api"** → paste your key → Save.
-4. From this folder:
+4. From this folder (every command here runs from the repo root — no `cd` needed):
    ```bash
    python tools/deploy.py
    ```
@@ -33,7 +32,7 @@ One optional click in n8n: open `مُنجِز — Main` → Settings → **Error
 | | |
 |---|---|
 | `workflow/` | The 4 n8n workflow files (imported for you by the script) |
-| `workflow-split/` | Same system as 8 granular workflows, for node-by-node inspection |
+| `workflow-split/` | Same system as 10 granular workflows, for node-by-node inspection |
 | `ui/index.html` | The portal (also runs standalone in demo mode — just double-click it) |
 | `docs/setup-guide.md` | Full guide + smoke test + troubleshooting |
 | `docs/demo-script.md` | The 8-minute live demo, beat by beat |

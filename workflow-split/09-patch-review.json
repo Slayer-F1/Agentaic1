@@ -2,7 +2,7 @@
   "name": "مُنجِز — 09 Patch Review",
   "nodes": [
     {
-      "id": "429521c7-4e17-4467-bcb7-45d4d8f44003",
+      "id": "05c5cc59-859b-526f-ad98-7105989056e4",
       "name": "POST Patch",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
@@ -16,10 +16,10 @@
         "responseMode": "responseNode",
         "options": {}
       },
-      "webhookId": "c2dae2d6-5021-4327-9c99-bdff6bf75088"
+      "webhookId": "40a13cf9-3674-5af2-8785-a7a194e4e3d7"
     },
     {
-      "id": "b79a987a-768e-436b-8a64-74308b542be6",
+      "id": "a20cff79-2f7c-5003-aa2d-58420e8bac0f",
       "name": "Read SkillPatches (review)",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -48,7 +48,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "23bf411d-c2c9-4a63-815f-6ea88d3a4af5",
+      "id": "9a572fe8-e1f6-5f8d-8c10-9afa0242a8dd",
       "name": "Apply Patch Decision",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -61,7 +61,7 @@
       }
     },
     {
-      "id": "4054847d-fac8-4cba-bb06-130aa17898d7",
+      "id": "bf760c2a-9c87-518a-92cc-b28e124dce52",
       "name": "Decision OK?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
@@ -94,7 +94,7 @@
       }
     },
     {
-      "id": "e656f9a1-6f66-4653-924c-e1d725d93848",
+      "id": "cd1c5a4f-37c1-5d06-bf74-0899371ce38a",
       "name": "Respond Patch Error",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.2,
@@ -122,7 +122,7 @@
       }
     },
     {
-      "id": "3bd9d63e-4bb0-45b0-ad99-f237657f536d",
+      "id": "ed99fdf5-adf2-5ba8-9d0b-d62f773598dc",
       "name": "Emit Patch Update",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -135,7 +135,7 @@
       }
     },
     {
-      "id": "a67607b8-f710-4b6d-b550-271634229020",
+      "id": "0ba3c5d8-b826-580b-945c-a00a5fcd74fe",
       "name": "Save Patch Decision",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -175,7 +175,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "4562cf09-3d5a-4e37-adcf-9ea1958f44b9",
+      "id": "10450118-9faf-5064-9e9e-cd4513e87358",
       "name": "Read Skills (apply)",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -204,7 +204,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "446b069e-23c4-4491-90f9-36c46d9f52a9",
+      "id": "4513a59a-8c24-5dd4-8a2e-f8467896bdf3",
       "name": "Apply To Skill",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -218,13 +218,46 @@
       "alwaysOutputData": true
     },
     {
-      "id": "8e72c24d-b74c-434b-a041-272e89f14e0e",
+      "id": "a58100ce-ccd3-5a0a-8c10-20156987da90",
+      "name": "Skill Rewritten?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1040,
+        -80
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.skill_id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "1b84a3be-9501-579d-bd4e-66f9c96cfb68",
       "name": "Save Improved Skill",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
       "position": [
-        1060,
-        -80
+        1260,
+        -180
       ],
       "parameters": {
         "operation": "upsert",
@@ -258,12 +291,12 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "614257e3-ca95-48c5-9507-81b3f88e99fa",
+      "id": "cc5d5bd7-81e6-5a4a-894e-19110d2d045a",
       "name": "Respond Patch",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.2,
       "position": [
-        1280,
+        1480,
         -80
       ],
       "parameters": {
@@ -286,8 +319,8 @@
       }
     },
     {
-      "id": "b02ffaeb-e045-4485-b5f2-2e06ce2118cb",
-      "name": "Note d535fdee",
+      "id": "1569975d-61a2-5b07-a4c4-ff029f11f6bd",
+      "name": "Note 0694a4d0",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
@@ -391,7 +424,25 @@
       "main": [
         [
           {
+            "node": "Skill Rewritten?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Skill Rewritten?": {
+      "main": [
+        [
+          {
             "node": "Save Improved Skill",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond Patch",
             "type": "main",
             "index": 0
           }

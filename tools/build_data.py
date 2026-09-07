@@ -3,15 +3,24 @@
 import csv
 import json
 import os
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SEEDS = os.path.join(ROOT, "data", "seeds")
-now = datetime.now()
+# Rows are authored relative to this FIXED anchor, not to the build clock. Two
+# reasons: a rebuild is byte-identical (no timestamp churn in the committed CSVs
+# and workflow JSON), and "07 Provision & Seed" rebases every ts/updated_at/
+# created_at onto the real clock when it seeds - so the demo data is as recent as
+# the moment it was provisioned, however long ago the builder last ran.
+ANCHOR = datetime(2026, 1, 5, 9, 0, 0, tzinfo=timezone.utc)
+now = ANCHOR
 
 
 def iso(dt):
-    return dt.isoformat(timespec="seconds")
+    """Always UTC with an explicit Z. Runtime rows are written with JS
+    toISOString(), and a bare local-looking stamp would be parsed on a different
+    clock than those by the very same age arithmetic."""
+    return dt.astimezone(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
 
 
 EMPLOYEES = [
@@ -83,13 +92,15 @@ SYSTEMS = [
 nxt = now + timedelta(days=7)
 TRANSACTIONS = [
     # سالم's approved leave next week — powers the overlap-warning beat for أحمد
-    {"txn_id": "TXN-SEED-OVERLAP", "ts": iso(now - timedelta(days=2)), "employee_id": "EMP-1003",
+    # Submitted and approved inside the last day, so the reflection pass (which only
+    # looks at the trailing 24h) always has at least one served request to learn from.
+    {"txn_id": "TXN-SEED-OVERLAP", "ts": iso(now - timedelta(hours=20)), "employee_id": "EMP-1003",
      "employee_name": "سالم النقبي (تجريبي)", "skill_id": "leave-request", "type_ar": "طلب إجازة",
      "payload_json": json.dumps({"leave_type": "annual", "start_date": nxt.date().isoformat(),
                                  "end_date": (nxt + timedelta(days=4)).date().isoformat(),
                                  "working_days": 3, "reason": "إجازة عائلية"}, ensure_ascii=False),
      "status": "executed", "approval_chain": "manager", "chain_pos": 1, "current_approver": "",
-     "decision_note": "اعتمدت", "output_ref": "", "sla_hours": 48, "updated_at": iso(now - timedelta(days=1))},
+     "decision_note": "اعتمدت", "output_ref": "", "sla_hours": 48, "updated_at": iso(now - timedelta(hours=6))},
     # راشد's stale claim — the SLA-chaser anchor (reset re-arms it too)
     {"txn_id": "TXN-SEED-CHASE", "ts": iso(now - timedelta(hours=30)), "employee_id": "EMP-1004",
      "employee_name": "راشد الكتبي (تجريبي)", "skill_id": "expense-claim", "type_ar": "مطالبة نفقات / بدلات",
@@ -113,11 +124,14 @@ TRANSACTIONS = [
      "updated_at": iso(now - timedelta(days=9))},
 ]
 
+# These two rows ARE the service calls that created TXN-SEED-OVERLAP, so they must
+# track its ts (now - 20h) — an audit trail that predates its own transaction is the
+# one thing the الحوكمة view must never show.
 AUDIT = [
-    {"ts": iso(now - timedelta(days=2)), "session_id": "S-seed-1", "employee_id": "EMP-1003",
+    {"ts": iso(now - timedelta(hours=20, seconds=30)), "session_id": "S-seed-1", "employee_id": "EMP-1003",
      "skill_id": "leave-request", "service": "get_leave_balance", "request_json": "{}",
      "result_summary": "OK {\"annual_remaining\":26,...}"},
-    {"ts": iso(now - timedelta(days=2)), "session_id": "S-seed-1", "employee_id": "EMP-1003",
+    {"ts": iso(now - timedelta(hours=20)), "session_id": "S-seed-1", "employee_id": "EMP-1003",
      "skill_id": "leave-request", "service": "submit_transaction",
      "request_json": "{\"leave_type\":\"annual\"}", "result_summary": "OK TXN-SEED-OVERLAP awaiting_manager"},
 ]
@@ -222,6 +236,37 @@ TABS = {
 }
 
 
+def _pin_xlsx(path):
+    """Rewrite an .xlsx so two builds of the same rows are byte-identical: every zip
+    entry stamped at ANCHOR, and dcterms:modified pinned too (openpyxl rewrites that
+    one with the wall clock during save(), ignoring wb.properties)."""
+    import re
+    import zipfile
+    stamp = ANCHOR.timetuple()[:6]
+    anchor_z = ANCHOR.strftime("%Y-%m-%dT%H:%M:%SZ").encode()
+    tmp = path + ".tmp"
+    try:
+        with zipfile.ZipFile(path) as src, zipfile.ZipFile(tmp, "w", zipfile.ZIP_DEFLATED) as out:
+            for item in src.infolist():
+                data = src.read(item.filename)
+                if item.filename == "docProps/core.xml":
+                    data = re.sub(rb"(<dcterms:modified[^>]*>)[^<]*(</dcterms:modified>)",
+                                  rb"\g<1>" + anchor_z + rb"\g<2>", data)
+                info = zipfile.ZipInfo(item.filename, date_time=stamp)
+                info.compress_type = item.compress_type
+                info.external_attr = item.external_attr
+                out.writestr(info, data)
+        # os.replace, not shutil.move: on Windows shutil.move falls back to a non-atomic
+        # copy when the destination exists, so a failure mid-copy would truncate the real
+        # file while the cleanup below removed the only intact copy.
+        os.replace(tmp, path)
+    finally:
+        # On success the replace consumed tmp; on any failure this clears the stray file
+        # (and both archives are already closed, so nothing holds a lock on Windows).
+        if os.path.exists(tmp):
+            os.remove(tmp)
+
+
 def main():
     os.makedirs(SEEDS, exist_ok=True)
     for tab, (headers, rows) in TABS.items():
@@ -240,7 +285,13 @@ def main():
             ws.append(headers)
             for r in rows:
                 ws.append([r.get(h, "") for h in headers])
-        wb.save(os.path.join(SEEDS, "munjiz-registry-seed.xlsx"))
+        # openpyxl stamps docProps and every zip entry with the wall clock, which would
+        # leave this the one build output that churns on every run. `created` is the only
+        # one that survives save(); _pin_xlsx handles dcterms:modified and the entry times.
+        wb.properties.created = ANCHOR.replace(tzinfo=None)
+        xlsx = os.path.join(SEEDS, "munjiz-registry-seed.xlsx")
+        wb.save(xlsx)
+        _pin_xlsx(xlsx)
         print("wrote seeds/munjiz-registry-seed.xlsx")
     except ImportError:
         print("openpyxl missing — CSVs only")

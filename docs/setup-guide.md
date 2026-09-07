@@ -16,7 +16,7 @@ Two paths: **Docker (recommended, ~5 min)** or manual. One credential total: a f
 ## A1. Start the stack
 
 ```bash
-cd docker && docker compose up -d
+docker compose -f docker/docker-compose.yml up -d
 ```
 
 | Service | URL | What it is |
@@ -40,9 +40,9 @@ n8n → **Credentials → Add** → search **"Google Gemini(PaLM) Api"** → pas
 python tools/deploy.py
 ```
 
-It binds your Gemini credential into every node that needs it, imports the workflows, activates them (sub-workflows included — n8n 2.x requires those active too), restarts n8n, **provisions the six data tables and loads the synthetic seed**, then verifies `GET /webhook/munjiz/state` returns real data.
+It binds your Gemini credential into every node that needs it, imports the workflows, activates them (sub-workflows included — n8n 2.x requires those active too), restarts n8n, **provisions the ten data tables and loads the synthetic seed**, then verifies `GET /webhook/munjiz/state` returns real data.
 
-Idempotent: workflows carry stable ids so re-running updates them in place, and the seed clears each table before loading it. Add `--split` for the 8-file granular set, or `--no-seed` to leave the data alone.
+Idempotent: workflows carry stable ids so re-running updates them in place, and the seed clears each table before loading it. Add `--split` for the 10-file granular set, or `--no-seed` to leave the data alone.
 
 The one thing it cannot set is **Settings → Error workflow → `مُنجِز — 06 Error Handler`** on `01-main` — do that once in the UI.
 
@@ -52,19 +52,21 @@ Open <http://localhost:8080>. The connection dot turns green ("متصل") on its
 
 ## A7. Everyday commands
 
+All of these run from the repo root, like every other command in this guide.
+
 ```bash
-docker compose logs -f n8n
+docker compose -f docker/docker-compose.yml logs -f n8n
 ```
 
 ```bash
-docker compose restart n8n
+docker compose -f docker/docker-compose.yml restart n8n
 ```
 
 ```bash
-docker compose down
+docker compose -f docker/docker-compose.yml down
 ```
 
-The n8n data (workflows + encrypted credentials) lives in the `munjiz_n8n_data` volume and survives `down`. To wipe everything: `docker compose down && docker volume rm munjiz_n8n_data`.
+The n8n data (workflows + encrypted credentials) lives in the `munjiz_n8n_data` volume and survives `down`. To wipe everything: `docker compose -f docker/docker-compose.yml down && docker volume rm munjiz_n8n_data`.
 
 ---
 
@@ -73,7 +75,7 @@ The n8n data (workflows + encrypted credentials) lives in the `munjiz_n8n_data` 
 1. `npx n8n` (Node 20+), then open <http://localhost:5678> and create the owner account.
 2. Add the Gemini credential (step **A3** above).
 3. There are **no placeholders to replace** — sub-workflow links resolve via stable workflow ids, and the datastore is internal to n8n.
-4. n8n → **Workflows → Import from File** → import the 4 files in `workflow/` in any order (or the 8 in `workflow-split/` — one set or the other, never both).
+4. n8n → **Workflows → Import from File** → import the 4 files in `workflow/` in any order (or the 10 in `workflow-split/` — one set or the other, never both).
 5. Attach credentials, set **Settings → Error workflow** on `01-main`, and activate **all four** (the two sub-workflows included — on n8n 2.x a called sub-workflow must be active or the caller fails).
 6. Open `ui/index.html`, then **الإعدادات / Settings** → base URL `http://localhost:5678/webhook` → Save.
 
@@ -99,7 +101,7 @@ The n8n data (workflows + encrypted credentials) lives in the `munjiz_n8n_data` 
 | `Workflow is not active and cannot be executed` | **n8n 2.x only:** a called sub-workflow must itself be active. `tools/deploy.py` activates every workflow it deploys (including `00 Data IO` and `02 Service Gateway`); if you imported by hand, activate those two as well. |
 | Webhook returns HTTP 200 with an empty body | The workflow ran but stopped before its Respond node — nearly always a missing credential. Open **n8n → Executions** and look at the red node. |
 | `port is already allocated` on compose up | Another container owns 5678/8080 — set `N8N_PORT` / `PORTAL_PORT` in `docker/.env`. |
-| Portal stuck in demo mode | It couldn't reach n8n. Check `docker compose ps`, and that Settings' base URL ends in `/webhook` (not `/webhook-test`). |
+| Portal stuck in demo mode | It couldn't reach n8n. Check `docker compose -f docker/docker-compose.yml ps`, and that Settings' base URL ends in `/webhook` (not `/webhook-test`). |
 | Skill not found / router says no match | Check the `Skills` data table: the row exists and `status` is `approved` (re-seed via إعادة تهيئة العرض if in doubt). |
 | `SERVICE_DENIED_BY_GOVERNANCE` | The skill's `allowed_services` doesn't include that service — governance working as designed. Edit the skill file if it was intentional. |
 | Gemini 429 | Free-tier rate limit; the nodes retry with backoff. Wait 60s. |

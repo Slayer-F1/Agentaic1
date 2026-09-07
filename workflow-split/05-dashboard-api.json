@@ -2,7 +2,7 @@
   "name": "مُنجِز — 05 Dashboard API",
   "nodes": [
     {
-      "id": "bce8f1e6-c1ff-4a04-8a37-7d675a84bf13",
+      "id": "89132edd-68a0-59ec-8011-e17062400123",
       "name": "GET State",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
@@ -16,10 +16,10 @@
         "responseMode": "responseNode",
         "options": {}
       },
-      "webhookId": "1c969e31-771d-4658-ac73-22f9467b21f8"
+      "webhookId": "c09712e7-0738-5214-8b3f-949ebc72d8df"
     },
     {
-      "id": "a5e405cb-aaca-476c-b67a-056c3778b078",
+      "id": "0fb01bf2-e30d-58d8-9ba3-37c7ab5ac8e3",
       "name": "Dashboard Start",
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
@@ -30,7 +30,7 @@
       "parameters": {}
     },
     {
-      "id": "26d648e5-86c0-499f-ad7c-d118d88784c0",
+      "id": "4915ea2f-a82d-5b5f-a82c-a5cb1eeaf104",
       "name": "Read All (dash)",
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
@@ -63,7 +63,7 @@
       }
     },
     {
-      "id": "4766c874-62d7-4c3f-8602-1cf61b28556c",
+      "id": "62294575-ce14-5146-a479-a6a47754b4a5",
       "name": "Assemble Dashboard",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -76,7 +76,7 @@
       }
     },
     {
-      "id": "448a0bca-c933-4de0-9f23-63ac04e23afb",
+      "id": "16b17b07-52d1-509c-9db9-b63e82313465",
       "name": "Respond State",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.2,
@@ -104,8 +104,8 @@
       }
     },
     {
-      "id": "a8aab3c5-169e-47b9-bea1-4dc0145cd572",
-      "name": "Note 0fa02efc",
+      "id": "0fdc2686-09f9-5d7e-98cc-09df4cd42ab9",
+      "name": "Note 2ab5f9d6",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
@@ -113,7 +113,7 @@
         -220
       ],
       "parameters": {
-        "content": "## Dashboard API\n`GET /munjiz/state` — polled by the portal every 3s. Skills come LIVE from the GitHub registry (the live-add demo beat needs no n8n change).",
+        "content": "## Dashboard API\n`GET /munjiz/state` — polled by the portal every 10s. Skills come LIVE from the `Skills` data table, so adding a procedure is one row — no n8n change and no network call.",
         "width": 560,
         "height": 160,
         "color": 4

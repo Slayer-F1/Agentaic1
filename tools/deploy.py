@@ -2,7 +2,7 @@
 """One-command deploy of the Munjiz workflows into the running n8n container.
 
     python tools/deploy.py            # import, activate, bind credentials, seed
-    python tools/deploy.py --split    # deploy the 8-file granular set instead
+    python tools/deploy.py --split    # deploy the 10-file granular set instead
 
 Run it AFTER you have created the n8n owner account at http://localhost:<port>
 (n8n does not register webhooks on an instance that has not been set up).
@@ -28,9 +28,22 @@ SPLIT_DIR = os.path.join(ROOT, "workflow-split")
 
 # Two interchangeable sets. Import ONE: they publish the same webhook paths, so
 # having both active at once makes n8n serve whichever registered first.
-MERGED_IDS = ["munjizDataIo0000", "munjizMain000001", "munjizGateway002", "munjizErrorHnd06"]
-SPLIT_IDS = ["munjizDataIo0000", "munjizChatAgent1", "munjizGateway002", "munjizApprovals3",
-             "munjizSlaChaser4", "munjizDashApi005", "munjizErrorHnd06", "munjizDemoReset7"]
+
+
+def wf_ids_in(d):
+    """Read the ids out of the workflow files themselves rather than repeating them
+    here. A hardcoded list silently went stale once 08 Reflection and 09 Patch Review
+    were added: --split activated only 8 of the 10, and a merged deploy left those two
+    behind as duplicate handlers for /munjiz/reflect and /munjiz/patch."""
+    ids = []
+    for fn in sorted(os.listdir(d)):
+        if not fn.endswith(".json"):
+            continue
+        with open(os.path.join(d, fn), encoding="utf-8") as f:
+            wid = json.load(f).get("id")
+        if wid and wid not in ids:
+            ids.append(wid)
+    return ids
 
 
 def run(args, check=True, quiet=False):
@@ -131,19 +144,21 @@ def main():
     ap.add_argument("--port", default=None)
     ap.add_argument("--skip-owner-check", action="store_true")
     ap.add_argument("--split", action="store_true",
-                    help="import the 8-file granular set instead of the merged 4-file set")
+                    help="import the 10-file granular set instead of the merged 4-file set")
     a = ap.parse_args()
     port = a.port or env_port()
     src_dir = SPLIT_DIR if a.split else WORKFLOW_DIR
-    want_ids = SPLIT_IDS if a.split else MERGED_IDS
-    stale_ids = [w for w in (MERGED_IDS if a.split else SPLIT_IDS) if w not in want_ids]
+    want_ids = wf_ids_in(src_dir)
+    stale_ids = [w for w in wf_ids_in(WORKFLOW_DIR if a.split else SPLIT_DIR)
+                 if w not in want_ids]
 
     print("== Munjiz deploy ==")
-    print("set: %s (%s)" % ("split/8" if a.split else "merged/4", os.path.basename(src_dir)))
+    print("set: %s/%d (%s)" % ("split" if a.split else "merged",
+                               len(want_ids), os.path.basename(src_dir)))
     print("container: %s | n8n port: %s" % (a.container, port))
 
     if not wait_healthy(port):
-        print("!! n8n is not answering on :%s — start it with:  cd docker && docker compose up -d" % port)
+        print("!! n8n is not answering on :%s — start it with:  docker compose -f docker/docker-compose.yml up -d" % port)
         sys.exit(1)
     print("-> n8n healthy")
 

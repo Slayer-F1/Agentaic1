@@ -94,10 +94,6 @@ main{flex:1;min-height:0;display:flex;justify-content:center;overflow:hidden}
 .msg .typing i{width:6px;height:6px;border-radius:50%;background:var(--ink-3);animation:blink 1.2s infinite}
 .msg .typing i:nth-child(2){animation-delay:.2s}.msg .typing i:nth-child(3){animation-delay:.4s}
 @keyframes blink{0%,80%,100%{opacity:.25}40%{opacity:1}}
-.chips-row{display:flex;gap:8px;flex-wrap:wrap;align-self:flex-end}
-.chip-btn{border:1px solid var(--brand);color:var(--brand);border-radius:99px;padding:3px 13px;
-  font-size:var(--fs-1);background:var(--surface)}
-.chip-btn:hover{background:var(--brand-soft)}
 .preview-card{align-self:flex-end;width:min(480px,92%);border:1.5px solid var(--brand);border-radius:var(--radius);
   background:var(--surface);overflow:hidden}
 .preview-card>h4{background:var(--brand-soft);color:var(--brand);padding:9px 16px;font-size:var(--fs-1)}
@@ -151,10 +147,6 @@ table.data{width:100%;border-collapse:collapse;font-size:var(--fs-1)}
 .tstep.done .dotp{background:var(--ok)}
 .tstep.now .dotp{background:var(--amber);box-shadow:0 0 0 3px var(--amber-soft)}
 .tstep+.tstep::before{content:"";width:26px;height:1.5px;background:var(--line);margin:0 6px}
-.cert{border:2px solid var(--gold);border-radius:var(--radius);padding:22px 26px;background:var(--gold-soft);
-  max-width:70ch;line-height:2.1;position:relative}
-.cert .stamp{position:absolute;top:14px;inset-inline-end:16px;border:2px solid var(--gold);color:var(--gold);
-  border-radius:8px;padding:2px 12px;font-weight:700;transform:rotate(-6deg);font-size:var(--fs-1)}
 .skill-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;margin-bottom:24px}
 .skill-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px}
 .skill-card h4{font-size:var(--fs-2);display:flex;justify-content:space-between;align-items:baseline;gap:8px}
@@ -276,7 +268,6 @@ dialog .dlg-f{padding:14px 20px;border-top:1px solid var(--line);display:flex;ga
     <div class="kpis" id="mineKpis"></div>
     <div class="sec-h"><h2 data-i18n="vMine">طلباتي</h2><span class="hint" id="mineHint"></span></div>
     <div id="mineTbl"></div>
-    <div id="certBox" style="margin-top:20px"></div>
   </section>
 
   <section class="view" id="view-approvals">
@@ -342,8 +333,6 @@ const AR={appTitle:"مُنجِز",appSub:"بوابة الخدمات الذاتي
  confirm:"تأكيد وإرسال",cancel:"إلغاء",previewTitle:"بطاقة المعاينة — راجع ثم أكّد",
  chain:"سلسلة الاعتماد",days:"أيام العمل",submitted:(id)=>`أُرسلت المعاملة ${id} ✓`,
  kMine:"إجمالي طلباتي",kPending:"قيد الاعتماد",kDone:"منفَّذة",kSaved:"دقيقة موفَّرة (تقديري)",
- thTxn:["المعاملة","النوع","التاريخ","الحالة","سلسلة الاعتماد"],
- thAppr:["المعاملة","النوع","الموظف","التفاصيل","منذ","القرار"],
  thAudit:["الوقت","المهارة","الخدمة","النتيجة"],
  approve:"اعتماد",reject:"رفض",noteOpt:"ملاحظة (اختياري)",decided:"سُجّل قرارك ✓",
  noPending:"لا معاملات بانتظار قرارك حاليًا",noTxns:"لا طلبات بعد — ابدأ من المحادثة",
@@ -351,7 +340,7 @@ const AR={appTitle:"مُنجِز",appSub:"بوابة الخدمات الذاتي
  skillsReg:"سجل المهارات (حيّ داخل n8n)",skillsHint:"كل مهارة معتمدة بإصدار — يقترح الوكيل تحسينًا، ويعتمده مالك الإجراء، فيُكتب في المهارة ويرتفع الإصدار",
  auditTitle:"سجل التدقيق",auditHint:"كل استدعاء خدمة يمر عبر بوابة الحوكمة ويُسجَّل — بما فيه المرفوض",
  chaseOk:"انطلق حارس الإنجاز",resetOk:"أُعيدت التهيئة",cert:"شهادة",instant:"فوري",
- downloadPdf:"تنزيل الشهادة (PDF)",reportTitle:"تقرير الوكيل للمعتمِد",otherOpt:"أخرى…",notePh:"ملاحظة القرار (اختياري)",age:"منذ",patchesTitle:"مقترحات تحسين المهارات",patchApprove:"اعتماد التحسين",patchReject:"رفض",patchPending:"بانتظار الاعتماد",patchDone:"معتمد",patchRejected:"مرفوض",memTitle:"الذاكرة المؤسسية",memUsage:"استخدام الذاكرة",noReport:"لا تقرير مرفق — التفاصيل أدناه",certFooter:"وثيقة تجريبية — بيانات وهمية لأغراض العرض",patchOk:"سُجّل قرار التحسين ✓", internalTag:"داخلية",
+ downloadPdf:"تنزيل الشهادة (PDF)",popupBlocked:"تعذّر فتح نافذة الشهادة — اسمح بالنوافذ المنبثقة لهذا الموقع ثم أعد المحاولة.",reportTitle:"تقرير الوكيل للمعتمِد",otherOpt:"أخرى…",notePh:"ملاحظة القرار (اختياري)",age:"منذ",patchesTitle:"مقترحات تحسين المهارات",patchApprove:"اعتماد التحسين",patchReject:"رفض",patchPending:"بانتظار الاعتماد",patchDone:"معتمد",patchRejected:"مرفوض",memTitle:"الذاكرة المؤسسية",memUsage:"استخدام الذاكرة",noReport:"لا تقرير مرفق — التفاصيل أدناه",certFooter:"وثيقة تجريبية — بيانات وهمية لأغراض العرض",patchOk:"سُجّل قرار التحسين ✓", internalTag:"داخلية",
  emptyBody:(w)=>`تعذّر إكمال الطلب: لم يُرجِع مسار العمل (${w}) أي رد. الغالب أن بيانات اعتماد Gemini غير مضافة في n8n — راجع Executions في n8n.`,
  badBody:(w)=>`رد غير مفهوم من مسار العمل (${w}).`,
  confirmMsg:"أؤكد الإرسال",cancelMsg:"إلغاء الطلب",newTitle:"محادثة جديدة",
@@ -370,8 +359,6 @@ const EN={appTitle:"Munjiz",appSub:"Skill-governed self-service portal — demo 
  confirm:"Confirm & submit",cancel:"Cancel",previewTitle:"Preview — review then confirm",
  chain:"Approval chain",days:"working days",submitted:(id)=>`Transaction ${id} submitted ✓`,
  kMine:"My requests",kPending:"Pending approval",kDone:"Executed",kSaved:"minutes saved (est.)",
- thTxn:["Txn","Type","Date","Status","Approval chain"],
- thAppr:["Txn","Type","Employee","Details","Age","Decision"],
  thAudit:["Time","Skill","Service","Result"],
  approve:"Approve",reject:"Reject",noteOpt:"Note (optional)",decided:"Decision recorded ✓",
  noPending:"Nothing awaiting your decision",noTxns:"No requests yet — start from Chat",
@@ -379,7 +366,7 @@ const EN={appTitle:"Munjiz",appSub:"Skill-governed self-service portal — demo 
  skillsReg:"Skill registry (live in n8n)",skillsHint:"Every skill is versioned and approved — the agent proposes, the owner approves, the rule is written in and the version bumps",
  auditTitle:"Audit log",auditHint:"Every service call passes the governance gateway and is logged — including denials",
  chaseOk:"SLA chaser fired",resetOk:"Demo re-armed",cert:"Certificate",instant:"instant",
- downloadPdf:"Download certificate (PDF)",reportTitle:"Agent report for the approver",otherOpt:"Other…",notePh:"Decision note (optional)",age:"since",patchesTitle:"Skill improvement proposals",patchApprove:"Approve improvement",patchReject:"Reject",patchPending:"awaiting approval",patchDone:"approved",patchRejected:"rejected",memTitle:"Institutional memory",memUsage:"Memory usage",noReport:"No report attached — details below",certFooter:"Demo document — fictional data for presentation",patchOk:"Improvement decision recorded ✓", internalTag:"internal",
+ downloadPdf:"Download certificate (PDF)",popupBlocked:"Could not open the certificate window — allow pop-ups for this site and try again.",reportTitle:"Agent report for the approver",otherOpt:"Other…",notePh:"Decision note (optional)",age:"since",patchesTitle:"Skill improvement proposals",patchApprove:"Approve improvement",patchReject:"Reject",patchPending:"awaiting approval",patchDone:"approved",patchRejected:"rejected",memTitle:"Institutional memory",memUsage:"Memory usage",noReport:"No report attached — details below",certFooter:"Demo document — fictional data for presentation",patchOk:"Improvement decision recorded ✓", internalTag:"internal",
  emptyBody:(w)=>`Request could not complete: the workflow (${w}) returned no body. Usually the Gemini credential is missing in n8n — check Executions there.`,
  badBody:(w)=>`Unreadable response from the workflow (${w}).`,
  confirmMsg:"I confirm, submit it",cancelMsg:"Cancel the request",newTitle:"New conversation",
@@ -406,7 +393,7 @@ const S={base:defaultBase(),lang:localStorage.getItem("munjiz.lang")||"ar",
 /* ---------------- demo data ---------------- */
 function demoData(){
  const now=new Date(); const d=n=>{const x=new Date(now);x.setDate(x.getDate()+n);return x.toISOString();};
- return {kpis:{total:3,today:0,pending:1,executed:2,rejected:0,minutes_saved:50},
+ const data={kpis:{total:3,today:0,pending:1,executed:2,rejected:0,minutes_saved:50},
   employees:[
    {employee_id:"EMP-1001",name_ar:"أحمد المهيري (تجريبي)",name_en:"Ahmed Almheiri (demo)",role:"specialist",department:"تقنية المعلومات",manager_id:"EMP-1002"},
    {employee_id:"EMP-1002",name_ar:"مريم الشامسي (تجريبي)",name_en:"Mariam Alshamsi (demo)",role:"manager",department:"تقنية المعلومات",manager_id:"EMP-1007"},
@@ -444,9 +431,33 @@ function demoData(){
     output_ref:"",sla_hours:48,updated_at:d(-1)}],
   audit:[
    {ts:d(0),session_id:"S-demo",employee_id:"EMP-1001",skill_id:"salary-certificate",
-    service:"get_leave_balance",request_json:"{}",result_summary:"DENIED/ERROR: SERVICE_DENIED_BY_GOVERNANCE"},
+    service:"get_leave_balance",request_json:"{}",result_summary:"DENIED: SERVICE_DENIED_BY_GOVERNANCE"},
    {ts:d(-1),session_id:"S-demo",employee_id:"EMP-1003",skill_id:"leave-request",
-    service:"submit_transaction",request_json:"{\"leave_type\":\"annual\"}",result_summary:"OK TXN-SEED-OVERLAP awaiting_manager"}]};
+    service:"submit_transaction",request_json:"{\"leave_type\":\"annual\"}",result_summary:"OK TXN-SEED-OVERLAP awaiting_manager"}],
+  memory:[
+   {memory_id:"MEM-0001",scope:"org",subject_id:"",status:"active",use_count:2,
+    content:"تُغلق إدارة المالية حساباتها الشهرية في آخر ثلاثة أيام عمل من كل شهر، وتتأخر اعتمادات المطالبات في تلك الفترة.",
+    source:"seed",created_at:d(-30),updated_at:d(-30)},
+   {memory_id:"MEM-0002",scope:"employee",subject_id:"EMP-1001",status:"active",use_count:1,
+    content:"يفضّل أحمد المهيري الردود المختصرة والمباشرة، ويطلب دائمًا تأكيد التواريخ بالتقويم الميلادي.",
+    source:"reflection",created_at:d(-6),updated_at:d(-6)}],
+  patches:[
+   {patch_id:"PATCH-0001",skill_id:"expense-claim",status:"pending",
+    proposed_text:"ذكّر الموظف برقم الإيصال قبل طلب المبلغ متى تجاوزت الفئة 100 درهم — أغلب طلبات النفقات المعادة تنقصها هذه الحقول.",
+    rationale:"مطالبتان من آخر ثلاث رجعتا needs_attention بسبب إيصال ناقص.",
+    reviewed_by:"",created_at:d(-1),updated_at:d(-1)},
+   {patch_id:"PATCH-0002",skill_id:"leave-request",status:"approved",
+    proposed_text:"عند وجود تعارض إجازة مع زميل من الفريق نفسه، اقترح زميل تغطية بديلًا قبل عرض بطاقة المعاينة.",
+    rationale:"تحذير التعارض وحده لم يكن كافيًا؛ المدير طلب بديلًا في الحالتين.",
+    reviewed_by:"EMP-1002",created_at:d(-8),updated_at:d(-7)}]};
+ /* Derived from the rows above, the way Assemble Dashboard does it live — so editing
+    a memory string or a patch status can never desync the Governance strip. */
+ const active=data.memory.filter(m=>m.status==="active");
+ data.learning={memory_entries:active.length,
+  memory_chars:active.reduce((n,m)=>n+String(m.content||"").length,0),memory_budget:2200,
+  pending_patches:data.patches.filter(p=>p.status==="pending").length,
+  approved_patches:data.patches.filter(p=>p.status==="approved").length};
+ return data;
 }
 /* scripted demo chat: keyword-aware, leave (3 beats) or certificate (2 beats) */
 function demoChat(msg){
@@ -537,6 +548,18 @@ function demoPost(p,body){
    else{t.status="executed";t.current_approver="";}
    t.decision_note=body.note||"";t.updated_at=new Date().toISOString();}
   return Promise.resolve({ok:true});}
+ if(p==="/munjiz/patch"){const x=(S.data.patches||[]).find(y=>y.patch_id===body.patch_id);
+  if(!x)return Promise.resolve({ok:false,error:"PATCH_NOT_FOUND"});
+  if(x.status!=="pending")return Promise.resolve({ok:false,error:"NOT_PENDING"});
+  x.status=body.decision==="approve"?"approved":"rejected";
+  x.reviewed_by=body.reviewer||"";x.updated_at=new Date().toISOString();
+  const L=S.data.learning||(S.data.learning={});
+  L.pending_patches=(S.data.patches||[]).filter(y=>y.status==="pending").length;
+  L.approved_patches=(S.data.patches||[]).filter(y=>y.status==="approved").length;
+  /* an approved proposal bumps the skill version, exactly as 09 Patch Review does */
+  if(x.status==="approved"){const sk=(S.data.skills||[]).find(y=>y.id===x.skill_id);
+   if(sk){const v=String(sk.version||"1.0.0").split(".");v[2]=String((+v[2]||0)+1);sk.version=v.join(".");}}
+  return Promise.resolve({ok:true});}
  return Promise.resolve({ok:true});}
 
 /* ---------------- chat rendering ---------------- */
@@ -557,8 +580,11 @@ function renderChat(){
  log.scrollTop=log.scrollHeight;
  $$(".opt-chip",log).forEach(b=>b.addEventListener("click",()=>{
   const v=b.dataset.opt;
-  if(v===T.otherOpt||/أخرى|Other/.test(v)){$("#chatInput").focus();return;}
-  $$(".opt-chip",log).forEach(x=>x.disabled=true); // answered: freeze the choice set
+  /* A trailing ellipsis marks the open-ended escape ("أخرى…", "تواريخ أخرى…", "Other…").
+     Options come from the model, which often normalises "…" to "...", so accept both.
+     A bare "أخرى" is a real answer — the expense policy's own `other` category — and
+     must be sent, not swallowed. */
+  if(/(…|\.\.\.)$/.test(v.trimEnd())){$("#chatInput").focus();return;}
   sendChat(v);}));
  $$(".preview-card .btn.primary",log).forEach(b=>b.addEventListener("click",()=>confirmPreview()));
  $$(".preview-card .btn.ghost",log).forEach(b=>b.addEventListener("click",()=>sendChat(T.cancelMsg)));
@@ -589,7 +615,7 @@ async function sendChat(text){
   S.chat.pop();
   if(r.skill_id)S.activeSkill=r.skill_id;
   pushMsg({role:"agent",text:r.reply||"—",state:r.state,skill:r.skill_id,
-   preview:r.preview||null,missing:r.missing_fields||[],options:r.options||[]});
+   preview:r.preview||null,options:r.options||[]});
   if(r.state==="submitted"){toast(T.submitted(r.txn_id||""));S.activeSkill="";fetchState(true);}
  }catch(e){S.chat.pop();pushMsg({role:"agent",text:"⚠ "+e});}
  S.busy=false;
@@ -605,12 +631,12 @@ function welcome(){
 
 function openCertificate(t){
  let pl={};try{pl=JSON.parse(t.payload_json||"{}");}catch(e){}
- const emp=(S.data?.employees||[]).find(e=>e.employee_id===t.employee_id)||{};
  const body=pl.certificate_text||("تشهد الهيئة الاتحادية للخدمات المشتركة (تجريبي) بأن "+(t.employee_name||"الموظف")
    +" يعمل لدينا وما زال على رأس عمله حتى تاريخه. أُصدرت هذه الشهادة بناءً على طلبه دون أدنى مسؤولية على الهيئة تجاه الغير.");
  const to=pl.addressed_to||"لمن يهمه الأمر";
  const date=String(t.updated_at||t.ts||"").slice(0,10);
  const w=window.open("","_blank","width=800,height=1000");
+ if(!w){toast(T.popupBlocked,"err");return;} // popup blocked: say so instead of throwing
  w.document.write(`<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8">
 <title>${esc(t.output_ref||"شهادة")}</title><style>
 @page{size:A4;margin:0}*{box-sizing:border-box;margin:0;padding:0}
@@ -623,7 +649,7 @@ header{display:flex;justify-content:space-between;align-items:center;border-bott
 .meta{display:flex;justify-content:space-between;font-size:15px;margin-top:16px;color:#333}
 h1{text-align:center;font-size:24px;margin:26px 0 6px;color:#14532d}
 .to{text-align:center;font-size:16px;color:#555;margin-bottom:22px}
-.body{font-size:18px;line-height:2.3;text-align:justify}
+.body{font-size:18px;line-height:2.3;text-align:justify;white-space:pre-wrap}
 .sig{margin-top:44px;display:flex;justify-content:space-between;align-items:flex-end}
 .sig .side{font-size:15px;text-align:center}.sig .line{border-top:1.5px solid #333;margin-top:36px;padding-top:6px;width:200px}
 .seal{width:150px;height:150px;transform:rotate(-8deg);opacity:.92}
@@ -681,7 +707,7 @@ function renderMine(){
   <div class="kpi gold"><b class="num">${mine.filter(t=>t.status==="executed").length*25}</b><span>${T.kSaved}</span></div>`;
  $("#mineHint").textContent=T.mineHint;
  const box=$("#mineTbl");
- if(!mine.length){box.innerHTML=`<div class="empty-note">${T.noTxns}</div>`;$("#certBox").innerHTML="";return;}
+ if(!mine.length){box.innerHTML=`<div class="empty-note">${T.noTxns}</div>`;return;}
  box.innerHTML=`<div class="req-grid">`+mine.map(t=>{
   let pl={};try{pl=JSON.parse(t.payload_json||"{}");}catch(e){}
   const fields=Object.entries(pl).filter(([kk])=>!kk.startsWith("_")&&!["certificate_text","approver_report"].includes(kk))
@@ -697,7 +723,6 @@ function renderMine(){
   </div>`;}).join("")+`</div>`;
  $$("[data-cert]",box).forEach(b=>b.addEventListener("click",()=>{
   const t=mine.find(x=>x.txn_id===b.dataset.cert); if(t)openCertificate(t);}));
- $("#certBox").innerHTML="";
 }
 
 function renderApprovals(){
@@ -715,9 +740,13 @@ function renderApprovals(){
   const owner=emps.find(e=>e.employee_id===t.employee_id)||{};
   const age=Math.round((Date.now()-new Date(t.ts).getTime())/36e5);
   const report=pl.approver_report||"";
+  /* Free-form model prose: bold a label only where the text really carries one,
+     and never invent punctuation the agent did not write. */
   const segs=report?report.split("|").map(x=>{
-    const m=x.split(":");const h=m.shift();
-    return `<span class="seg"><b>${esc(h.trim())}:</b> ${esc(m.join(":").trim())}</span>`;}).join(""):"";
+    const s=x.trim();if(!s)return "";
+    const i=s.indexOf(":");
+    if(i<0)return `<span class="seg">${esc(s)}</span>`;
+    return `<span class="seg"><b>${esc(s.slice(0,i+1))}</b> ${esc(s.slice(i+1).trim())}</span>`;}).join(""):"";
   const details=Object.entries(pl).filter(([kk])=>!kk.startsWith("_")&&!["approver_report","certificate_text"].includes(kk))
    .map(([kk,v])=>`<span>${esc(kk)}: ${esc(String(v).slice(0,50))}</span>`).join("");
   return `<div class="req-card">
@@ -734,18 +763,21 @@ function renderApprovals(){
     <button class="btn ghost" data-txn="${esc(t.txn_id)}" data-d="reject">${T.reject}</button>
    </div></div>`;}).join("");
  $$("button[data-txn]",box).forEach(b=>b.addEventListener("click",async()=>{
-  const note=($(`.note-inp[data-note="${b.dataset.txn}"]`,box)||{}).value||"";
-  b.disabled=true; // one decision per click: no double-submit while the request is in flight
-  try{const r=await post("/munjiz/decide",{txn_id:b.dataset.txn,approver_id:S.who,decision:b.dataset.d,note});
+  const txn=b.dataset.txn;
+  const note=($(`.note-inp[data-note="${txn}"]`,box)||{}).value||"";
+  // freeze BOTH buttons of this card: approve and reject are two ways to decide the
+  // same transaction, and the server check is a read-then-write with no transaction
+  const btns=$$(`button[data-txn="${txn}"]`,box);
+  btns.forEach(x=>x.disabled=true);
+  try{const r=await post("/munjiz/decide",{txn_id:txn,approver_id:S.who,decision:b.dataset.d,note});
    if(r&&r.ok===false){toast(r.error||"رفض الخادم العملية","err");}else{toast(T.decided);}
-   fetchState(true);}catch(e){toast(String(e),"err");}finally{b.disabled=false;}}));
+   fetchState(true);}catch(e){toast(String(e),"err");}finally{btns.forEach(x=>x.disabled=false);}}));
 }
 
 function renderGov(){
  const grid=$("#skillGrid");
  const L=S.data?.learning||{};
  const pct=Math.min(100,Math.round((L.memory_chars||0)/(L.memory_budget||2200)*100));
- const mems=S.data?.memory||[];
  const patches=S.data?.patches||[];
  /* learning strip + pending proposals live above the registry: the evolving part first */
  grid.innerHTML=`

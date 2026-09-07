@@ -2,7 +2,7 @@
   "name": "مُنجِز — 04 SLA Chaser",
   "nodes": [
     {
-      "id": "47bbbb99-bfd8-46d0-9f84-b6c8d74c3ac1",
+      "id": "9eaa1081-7424-5e0d-8931-683b95dc1ef0",
       "name": "Every 12 Hours",
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
@@ -22,7 +22,7 @@
       }
     },
     {
-      "id": "e6cda6f8-6e1e-4978-abf0-860075e74625",
+      "id": "d67456fa-b947-5959-8509-dfea10395c02",
       "name": "Manual Test",
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
@@ -33,7 +33,7 @@
       "parameters": {}
     },
     {
-      "id": "4ed1e917-9643-4ee3-91f7-28fea52180f9",
+      "id": "bc365576-3ce2-5e8d-ac04-56f5e2d879ba",
       "name": "Chase Webhook",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
@@ -47,10 +47,10 @@
         "responseMode": "responseNode",
         "options": {}
       },
-      "webhookId": "1e8a475f-fac7-4330-abff-ff31b6bafd9e"
+      "webhookId": "9f4dc5dd-7605-54a2-8720-3c4109a85323"
     },
     {
-      "id": "0bde50ee-5f45-41d3-a4c1-c1d290acab8d",
+      "id": "8a204590-133f-5f2e-881e-b6a2e58d6d29",
       "name": "Respond Chase",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.2,
@@ -78,7 +78,7 @@
       }
     },
     {
-      "id": "4451e6af-fefe-4324-b1de-8a7364521ddb",
+      "id": "43120096-2001-5dda-961d-2a3ab911e71e",
       "name": "Read All",
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
@@ -111,7 +111,7 @@
       }
     },
     {
-      "id": "d17e6742-70d9-4281-aa99-7e4b23d95cc7",
+      "id": "3215a34c-c877-5498-a71c-fb8f7eb6b42f",
       "name": "Find Stale",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -124,7 +124,7 @@
       }
     },
     {
-      "id": "671da251-3d48-4736-9ea5-e975beb5abbc",
+      "id": "fc3c23a4-92c3-534e-8205-007e7f5afbe6",
       "name": "Any Stale?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
@@ -156,7 +156,7 @@
       }
     },
     {
-      "id": "c0071f74-71c5-4ecd-bf8c-ac2ba3083143",
+      "id": "40dff78a-5a69-5205-a573-19411bf3c1a3",
       "name": "Nothing ✓",
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
@@ -167,7 +167,7 @@
       "parameters": {}
     },
     {
-      "id": "251841e4-3347-43e0-9b7e-6f2e04a3b967",
+      "id": "00068e24-74c7-58c5-bd85-be11ee78e7b4",
       "name": "Chaser Agent",
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 2.2,
@@ -190,7 +190,7 @@
       "waitBetweenTries": 15000
     },
     {
-      "id": "6b19186c-2446-4174-b505-009db50ce377",
+      "id": "638b7efd-5bb0-59d3-b681-cffac4bec710",
       "name": "Gemini Chat Model (chaser)",
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1,
@@ -212,7 +212,7 @@
       }
     },
     {
-      "id": "afde942e-ef96-46c5-a119-4cde1a3a0a77",
+      "id": "12e45aed-0faa-555d-8d78-bcfadb958233",
       "name": "Chaser Output",
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "typeVersion": 1.2,
@@ -226,7 +226,7 @@
       }
     },
     {
-      "id": "ff8e9152-b40f-4e3e-a743-cc96b2b6da59",
+      "id": "bb01ed9f-f865-54f8-b8fd-7ffd1c72c7a3",
       "name": "Flatten",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -239,7 +239,7 @@
       }
     },
     {
-      "id": "3cef01d5-c30a-4a75-83a5-7d9483ed5b38",
+      "id": "61c450f7-a1a4-5ed9-b488-d282fb649643",
       "name": "Audit Rows",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -252,7 +252,7 @@
       }
     },
     {
-      "id": "e506c1cb-b5ab-4940-a8af-a846b3508f0f",
+      "id": "eafd8456-d723-5d9a-9c7e-96e147599fd2",
       "name": "Append AuditLog (chaser)",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -282,7 +282,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "10d9be27-6c1d-4f74-8694-2e09c7be4abf",
+      "id": "37484938-8d24-5731-89d5-a59b6dd7e12d",
       "name": "Carry Decisions",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -295,7 +295,7 @@
       }
     },
     {
-      "id": "65432bde-bd5f-4b81-b7fe-f1a735eef009",
+      "id": "dadbb51c-abf7-5202-b3b1-9dbc90524f26",
       "name": "Chaser Switch",
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
@@ -358,7 +358,7 @@
       }
     },
     {
-      "id": "9b372952-6145-406e-ba25-f3a4756f0a75",
+      "id": "b9ffa860-b208-5d55-a831-ca0dd61c05c1",
       "name": "Remind Approver",
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
@@ -369,7 +369,7 @@
       "parameters": {}
     },
     {
-      "id": "776eebdb-3fd4-472e-848f-39aac873195e",
+      "id": "3245c21e-b20d-54ba-98d0-922423b8c764",
       "name": "Escalate",
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
@@ -380,8 +380,8 @@
       "parameters": {}
     },
     {
-      "id": "3b45d77d-96bc-4185-bc4b-c34d8058c361",
-      "name": "Note d3fd749d",
+      "id": "8a97c899-6dd0-5b0d-a47b-000301b69ca8",
+      "name": "Note f5657ccb",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
@@ -389,7 +389,7 @@
         -320
       ],
       "parameters": {
-        "content": "## SLA Chaser — حارس الإنجاز (criteria ④⑤⑥)\nEvery 5 minutes it reads pending transactions, and the MODEL decides per case: remind / escalate / wait — each decision logged with its written justification.",
+        "content": "## SLA Chaser — حارس الإنجاز (criteria ④⑤⑥)\nEvery 12 hours it reads pending transactions, and the MODEL decides per case: remind / escalate / wait — each decision logged with its written justification.",
         "width": 620,
         "height": 190,
         "color": 4

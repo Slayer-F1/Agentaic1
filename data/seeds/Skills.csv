@@ -60,7 +60,7 @@ sla_hours: 48
 - لا تعتمد الإجازة بنفسك — الاعتماد للمدير حصرًا.
 - لا تتجاوز الرصيد ولو بيوم واحد «استثناءً».
 - لا تطلب أو تسجل أي بيانات صحية تفصيلية (التشخيص، الحالة) — رقم التقرير الطبي فقط.
-",human,2026-08-13T15:04:41
+",human,2026-01-05T09:00:00Z
 salary-certificate,1.1.0,approved,شهادة راتب / لمن يهمه الأمر,Salary / Employment Certificate,شهادة;راتب;لمن يهمه الأمر;certificate;salary;employment;بنك;سفارة,hr-officer,get_employee_profile;get_salary_record;submit_transaction,,true,1,false,"---
 id: salary-certificate
 version: 1.1.0
@@ -116,7 +116,7 @@ sla_hours: 1
 
 ## ما لا يجوز
 - لا شهادة لموظف آخر، ولا تعديل أي رقم، ولا وعود بمحتوى مستقبلي («سيصبح راتبه…»).
-",human,2026-08-13T15:04:41
+",human,2026-01-05T09:00:00Z
 expense-claim,1.0.2,approved,مطالبة نفقات / بدلات,Expense / Allowance Claim,نفقات;مصاريف;بدل;مطالبة;expense;claim;reimbursement;allowance;فاتورة,finance-officer,get_employee_profile;get_expense_policy;submit_transaction,manager;finance,false,72,false,"---
 id: expense-claim
 version: 1.0.2
@@ -173,7 +173,7 @@ sla_hours: 72
 
 ## ما لا يجوز
 - لا تعديل للسقوف، لا تجزئة مطالبة واحدة لعدة طلبات للالتفاف على السقف (ارفض النمط صراحةً إذا لاحظته)، لا مطالبات لموظف آخر.
-",human,2026-08-13T15:04:41
+",human,2026-01-05T09:00:00Z
 it-access-request,1.0.0,approved,طلب صلاحية نظام,IT System Access Request,صلاحية;نظام;وصول;access;system;permission;حساب;دخول;it,it-officer,get_employee_profile;get_it_roles;get_system_catalog;submit_transaction,manager;it_security,false,24,false,"---
 id: it-access-request
 version: 1.0.0
@@ -232,7 +232,7 @@ sla_hours: 24
 
 ## ما لا يجوز
 - لا منح فوري لأي صلاحية، لا admin دائمة، لا طلب نيابة عن موظف آخر، ولا قبول مبرر عام («أحتاجه لعملي») دون مهمة محددة.
-",human,2026-08-13T15:04:41
+",human,2026-01-05T09:00:00Z
 reflection,1.0.0,approved,مراجعة ما بعد الدور (التعلّم),Post-turn Reflection (Learning),reflection;learning;تعلّم;مراجعة,general,read_memory;write_memory;propose_skill_patch,,true,1,true,"---
 id: reflection
 version: 1.0.0
@@ -287,4 +287,4 @@ sla_hours: 1
 2. حلّل المعاملات والقرارات الواردة في الدفعة: ما الذي تكرر؟ ما الذي رُفض ولماذا؟ أين تعثّر الموظف؟
 3. طبّق ترتيب الأفضلية أعلاه، وارفض ما يقع في القائمة السلبية صراحةً.
 4. أعد JSON فقط بالمخطط المطلوب موضحًا ما كتبته ولماذا.
-",human,2026-08-13T15:04:41
+",human,2026-01-05T09:00:00Z

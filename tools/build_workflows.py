@@ -3,8 +3,9 @@
 
 Run:  python tools/build_workflows.py     → workflow/*.json
 
-User-replaced placeholders (find & replace before import):
-The GitHub raw base defaults to the real Agentaic1 repo (public) and can be edited in one node.
+Nothing is fetched over the network at runtime: the skill library, profiles, memory
+and all records live in n8n Data Tables, seeded by "07 Provision & Seed". This repo
+is the authored source, not a runtime dependency.
 """
 import json
 import os
@@ -28,7 +29,6 @@ MODEL_MAIN = "gemini-2.5-flash"        # employee-facing reasoning
 # runs on flash. Quota is therefore managed by cadence, not by model tier.
 MODEL_CHEAP = MODEL_MAIN
 GEMINI_URL = GEMINI_BASE + MODEL_MAIN + ":generateContent"
-RAW_BASE = "https://raw.githubusercontent.com/Slayer-F1/Agentaic1/main/"
 DEMO_INBOX = "munjiz.demo.uae@gmail.com"
 
 CRED_GEMINI = {"googlePalmApi": {"id": "GEMINI_CRED_ID", "name": "Google Gemini (AI Studio)"}}
@@ -47,23 +47,31 @@ def seed_rows(table):
     return [{k: ("" if r.get(k) is None else r.get(k)) for k in headers} for r in rows]
 
 
-def nid():
-    return str(uuid.uuid4())
+# Fixed namespace for derived node ids. Node names are unique within a workflow
+# (n8n requires it, and merge() below leans on it), so uuid5 over the name is both
+# unique and stable - a rebuild with no source change is byte-identical instead of
+# rewriting every id in all 14 generated files. Same reasoning as WF_IDS below,
+# one level down.
+NID_NS = uuid.UUID("6f1b9c4e-2d7a-5e83-9a4f-1c8b0d3e7a26")
+
+
+def nid(key):
+    return str(uuid.uuid5(NID_NS, key))
 
 
 def node(name, ntype, tv, pos, params, credentials=None, webhook=False, **extra):
-    n = {"id": nid(), "name": name, "type": ntype, "typeVersion": tv,
+    n = {"id": nid(name), "name": name, "type": ntype, "typeVersion": tv,
          "position": list(pos), "parameters": params}
     if credentials:
         n["credentials"] = credentials
     if webhook:
-        n["webhookId"] = nid()
+        n["webhookId"] = nid(name + "#webhook")
     n.update(extra)
     return n
 
 
 def sticky(content, pos, width=520, height=220, color=4):
-    return node("Note " + nid()[:8], "n8n-nodes-base.stickyNote", 1, pos,
+    return node("Note " + uuid.uuid5(NID_NS, content).hex[:8], "n8n-nodes-base.stickyNote", 1, pos,
                 {"content": content, "width": width, "height": height, "color": color})
 
 
@@ -843,7 +851,8 @@ RE_REASON_JS = (
     "const j = $json;\n"
     "const prompt = ['راجع ردك: المدقق الحتمي وجد خطأً حسابيًا.', j.recheck_notes.join('؛ '),\n"
     "  'ردك السابق:', JSON.stringify({ reply_ar: j.reply_ar, state: j.state,\n"
-    "    transaction_preview: j.transaction_preview, missing_fields: j.missing_fields }),\n"
+    "    transaction_preview: j.transaction_preview, txn_id: j.txn_id,\n"
+    "    missing_fields: j.missing_fields, options: j.options }),\n"
     "  'صحّح الأرقام وأعد JSON بنفس المخطط تمامًا دون أي نص آخر.'].join('\\n');\n"
     "return [{ json: { ...j, geminiBody: { contents: [{ role: 'user', parts: [{ text: prompt }] }],\n"
     "  generationConfig: { temperature: 0, response_mime_type: 'application/json' } } } }];\n"
@@ -950,9 +959,10 @@ def build_agent():
     rr_parse = wf.add(code("Parse Re-reason", GPARSE, (1680, -220)))
     rr_merge = wf.add(code("Merge Re-reason", (
         "const prev = $('Deterministic Cross-Check').first().json;\n"
-        "const fixed = $json.gemini_ok ? $json.gemini_json : {\n"
-        "  reply_ar: prev.reply_ar, state: prev.state, transaction_preview: prev.transaction_preview,\n"
-        "  txn_id: prev.txn_id, missing_fields: prev.missing_fields, options: prev.options };\n"
+        "// Merge ONTO the previous answer rather than replacing it: the re-reason call\n"
+        "// runs without a response schema, so any field the model drops (txn_id after a\n"
+        "// submit, the collecting options) is inherited instead of silently lost.\n"
+        "const fixed = { ...prev, ...($json.gemini_ok ? $json.gemini_json : {}) };\n"
         "return [{ json: { output: fixed, _rechecked: true } }];\n"
     ), (1900, -220)))
     wf.link(needs, rr, output=0)
@@ -969,7 +979,8 @@ def build_agent():
     wf.nodes.append(sticky(
         "## مُنجِز — Chat Agent (criteria ①②③④⑤⑥)\n"
         "④ webhook trigger from the portal. ⑤ router picks the SKILL at runtime; the whole "
-        "system prompt is composed dynamically from GitHub (governed SKILL.md + PROFILE.md). "
+        "system prompt is composed dynamically from the Skills and Profiles data tables "
+        "(governed SKILL.md + PROFILE.md bodies) — no network call. "
         "① one governed tool (call_service) — the model chooses WHICH service per step. "
         "② think-tool plan first. ③ session memory + registry sheets. "
         "⑥ deterministic working-day cross-check forces a re-reason pass on mismatch.",
@@ -1226,9 +1237,10 @@ def build_chaser():
     esc = wf.add(node("Escalate", "n8n-nodes-base.noOp", 1, (540, 60), {}))
     wf.link(act, esc, output=1)
     wf.nodes.append(sticky(
-        "## SLA Chaser — حارس الإنجاز (criteria ④⑤⑥)\nEvery 5 minutes it reads pending "
+        "## SLA Chaser — حارس الإنجاز (criteria ④⑤⑥)\nEvery %d hours it reads pending "
         "transactions, and the MODEL decides per case: remind / escalate / wait — each decision "
-        "logged with its written justification.", (-1120, -320), width=620, height=190))
+        "logged with its written justification." % CHASER_HOURS,
+        (-1120, -320), width=620, height=190))
     return wf
 
 
@@ -1292,9 +1304,9 @@ def build_dash():
     wf.link(rd, asm)
     resp = wf.add(respond("Respond State", "={{ $json }}", (180, 0)))
     wf.link(asm, resp)
-    wf.nodes.append(sticky("## Dashboard API\n`GET /munjiz/state` — polled by the portal every 3s. "
-                           "Skills come LIVE from the GitHub registry (the live-add demo beat needs "
-                           "no n8n change).", (-720, -220), width=560, height=160))
+    wf.nodes.append(sticky("## Dashboard API\n`GET /munjiz/state` — polled by the portal every 10s. "
+                           "Skills come LIVE from the `Skills` data table, so adding a procedure is "
+                           "one row — no n8n change and no network call.", (-720, -220), width=560, height=160))
     return wf
 
 
@@ -1316,13 +1328,13 @@ def build_error():
     wf.link(trig, ext)
     wf.link(ext, mail)
     wf.link(mail, done)
-    wf.nodes.append(sticky("## Error Handler (criterion ⑥)\nSet as error workflow for 01/03/04/05.",
+    wf.nodes.append(sticky("## Error Handler (criterion ⑥)\nSet as error workflow on each set's trigger workflows (01-main, or 01/03/04/05/07/08/09 when split).",
                            (-520, -180), width=440, height=120))
     return wf
 
 
 def build_seed():
-    """Provision the datastore inside n8n: create the six data tables, clear them
+    """Provision the datastore inside n8n: create the data tables, clear them
     and load the synthetic seed. Idempotent, so it doubles as the demo-reset
     button (POST /munjiz/reset). No external service is involved."""
     wf = Wf("مُنجِز — 07 Provision & Seed")
@@ -1337,12 +1349,51 @@ def build_seed():
     for table in build_data.TABS:
         cols = [{"name": c, "type": "string"} for c in build_data.TABS[table][0]]
         lines = ["const rows = JSON.parse(" + js_lit(seed_rows(table)) + ");"]
-        if table == "Transactions":
+        # Rows are authored against build_data.ANCHOR, a fixed instant, so that a rebuild
+        # is byte-identical. Shift them onto the seeding clock here: without this the
+        # reflection pass (24h window), the "today" KPI and every approval age would be
+        # measured against whenever the builder last ran.
+        lines += [
+            "const SHIFT = Date.now() - Date.parse('" + build_data.iso(build_data.ANCHOR) + "');",
+            "// An unparseable stamp is left as authored rather than thrown on: one bad cell"
+            " must not take the whole reset down.",
+            "const shiftTs = s => { const t = Date.parse(s);"
+            " return isNaN(t) ? s : new Date(t + SHIFT).toISOString(); };",
+            "for (const r of rows)",
+            "  for (const c of ['ts', 'updated_at', 'created_at']) if (r[c]) r[c] = shiftTs(r[c]);",
+        ]
+        # Date-only payload fields shift by whole CALENDAR days, and the calendar that
+        # matters is the agent's: COMPOSE_JS stamps the prompt with the Asia/Dubai date,
+        # so a UTC-based day would disagree with it for four hours out of every day.
+        if "payload_json" in build_data.TABS[table][0]:
             lines += [
-                "const stale = new Date(Date.now() - 30 * 3600 * 1000).toISOString();",
-                "// re-arm the SLA anchor relative to now so the chaser always has a live case",
-                "for (const r of rows) if (r.txn_id === 'TXN-SEED-CHASE') { r.ts = stale; r.updated_at = stale; }",
+                "const SHIFT_D = Date.parse(new Date()"
+                ".toLocaleDateString('en-CA', { timeZone: 'Asia/Dubai' }) + 'T00:00:00Z')",
+                "  - Date.parse('" + build_data.ANCHOR.date().isoformat() + "T00:00:00Z');",
+                "const shiftDay = s => new Date(Date.parse(s + 'T00:00:00Z') + SHIFT_D)"
+                ".toISOString().slice(0, 10);",
+                "// Shifting the dates changes their weekday, so a stored working_days would"
+                " drift. Recompute it with the same Mon-Fri rule the cross-check uses, or the"
+                " seeded card would contradict the very arithmetic the demo audits.",
+                "const wdays = (a, b) => {",
+                "  const e = new Date(b + 'T12:00:00Z'); let n = 0;",
+                "  for (const d = new Date(a + 'T12:00:00Z'); d <= e; d.setUTCDate(d.getUTCDate() + 1))",
+                "    { const w = d.getUTCDay(); if (w !== 6 && w !== 0) n++; }",
+                "  return n; };",
+                "for (const r of rows) {",
+                "  if (!r.payload_json) continue;",
+                "  try {",
+                "    const p = JSON.parse(r.payload_json);",
+                "    for (const c of ['start_date', 'end_date', 'expense_date'])",
+                "      if (p[c]) p[c] = shiftDay(p[c]);",
+                "    if (p.start_date && p.end_date && p.working_days != null)",
+                "      p.working_days = wdays(p.start_date, p.end_date);",
+                "    r.payload_json = JSON.stringify(p);",
+                "  } catch (e) {}",
+                "}",
             ]
+        # No SLA re-arm needed: the shift above already carries TXN-SEED-CHASE's authored
+        # 30h offset onto the seeding clock, so the chaser always has a live breached case.
         lines.append("return rows.map(r => ({ json: r }));")
         create = wf.add(node("Create " + table, DT_TYPE, DT_VER, (x, 0), {
             "resource": "table", "operation": "create", "tableName": table,
@@ -1365,7 +1416,8 @@ def build_seed():
         x += 250
     wf.nodes.append(sticky(chr(10).join([
         "## Provision & Seed",
-        "`POST /munjiz/reset` (or run it manually) creates the six **n8n Data Tables**,",
+        "`POST /munjiz/reset` (or run it manually) creates the %d **n8n Data Tables**,"
+        % len(build_data.TABS),
         "clears them and loads the synthetic seed.",
         "",
         "No Google Sheet, no spreadsheet id, no OAuth - the datastore lives inside n8n.",
@@ -1545,12 +1597,19 @@ def build_patch_review():
         "  created_by: sk.created_by, updated_at: new Date().toISOString() } }];\n"
     ), (840, -80), alwaysOutputData=True))
     wf.link(read_sk, apply_patch)
-    save_sk = wf.add(dt_upsert("Save Improved Skill", "Skills", "skill_id", (1060, -80)))
-    wf.link(apply_patch, save_sk)
+    # A rejection returns no rows, but alwaysOutputData turns that into one EMPTY item -
+    # which would upsert a blank row into the skill registry. Gate on a real skill_id
+    # before the write, the same guard shape "Leave Side?" uses in 03 Approvals.
+    applied = wf.add(if_node("Skill Rewritten?", "={{ $json.skill_id }}", "string", "notEmpty", "",
+                             (1040, -80), single=True))
+    wf.link(apply_patch, applied)
+    save_sk = wf.add(dt_upsert("Save Improved Skill", "Skills", "skill_id", (1260, -180)))
+    wf.link(applied, save_sk, output=0)
     resp = wf.add(respond("Respond Patch",
                           '={{ { "ok": true, "status": $(\'Apply Patch Decision\').first().json.row.status } }}',
-                          (1280, -80)))
+                          (1480, -80)))
     wf.link(save_sk, resp)
+    wf.link(applied, resp, output=1)
     wf.nodes.append(sticky(chr(10).join([
         "## 09 Patch Review",
         "`POST /munjiz/patch {patch_id, decision, note, reviewer}`.",
@@ -1650,8 +1709,9 @@ def emit(outdir, builds):
 
 
 def main():
-    print("workflow-split/ (8 files, one per concern)")
-    bad = emit(OUT_SPLIT, [
+    # Counts below are derived, never spelled out: the "8 files" this used to print
+    # stayed behind when 08 Reflection and 09 Patch Review were added.
+    split_builds = [
         ("00-data-io.json", build_data_io()),
         ("01-chat-agent.json", build_agent()),
         ("02-service-gateway.json", build_gateway()),
@@ -1662,9 +1722,11 @@ def main():
         ("07-demo-reset.json", build_seed()),
         ("08-reflection.json", build_reflection()),
         ("09-patch-review.json", build_patch_review()),
-    ])
+    ]
+    print("workflow-split/ (%d files, one per concern)" % len(split_builds))
+    bad = emit(OUT_SPLIT, split_builds)
 
-    # Default set: the five trigger workflows merged onto one canvas.
+    # Default set: every trigger workflow merged onto one canvas.
     # 00 Data IO and 02 Service Gateway MUST stay separate (they are invoked via
     # executeWorkflow / toolWorkflow, which can only target another workflow),
     # and the error handler stays separate so it can be assigned as one.
@@ -1677,13 +1739,14 @@ def main():
         ("08 Reflection", build_reflection()),
         ("09 Patch Review", build_patch_review()),
     ])
-    print("workflow/ (4 files, merged - the default import set)")
-    bad = emit(OUT, [
+    merged_builds = [
         ("00-data-io.json", build_data_io()),
         ("01-main.json", main_wf),
         ("02-service-gateway.json", build_gateway()),
         ("03-error-handler.json", build_error()),
-    ]) or bad
+    ]
+    print("workflow/ (%d files, merged - the default import set)" % len(merged_builds))
+    bad = emit(OUT, merged_builds) or bad
 
     if bad:
         raise SystemExit(1)

@@ -2,7 +2,7 @@
   "name": "مُنجِز — 06 Error Handler",
   "nodes": [
     {
-      "id": "9fee2155-4ac9-4513-ba8a-83aa115164e1",
+      "id": "fae2d471-e403-5d1d-bfc4-a7ac6d3ef4a3",
       "name": "Error Trigger",
       "type": "n8n-nodes-base.errorTrigger",
       "typeVersion": 1,
@@ -13,7 +13,7 @@
       "parameters": {}
     },
     {
-      "id": "7c876fca-91f8-4d6c-9184-ee189cec58c7",
+      "id": "8d97bb46-3484-5dc2-b4e6-872027e6566c",
       "name": "Extract",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -26,7 +26,7 @@
       }
     },
     {
-      "id": "c7d22238-fade-4d85-a5f6-2af6d3fab9d4",
+      "id": "c615201f-e3d3-57fa-9b0b-d0a5f8acbe7c",
       "name": "Notify",
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1.1,
@@ -56,7 +56,7 @@
       "waitBetweenTries": 2000
     },
     {
-      "id": "ea508641-3d32-4249-ae71-2a0f003960c5",
+      "id": "cdee4550-94f2-5218-88bc-cf978b305892",
       "name": "Logged ✓",
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
@@ -67,8 +67,8 @@
       "parameters": {}
     },
     {
-      "id": "ffbe0dba-7bfc-45c0-a49e-9691da905c9a",
-      "name": "Note 47217445",
+      "id": "feca73f9-3fad-5ea8-bcce-468248a71aa3",
+      "name": "Note 0d68d851",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
@@ -76,7 +76,7 @@
         -180
       ],
       "parameters": {
-        "content": "## Error Handler (criterion ⑥)\nSet as error workflow for 01/03/04/05.",
+        "content": "## Error Handler (criterion ⑥)\nSet as error workflow on each set's trigger workflows (01-main, or 01/03/04/05/07/08/09 when split).",
         "width": 440,
         "height": 120,
         "color": 4
